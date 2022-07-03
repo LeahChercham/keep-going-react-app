@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
 const pages = ["Log In", "Sign Up"];
-const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+// const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 const open = Boolean(anchorEl);
 
 class NavBar extends Component {
