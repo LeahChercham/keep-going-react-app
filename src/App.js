@@ -1,25 +1,48 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import { BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
+import NavBar from './Components/NavBar';
+import LandingPage from './Components/LandingPage';
+import SearchPage from './Components/SearchPage';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(){
+    super()
+    this.state = {
+      userName:"",
+      isOnline:true
+    }
+  }
+
+  updateUserName = (name) => {
+    this.setState({
+      userName: name
+    })
+  }
+
+  render(){
+    return(
+      <BrowserRouter>
+        <NavBar name={this.state.userName}>
+
+        </NavBar>
+<Routes>
+        <Route path="/" exact render={() =>
+            (this.state.userName ?
+              (<Navigate to="/Search" />) :
+              (<LandingPage updateUser={this.updateUser}
+                 />))}>
+          </Route>
+
+          <Route path="/Search" exact render={() =>
+            <SearchPage />}>
+          </Route>
+
+</Routes>
+
+      </BrowserRouter>
+    )
+  }
 }
 
 export default App;
