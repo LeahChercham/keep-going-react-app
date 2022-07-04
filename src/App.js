@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
 import NavBar from './Components/NavBar';
 import LandingPage from './Components/LandingPage';
 import SearchPage from './Components/SearchPage';
+import Signup from './Components/Signup';
+import Login from './Components/Login';
 import './App.css';
 
 class App extends Component {
@@ -34,8 +36,14 @@ class App extends Component {
                  />))}>
           </Route>
 
-          <Route path="/Search" exact render={() =>
+          <Route path="/search" exact render={() =>
             <SearchPage />}>
+          </Route>
+          <Route path="/login" exact render={() =>
+            <Login />}>
+          </Route>
+          <Route path="/register" exact render={() =>
+            <Signup />}>
           </Route>
 
 </Routes>
