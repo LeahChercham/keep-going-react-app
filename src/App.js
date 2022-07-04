@@ -9,7 +9,7 @@ import './App.css';
 
 
 const styles = {
-  main: { marginTop:100} // to position stuff under header
+   main: {display: "flex", flexFlow:"column"}
 }
 class App extends Component {
   constructor() {
@@ -30,13 +30,13 @@ class App extends Component {
     return (
 
       <BrowserRouter>
-        <div>
+        <div style={styles.main}>
 
           <NavBar name={this.state.userName}>
           </NavBar>
 
 
-          <div style={styles.main}>
+          <div className="page">
             <Routes>
               <Route path="/" element={
                 (this.state.userName ?
