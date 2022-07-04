@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavBar from './Components/NavBar';
 import LandingPage from './Components/LandingPage';
 import SearchPage from './Components/SearchPage';
@@ -7,12 +7,16 @@ import Signup from './Components/Signup';
 import Login from './Components/Login';
 import './App.css';
 
+
+const styles = {
+  main: { marginTop:100} // to position stuff under header
+}
 class App extends Component {
-  constructor(){
+  constructor() {
     super()
     this.state = {
-      userName:"",
-      isOnline:true
+      userName: false,
+      isOnline: true
     }
   }
 
@@ -22,32 +26,41 @@ class App extends Component {
     })
   }
 
-  render(){
-    return(
+  render() {
+    return (
+
       <BrowserRouter>
-        <NavBar name={this.state.userName}>
+        <div>
 
-        </NavBar>
-<Routes>
-        <Route path="/" exact render={() =>
-            (this.state.userName ?
-              (<Navigate to="/Search" />) :
-              (<LandingPage updateUser={this.updateUser}
-                 />))}>
-          </Route>
+          <NavBar name={this.state.userName}>
+          </NavBar>
 
-          <Route path="/search" exact render={() =>
-            <SearchPage />}>
-          </Route>
-          <Route path="/login" exact render={() =>
-            <Login />}>
-          </Route>
-          <Route path="/register" exact render={() =>
-            <Signup />}>
-          </Route>
 
-</Routes>
+          <div style={styles.main}>
+            <Routes>
+              <Route path="/" element={
+                (this.state.userName ?
+                  (<Navigate to="/search" />) :
+                  (<LandingPage updateUser={this.updateUser}
+                  />))}>
+              </Route>
 
+              <Route path="/" element={<LandingPage />}></Route>
+
+              <Route path="/search" element={
+                <SearchPage />}>
+              </Route>
+              <Route path="/login" element={
+                <Login />}>
+              </Route>
+              <Route path="/register" element={
+                <Signup />}>
+              </Route>
+
+            </Routes>
+
+          </div>
+        </div>
       </BrowserRouter>
     )
   }

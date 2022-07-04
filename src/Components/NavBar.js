@@ -19,7 +19,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 const pages = [{ label: "Sign In", href: "/register" }, { label: "Log In", href: "/login" }, { label: "Username", href: "/search" }];
 
 const styles = {
-    appbar: { backgroundColor: "#0F202A" },
+    appbar: { backgroundColor: "#0F202A", height:100 },
     menuButton: {
         fontWeight: 500,
         size: "18px",
