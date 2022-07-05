@@ -1,5 +1,5 @@
+import React, { Component } from 'react';
 import { Link as RouterLink } from "react-router-dom";
-import { Component } from "react";
 import Button from '@mui/material/Button';
 import landingImage from '../Image Landing.png';
 

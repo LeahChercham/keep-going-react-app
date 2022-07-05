@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from 'react';
 import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
 import { InputLabel } from "@mui/material";

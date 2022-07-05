@@ -1,10 +1,12 @@
-import { Component } from "react";
+import React, { Component } from 'react';
 import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
 import { InputLabel } from "@mui/material";
-import { Input } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Button } from "@mui/material";
+import Axios from '../../node_modules/axios';
+import consts from '../consts'
+const CREATE_ROUTE = consts.CREATE_ROUTE
 
 const styles = {
     main: {
@@ -17,8 +19,8 @@ const styles = {
         header: {
             fontSize: "2em",
             marginTop: "0.5em",
-            display:"flex",
-            justifyContent:"center",
+            display: "flex",
+            justifyContent: "center",
             color: "#0F202A"
         }
     }
@@ -29,11 +31,18 @@ class Signup extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
-            password: "",
+            newUser: {
+                email: "",
+                password: "",
+                username: "",
+                usernameTaken: true,
+                emailTaken: true,
+                mainExpertise: "",
+                mainExpertiseKeywords: [],
+                otherKeywords: [],
+            },
             confirmPassword: "",
             error: "",
-            username: ""
         }
     }
 
@@ -45,13 +54,34 @@ class Signup extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        if (this.state.password !== this.state.confirmPassword) {
+        let newUser = { ...this.state.newUser }
+        if (newUser.usernameTaken) {
+            this.setState({
+                error: "Username already taken"
+            })
+        }
+        if (newUser.emailTaken) {
+            this.setState({
+                error: "Email already taken"
+            })
+        }
+        if (newUser.password !== this.state.confirmPassword) {
             this.setState({
                 error: "Passwords do not match"
             })
-        } else { // Function to create
-            this.props.signUp(this.state.email, this.state.password, this.state.username);
+        } 
+        
+        if(!newUser.usernameTaken && !newUser.emailTaken && newUser.password === this.state.confirmPassword) {
+            this.signUp(this.state.email, this.state.password, this.state.username);
         }
+    }
+
+    signUp = () => {
+        let userData = { ...this.state.newUser }
+        Axios.post(CREATE_ROUTE("user"), userData).then(() => {
+            alert("Yey! You're now an user!")
+            this.props.showLogIn()
+        })  
     }
 
 

@@ -1,5 +1,4 @@
-import { Component } from "react";
-
+import React, { Component } from 'react';
 class SearchPage extends Component {
     constructor(props) {
         super(props);
