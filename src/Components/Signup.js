@@ -35,8 +35,8 @@ class Signup extends Component {
                 email: "",
                 password: "",
                 username: "",
-                usernameTaken: true,
-                emailTaken: true,
+                usernameTaken: false,
+                emailTaken: false,
                 mainExpertise: "",
                 mainExpertiseKeywords: [],
                 otherKeywords: [],
@@ -46,33 +46,67 @@ class Signup extends Component {
         }
     }
 
-    handleChange = (event) => {
-        this.setState({
-            [event.target.id]: event.target.value
-        })
+    handleChange = async (event) => {
+        switch (event.target.id) {
+            case "username": this.handleUsername(event.target.value); break;
+            case "email": this.handleEmail(event.target.value); break;
+            case "password": {
+                let state = { ...this.state }
+                state.newUser.password = event.target.value
+                this.setState({ state })
+            }; break;
+            default: this.setState({
+                [event.target.id]: event.target.value
+            }); break;
+        }
+    }
+
+    handleUsername = async inputUsernameValue => {
+
+        let newUser = { ...this.state.newUser }
+        newUser.username = inputUsernameValue
+        this.setState({ newUser })
+
+        if (inputUsernameValue) {
+            let response = await Axios.get(CREATE_ROUTE(`userusername/${inputUsernameValue}`))
+            if (response.data) {
+                newUser.usernameTaken = true
+            } else {
+                newUser.usernameTaken = false
+            }
+        }
+        this.setState({ newUser })
+    }
+
+    handleEmail = async inputEmailValue => {
+        let newUser = { ...this.state.newUser }
+        newUser.email = inputEmailValue
+        this.setState({ newUser })
+        if (inputEmailValue) {
+            let response = await Axios.get(CREATE_ROUTE(`useremail/${inputEmailValue}`))
+            if (response.data) {
+                newUser.emailTaken = true
+            } else {
+                newUser.emailTaken = false
+            }
+        }
+        this.setState({ newUser })
     }
 
     handleSubmit = (event) => {
+        console.log(this.state)
         event.preventDefault();
         let newUser = { ...this.state.newUser }
-        if (newUser.usernameTaken) {
-            this.setState({
-                error: "Username already taken"
-            })
-        }
-        if (newUser.emailTaken) {
-            this.setState({
-                error: "Email already taken"
-            })
-        }
+
         if (newUser.password !== this.state.confirmPassword) {
             this.setState({
                 error: "Passwords do not match"
             })
-        } 
-        
-        if(!newUser.usernameTaken && !newUser.emailTaken && newUser.password === this.state.confirmPassword) {
-            this.signUp(this.state.email, this.state.password, this.state.username);
+            return;
+        }
+
+        if (newUser.username && newUser.email && newUser.password && !newUser.usernameTaken && !newUser.emailTaken && newUser.password === this.state.confirmPassword) {
+            this.signUp();
         }
     }
 
@@ -80,8 +114,8 @@ class Signup extends Component {
         let userData = { ...this.state.newUser }
         Axios.post(CREATE_ROUTE("user"), userData).then(() => {
             alert("Yey! You're now an user!")
-            this.props.showLogIn()
-        })  
+            // this.props.showLogIn()
+        })
     }
 
 
@@ -93,34 +127,36 @@ class Signup extends Component {
                     <FormControl style={styles.main}>
                         <div>
                             <TextField
+                                error={this.state.newUser.usernameTaken}
                                 id="username"
                                 label="Username"
-                                value={this.state.username}
+                                value={this.state.newUser.username}
                                 onChange={this.handleChange}
                                 margin="normal"
                                 variant="outlined"
                                 style={{ width: "100%" }}
                             />
-                            <FormHelperText id="my-helper-text">Your username has to be unique.</FormHelperText>
+                            <FormHelperText id="my-helper-text">{this.state.newUser.usernameTaken ? "Username already taken" : ""}</FormHelperText>
                         </div>
                         <div>
                             <TextField
+                                error={this.state.newUser.emailTaken}
                                 id="email"
                                 label="Email"
-                                value={this.state.email}
+                                // value={this.state.newUser.email}
                                 onChange={this.handleChange}
                                 margin="normal"
                                 variant="outlined"
                                 style={{ width: "100%" }}
                             />
-                            <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
+                            <FormHelperText id="my-helper-text">{this.state.newUser.emailTaken ? "An account with this e-mail address already exists" : ""}</FormHelperText>
                         </div>
                         <div>
                             <TextField
                                 id="password"
                                 label="Password"
                                 type="password"
-                                value={this.state.password}
+                                value={this.state.newUser.password}
                                 onChange={this.handleChange}
                                 margin="normal"
                                 variant="outlined"

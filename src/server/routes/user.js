@@ -19,7 +19,7 @@ router.post("/user", function (req, res) {
 })
 
 // route to see if username already exists 
-router.get("/user/:username", function (req, res) {
+router.get("/userusername/:username", function (req, res) {
     let { username } = req.params
     User.findOne({ username }, function (error, response) {
         res.send(response)
@@ -27,7 +27,7 @@ router.get("/user/:username", function (req, res) {
 })
 
 // route to see if email already exists 
-router.get("/user/:email", function (req, res) {
+router.get("/useremail/:email", function (req, res) {
     let { email } = req.params
     User.findOne({ email }, function (error, response) {
         res.send(response)

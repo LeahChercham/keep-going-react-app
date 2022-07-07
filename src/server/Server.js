@@ -2,8 +2,9 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const PORT = 7777
+const path = require('path')
 
-const user = require('./user')
+const user = require('./routes/user')
 
 let app = express();
 
