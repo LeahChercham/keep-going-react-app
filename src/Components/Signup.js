@@ -68,7 +68,7 @@ class Signup extends Component {
         this.setState({ newUser })
 
         if (inputUsernameValue) {
-            let response = await Axios.get(CREATE_ROUTE(`userusername/${inputUsernameValue}`))
+            let response = await Axios.get(CREATE_ROUTE(`user/username/${inputUsernameValue}`))
             if (response.data) {
                 newUser.usernameTaken = true
             } else {
@@ -83,7 +83,7 @@ class Signup extends Component {
         newUser.email = inputEmailValue
         this.setState({ newUser })
         if (inputEmailValue) {
-            let response = await Axios.get(CREATE_ROUTE(`useremail/${inputEmailValue}`))
+            let response = await Axios.get(CREATE_ROUTE(`user/email/${inputEmailValue}`))
             if (response.data) {
                 newUser.emailTaken = true
             } else {
