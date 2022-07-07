@@ -13,7 +13,9 @@ router.post("/user", function (req, res) {
         req.body.password = hash
         let newUser = new User(req.body)
         console.log(req.body);
-        newUser.save()
+        newUser.save().then(result => {
+            console.log('user saved!')
+        })
         res.end()
     })
 })
