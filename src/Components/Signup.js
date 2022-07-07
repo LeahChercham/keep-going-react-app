@@ -123,7 +123,7 @@ class Signup extends Component {
             <div>
                 <div style={{ marginLeft: "4em", marginRight: "4em" }}>
                     <div style={styles.text.header}>Sign Up</div>
-                    <FormControl style={styles.main}>
+                    <FormControl style={styles.main} >
                         <div>
                             <TextField
                                 error={this.state.newUser.usernameTaken}
