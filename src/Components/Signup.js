@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
-import { InputLabel } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Button } from "@mui/material";
 import Axios from '../../node_modules/axios';
@@ -114,7 +113,6 @@ class Signup extends Component {
         let userData = { ...this.state.newUser }
         Axios.post(CREATE_ROUTE("user"), userData).then(() => {
             alert("Yey! You're now an user!")
-            // this.props.showLogIn()
         })
     }
 
@@ -143,7 +141,7 @@ class Signup extends Component {
                                 error={this.state.newUser.emailTaken}
                                 id="email"
                                 label="Email"
-                                // value={this.state.newUser.email}
+                                value={this.state.newUser.email}
                                 onChange={this.handleChange}
                                 margin="normal"
                                 variant="outlined"

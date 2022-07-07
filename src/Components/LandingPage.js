@@ -12,7 +12,7 @@ const styles = {
         height: "100%",
         backgroundColor: "#0F202A"
     },
-    secondColumn:{
+    secondColumn: {
         justifyContent: "center",
         display: "flex",
         flexFlow: "column"
@@ -21,12 +21,12 @@ const styles = {
         header: {
             color: "white",
             fontSize: "4em",
-             flex: "0 1 20%",
+            flex: "0 1 20%",
         },
         body: {
             color: "white",
             fontSize: "2em",
-             flex: "0 1 20%",
+            flex: "0 1 20%",
         }
     },
     menuButton: {
@@ -41,8 +41,8 @@ const styles = {
 
 }
 class LandingPage extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
 
         }
@@ -52,7 +52,7 @@ class LandingPage extends Component {
         return (
             <div style={styles.main}>
                 <div style={styles.image} >
-                    <img src={landingImage} style={{ maxHeight: "99%" }} alt="racket image" />
+                    <img src={landingImage} style={{ maxHeight: "99%" }} alt="racket" />
                 </div>
                 <div style={styles.secondColumn}>
 
@@ -63,9 +63,11 @@ class LandingPage extends Component {
                         Find the expert to free your potential while building your online business
                     </div>
                     <div>
+
                         <RouterLink to="/register" style={{ textDecoration: "none" }}>
                             <Button style={styles.menuButton}>Sign up now</Button>
                         </RouterLink>
+
                     </div>
                 </div>
             </div>

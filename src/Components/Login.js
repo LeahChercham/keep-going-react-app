@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
-import { InputLabel } from "@mui/material";
-import { Input } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Button } from "@mui/material";
+import { Navigate } from 'react-router';
+
 
 const styles = {
     main: {
@@ -17,22 +17,23 @@ const styles = {
         header: {
             fontSize: "2em",
             marginTop: "0.5em",
-            display:"flex",
-            justifyContent:"center",
+            display: "flex",
+            justifyContent: "center",
             color: "#0F202A"
         }
     }
+
 }
 
 class Login extends Component {
-
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
-            email: "",
             password: "",
             error: "",
-            username: ""
+            username: "",
+            redirect: false
+            // loginStatus: this.props.loginStatus,
         }
     }
 
@@ -42,35 +43,33 @@ class Login extends Component {
         })
     }
 
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
         event.preventDefault();
-        if (this.state.password !== this.state.confirmPassword) { // here check if password correct
-            this.setState({
-                error: "Passwords not correct"
-            })
-        } else { // Function to create
-            this.props.Login(this.state.email, this.state.password, this.state.username);
-        }
+        let loginSuccessfull = await this.props.login(this.state.username, this.state.password);
+        loginSuccessfull ? this.setState({ redirect: true }) : this.setState({ error: "Login failed" });
     }
 
-
     render() {
-        return (
+        const { redirect, error } = this.state;
+
+        if (redirect) {
+            return <Navigate to='/search' />;
+        } else return (
             <div>
                 <div style={{ marginLeft: "4em", marginRight: "4em" }}>
                     <div style={styles.text.header}>Log In</div>
                     <FormControl style={styles.main}>
                         <div>
                             <TextField
-                                id="username or email"
-                                label="Username or Email"
+                                id="username"
+                                label="Username"
                                 value={this.state.username}
                                 onChange={this.handleChange}
                                 margin="normal"
                                 variant="outlined"
                                 style={{ width: "100%" }}
                             />
-                            <FormHelperText id="my-helper-text">Use your Username or Email to log in.</FormHelperText>
+                            <FormHelperText id="my-helper-text">Use your Username to log in.</FormHelperText>
                         </div>
                         <div>
                             <TextField
@@ -94,7 +93,7 @@ class Login extends Component {
                             </Button>
                         </div>
                         <div>
-                            {this.state.error}
+                            {error}
                         </div>
                     </FormControl>
                 </div >
