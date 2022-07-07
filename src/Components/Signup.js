@@ -39,6 +39,7 @@ class Signup extends Component {
                 mainExpertise: "",
                 mainExpertiseKeywords: [],
                 otherKeywords: [],
+                tokens:50,
             },
             confirmPassword: "",
             error: "",

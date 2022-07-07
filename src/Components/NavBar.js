@@ -5,6 +5,8 @@ import { Link as RouterLink } from "react-router-dom";
 import '../styles/navbar.css';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
+import MessageIcon from '@mui/icons-material/Message';
+import { flexbox } from '@mui/system';
 
 const pages = [{ label: "Sign In", href: "/register" }, { label: "Log In", href: "/login" }];
 
@@ -13,12 +15,18 @@ const styles = {
     menuButton: {
         fontWeight: 500,
         size: "18px",
-        marginLeft: "38px",
         color: "#FFFFFF",
     },
     toolbar: {
         display: "flex",
         justifyContent: "space-between",
+        alignItems: "center",
+    },
+    links: {
+        display: "flex",
+        flex: "0 1 80%",
+        alignItems: "center",
+        justifyContent: "space-evenly",
     }
 }
 
@@ -36,16 +44,23 @@ class NavBar extends Component {
                     <div>
                         <RouterLink to="/"> <img src={logo} alt="logo" /></RouterLink>
                     </div>
-                    <div>
+                    <div style={styles.links}>
                         {this.props.isLoggedIn ?
 
-                            <div><Button style={styles.menuButton}
+                            <div style={styles.links}><Button style={styles.menuButton}
                                 onClick={() => this.props.logout()}
                             >Log Out</Button>
 
+                                {this.props.tokens}55 Tokens
+
+                                <MessageIcon style={styles.menuButton} />
+
                                 <RouterLink to={"/profile"} style={{ textDecoration: "none" }}>
                                     <Button style={styles.menuButton}>{this.props.username}</Button>
-                                </RouterLink></div>
+                                </RouterLink>
+
+
+                            </div>
                             :
 
                             (pages.map((page) => (

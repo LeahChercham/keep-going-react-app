@@ -5,6 +5,7 @@ import LandingPage from './Components/LandingPage';
 import SearchPage from './Components/SearchPage';
 import Signup from './Components/Signup';
 import Login from './Components/Login';
+import Profile from './Components/Profile';
 import Results from './Components/Results';
 import './App.css';
 import Axios from '../node_modules/axios';
@@ -31,8 +32,9 @@ class App extends Component {
           mainExpertise: "",
           mainExpertiseKeywords: [],
           otherKeywords: [],
+          tokens: 0,
         },
-      }
+      }, title: "", currentPage: ""
     }
   } s
 
@@ -75,7 +77,7 @@ class App extends Component {
       <BrowserRouter>
         <div style={styles.main}>
 
-          <NavBar username={this.state.login.user.username} isLoggedIn={this.state.login.isLoggedIn} logout={this.logout}>
+          <NavBar username={this.state.login.user.username} tokens={this.state.login.user.tokens} isLoggedIn={this.state.login.isLoggedIn} currentPage={this.state.currentPage} logout={this.logout} title={this.state.title}>
           </NavBar>
 
 
@@ -103,6 +105,9 @@ class App extends Component {
               </Route>
               <Route path="/register" element={
                 <Signup />}>
+              </Route>
+              <Route path="/profile" element={
+                <Profile user={this.state.login.user} />}>
               </Route>
 
             </Routes>

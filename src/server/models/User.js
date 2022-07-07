@@ -8,6 +8,7 @@ const UserSchema = new Schema({
     mainExpertise: String,
     mainExpertiseKeywords: [String],
     otherKeywords: [String],
+    tokens: Number,
 })
 
 const User = mongoose.model('user', UserSchema)
