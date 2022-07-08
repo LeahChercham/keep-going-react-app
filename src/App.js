@@ -107,8 +107,12 @@ class App extends Component {
                 <Signup />}>
               </Route>
               <Route path="/profile" element={
-                <Profile user={this.state.login.user} />}>
+                (this.state.login.isLoggedIn ?
+                  (<Profile user={this.state.login.user} />) :
+                  (<LandingPage />))
+              }>
               </Route>
+
 
             </Routes>
 

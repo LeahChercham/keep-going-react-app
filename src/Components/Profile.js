@@ -29,6 +29,8 @@ class Profile extends Component {
         super();
         this.state = {
             status: "View",
+            originalKeywordsText: "",
+            newKeywordsText: "",
             user: {
                 email: "",
                 password: "",
@@ -36,8 +38,8 @@ class Profile extends Component {
                 usernameTaken: false,
                 emailTaken: false,
                 mainExpertise: "",
-                mainExpertiseKeywords: [],
-                otherKeywords: [],
+                mainExpertiseKeywords: [""],
+                otherKeywords: [""],
                 tokens: 0,
             },
             updateUser: {
@@ -47,25 +49,31 @@ class Profile extends Component {
                 usernameTaken: false,
                 emailTaken: false,
                 mainExpertise: "",
-                mainExpertiseKeywords: [],
-                otherKeywords: [],
+                mainExpertiseKeywords: [""],
+                otherKeywords: [""],
                 tokens: 0,
             }
         }
     }
 
-    componentWillReceiveProps(props) {
+    componentDidMount() {
         this.setState({
-            user: props.user,
-            updateUser: props.user,
-            status: "View"
+            user: this.props.user,
+            updateUser: this.props.user,
+            status: "View",
+            originalKeywordsText: this.props.user.mainExpertiseKeywords.join(" "),
+            newKeywordsText: this.props.user.mainExpertiseKeywords.join(" "),
         })
     }
 
     handleChange = (event) => { //
-        let state = { ...this.state }
-        state.updateUser[event.target.id] = event.target.value
-        this.setState({ state })
+        let newKeywordsText = { ...this.state.newKeywordsText }
+        let updateUser = { ...this.state.updateUser }
+        switch (event.target.id) {
+            case "newKeywordsText": newKeywordsText = event.target.value; break;
+            default: updateUser[event.target.id] = event.target.value; break;
+        }
+        this.setState({ updateUser, newKeywordsText })
     }
 
     handleSubmit = (event, status) => {
@@ -126,12 +134,10 @@ class Profile extends Component {
 
                             <div>
                                 <TextField
-                                    disabled={this.state.status === "View" ? true : false}
+                                    disabled={this.state.status === "View" ? true : true} // always disabled
                                     id="tokens"
                                     label="Tokens"
-                                    // type="tokens"
                                     value={this.state.updateUser.tokens}
-                                    onChange={this.handleChange}
                                     margin="normal"
                                     variant="outlined"
                                     style={{ width: "100%" }}
@@ -139,18 +145,6 @@ class Profile extends Component {
                                 {/* <FormHelperText id="my-helper-text"></FormHelperText> */}
                             </div>
                             <div>
-                                <TextField
-                                    disabled={this.state.status === "View" ? true : false}
-                                    id="mainExpertiseKeywords"
-                                    label="Keywords"
-                                    value={(this.state.updateUser.mainExpertiseKeywords).map((keyword) => {
-                                        return keyword.name
-                                    })}
-                                    onChange={this.handleChange}
-                                    margin="normal"
-                                    variant="outlined"
-                                    style={{ width: "100%" }}
-                                />
                                 <TextField
                                     disabled={this.state.status === "View" ? true : false}
                                     id="mainExpertise"
@@ -162,10 +156,21 @@ class Profile extends Component {
                                     variant="outlined"
                                     style={{ width: "100%" }}
                                 />
+                                <TextField
+                                    multiline
+                                    disabled={this.state.status === "View" ? true : false}
+                                    id="newKeywordsText"
+                                    label="Keywords"
+                                    value={this.state.newKeywordsText}
+                                    onChange={this.handleChange}
+                                    margin="normal"
+                                    variant="outlined"
+                                    style={{ width: "100%" }}
+                                />
                             </div>
 
                             <div>
-                            
+
                                 <Button
                                     variant="contained"
                                     color="primary"
