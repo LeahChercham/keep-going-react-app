@@ -57,19 +57,29 @@ class SearchPage extends Component {
     constructor() {
         super();
         this.state = {
-            input:""
+            input: ""
         }
     }
 
     handleChange = (event) => {
         event.preventDefault();
         this.setState({
-            [event.target.id]: event.target.value})
+            [event.target.id]: event.target.value
+        })
     }
 
-    handleSubmit = (event) => { 
+    handleSubmit = (event) => {
+        
         event.preventDefault();
         alert("Searching...")
+        let state = { ...this.state }
+        let input = state.input
+        console.log(input)
+        input = input.toLowerCase()
+        let searchTerms = input.split(" ")
+        console.log(searchTerms[0])
+
+
         // this.search(event.target.value);
     }
 
@@ -86,9 +96,9 @@ class SearchPage extends Component {
                     </div>
                     <div style={styles.buttonDiv}>
                         <RouterLink to="/results" style={{ textDecoration: "none" }}>
-                            <Button 
-                            onClick={this.handleSubmit}
-                            style={styles.menuButton}>Search</Button>
+                            <Button
+                                onClick={this.handleSubmit}
+                                style={styles.menuButton}>Search</Button>
                         </RouterLink>
                     </div>
                 </div>
