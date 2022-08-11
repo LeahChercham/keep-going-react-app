@@ -29,8 +29,6 @@ class Profile extends Component {
         super();
         this.state = {
             status: "View",
-            originalKeywordsText: "",
-            newKeywordsText: "",
             user: {
                 email: "",
                 password: "",
@@ -38,8 +36,8 @@ class Profile extends Component {
                 usernameTaken: false,
                 emailTaken: false,
                 mainExpertise: "",
-                mainExpertiseKeywords: [""],
-                otherKeywords: [""],
+                mainExpertiseKeywords: "",
+                otherKeywords: "",
                 tokens: 0,
             },
             updateUser: {
@@ -49,8 +47,8 @@ class Profile extends Component {
                 usernameTaken: false,
                 emailTaken: false,
                 mainExpertise: "",
-                mainExpertiseKeywords: [""],
-                otherKeywords: [""],
+                mainExpertiseKeywords: "",
+                otherKeywords: "",
                 tokens: 0,
             }
         }
@@ -61,23 +59,16 @@ class Profile extends Component {
             user: this.props.user,
             updateUser: this.props.user,
             status: "View",
-            originalKeywordsText: this.props.user.mainExpertiseKeywords.join(" "),
-            newKeywordsText: this.props.user.mainExpertiseKeywords.join(" "),
         })
     }
 
     handleChange = (event) => { //
-        let newKeywordsText = { ...this.state.newKeywordsText }
         let updateUser = { ...this.state.updateUser }
-        switch (event.target.id) {
-            case "newKeywordsText": newKeywordsText = event.target.value; break;
-            default: updateUser[event.target.id] = event.target.value; break;
-        }
-        this.setState({ updateUser, newKeywordsText })
+        updateUser[event.target.id] = event.target.value
+        this.setState({ updateUser })
     }
 
     handleSubmit = (event, status) => {
-
         event.preventDefault();
 
         switch (status) {
@@ -86,12 +77,21 @@ class Profile extends Component {
                 this.setState({ status })
             }; break;
             case "Edit": {
+                this.updateUser()
+                // hier zu DB schicken
                 status = "View"
                 this.setState({ status })
             }; break;
             default:
                 break;
         }
+    }
+
+    updateUser = async () => {
+        let updateUser = { ...this.state.updateUser }
+        let updateSuccessful = await Axios.put(CREATE_ROUTE(`user/${this.state.user.username}`), updateUser).then(res => {this.setState({user: res.data})})
+
+        updateSuccessful ? this.setState({ updateSuccessful: true }) : this.setState({ updateSuccessful: false })
     }
 
     render() {
@@ -149,19 +149,20 @@ class Profile extends Component {
                                     disabled={this.state.status === "View" ? true : false}
                                     id="mainExpertise"
                                     label="Expertise"
-                                    // type="password"
                                     value={this.state.updateUser.mainExpertise}
                                     onChange={this.handleChange}
                                     margin="normal"
                                     variant="outlined"
                                     style={{ width: "100%" }}
                                 />
+                                <div>Enter Keywords separated by semicolons ;</div>
+                                {/* Hier vorschläge für schon existierende Stichwörter vorschlagen */}
                                 <TextField
                                     multiline
                                     disabled={this.state.status === "View" ? true : false}
-                                    id="newKeywordsText"
+                                    id="mainExpertiseKeywords"
                                     label="Keywords"
-                                    value={this.state.newKeywordsText}
+                                    value={this.state.updateUser.mainExpertiseKeywords}
                                     onChange={this.handleChange}
                                     margin="normal"
                                     variant="outlined"
@@ -176,7 +177,7 @@ class Profile extends Component {
                                     color="primary"
                                     // currentStatus="Edit"
                                     onClick={(e) => this.handleSubmit(e, this.state.status)}>
-                                    {this.state.status === "View" ? "Edit" : "Update"}
+                                    {this.state.status === "View" ? "Edit" : "Save"}
                                 </Button>
 
                             </div>

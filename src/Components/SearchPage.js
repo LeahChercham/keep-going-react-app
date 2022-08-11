@@ -57,8 +57,20 @@ class SearchPage extends Component {
     constructor() {
         super();
         this.state = {
-
+            input:""
         }
+    }
+
+    handleChange = (event) => {
+        event.preventDefault();
+        this.setState({
+            [event.target.id]: event.target.value})
+    }
+
+    handleSubmit = (event) => { 
+        event.preventDefault();
+        alert("Searching...")
+        // this.search(event.target.value);
     }
 
     render() {
@@ -70,11 +82,13 @@ class SearchPage extends Component {
                 <div style={styles.secondRow}>
                     <SearchIcon style={styles.icon} />
                     <div style={styles.inputDiv}>
-                        <Input style={styles.input} type="search" placeholder="Try “React Native navigation”" />
+                        <Input id="input" onChange={this.handleChange} style={styles.input} type="search" placeholder="Try “React Native navigation”" />
                     </div>
                     <div style={styles.buttonDiv}>
                         <RouterLink to="/results" style={{ textDecoration: "none" }}>
-                            <Button style={styles.menuButton}>Search</Button>
+                            <Button 
+                            onClick={this.handleSubmit}
+                            style={styles.menuButton}>Search</Button>
                         </RouterLink>
                     </div>
                 </div>

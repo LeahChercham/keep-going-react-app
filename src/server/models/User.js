@@ -6,8 +6,8 @@ const UserSchema = new Schema({
     email: String,
     password: String, // The password will not be the real password, but the encryption of the password.
     mainExpertise: String,
-    mainExpertiseKeywords: [String],
-    otherKeywords: [String],
+    mainExpertiseKeywords: String,
+    otherKeywords: String,
     tokens: Number,
 })
 
