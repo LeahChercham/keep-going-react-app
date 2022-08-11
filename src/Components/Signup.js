@@ -3,6 +3,7 @@ import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Button } from "@mui/material";
+import { Navigate } from 'react-router';
 import Axios from '../../node_modules/axios';
 import consts from '../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
@@ -39,10 +40,11 @@ class Signup extends Component {
                 mainExpertise: "",
                 mainExpertiseKeywords: [],
                 otherKeywords: [],
-                tokens:50,
+                tokens: 50,
             },
             confirmPassword: "",
             error: "",
+            redirect: false
         }
     }
 
@@ -113,13 +115,23 @@ class Signup extends Component {
     signUp = () => {
         let userData = { ...this.state.newUser }
         Axios.post(CREATE_ROUTE("user"), userData).then(() => {
-            alert("Yey! You're now an user!")
+            this.login()
         })
+
+    }
+
+    login = async () => {
+        let loginSuccessfull = await this.props.login(this.state.newUser.username, this.state.newUser.password);
+        loginSuccessfull ? this.setState({ redirect: true }) : this.setState({ error: "Login failed" });
     }
 
 
     render() {
-        return (
+        const { redirect, error } = this.state;
+
+        if (redirect) {
+            return <Navigate to='/search' />;
+        } else return (
             <div>
                 <div style={{ marginLeft: "4em", marginRight: "4em" }}>
                     <div style={styles.text.header}>Sign Up</div>

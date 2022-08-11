@@ -36,7 +36,7 @@ class App extends Component {
         },
       }, title: "", currentPage: ""
     }
-  } s
+  } 
 
   //* Lifecycle Method */
   componentDidMount() {
@@ -104,7 +104,7 @@ class App extends Component {
                 <Results />}>
               </Route>
               <Route path="/register" element={
-                <Signup />}>
+                <Signup login={this.login} loginStatus={this.state.login} />}>
               </Route>
               <Route path="/profile" element={
                 (this.state.login.isLoggedIn ?
