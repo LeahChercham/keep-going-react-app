@@ -54,7 +54,8 @@ class Login extends Component {
 
         if (redirect) {
             return <Navigate to='/search' />;
-        } else return (
+        } else 
+        return (
             <div>
                 <div style={{ marginLeft: "4em", marginRight: "4em" }}>
                     <div style={styles.text.header}>Log In</div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavBar from './Components/NavBar';
 import LandingPage from './Components/LandingPage';
 import SearchPage from './Components/SearchPage';
@@ -85,7 +85,7 @@ class App extends Component {
             <Routes>
               <Route path="/" element={
                 (this.state.login.isLoggedIn ?
-                  (<SearchPage />) :
+                  (<Navigate to="/search" />) :
                   (<LandingPage />))}>
               </Route>
 
@@ -109,7 +109,7 @@ class App extends Component {
               <Route path="/profile" element={
                 (this.state.login.isLoggedIn ?
                   (<Profile user={this.state.login.user} />) :
-                  (<LandingPage />))
+                  (<Navigate to="/" />))
               }>
               </Route>
 

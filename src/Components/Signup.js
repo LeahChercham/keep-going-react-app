@@ -3,7 +3,7 @@ import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Button } from "@mui/material";
-import { Navigate } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import Axios from '../../node_modules/axios';
 import consts from '../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
@@ -130,7 +130,7 @@ class Signup extends Component {
         const { redirect, error } = this.state;
 
         if (redirect) {
-            return <Navigate to='/search' />;
+            return <Navigate to="/search" />
         } else return (
             <div>
                 <div style={{ marginLeft: "4em", marginRight: "4em" }}>
