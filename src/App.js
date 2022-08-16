@@ -6,7 +6,7 @@ import SearchPage from './Components/SearchPage';
 import Signup from './Components/Signup';
 import Login from './Components/Login';
 import Profile from './Components/Profile';
-import Results from './Components/Results';
+import WrappedResults from './Components/WrappedResults';
 import './App.css';
 import Axios from '../node_modules/axios';
 import consts from './consts'
@@ -101,7 +101,7 @@ class App extends Component {
                 <Login login={this.login} loginStatus={this.state.login} />}>
               </Route>
               <Route path="/results" element={
-                <Results />}>
+                <WrappedResults />}>
               </Route>
               <Route path="/register" element={
                 <Signup login={this.login} loginStatus={this.state.login} />}>

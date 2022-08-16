@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { Link as RouterLink } from "react-router-dom";
+import { Navigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import landingImage from '../Image Landing.png';
 import { Input } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import Axios from '../../node_modules/axios';
+import consts from '../consts'
+const CREATE_ROUTE = consts.CREATE_ROUTE
+
 
 
 const styles = {
@@ -57,7 +61,9 @@ class SearchPage extends Component {
     constructor() {
         super();
         this.state = {
-            input: ""
+            redirect: false,
+            input: "",
+            results: []
         }
     }
 
@@ -69,9 +75,7 @@ class SearchPage extends Component {
     }
 
     handleSubmit = (event) => {
-        
         event.preventDefault();
-        alert("Searching...")
         let state = { ...this.state }
         let input = state.input
         console.log(input)
@@ -80,11 +84,40 @@ class SearchPage extends Component {
         console.log(searchTerms[0])
 
 
-        // this.search(event.target.value);
+        this.search(searchTerms);
     }
 
+    search = async (searchTerms) => {
+        let results = []
+
+        let response = await Axios.get(CREATE_ROUTE('user/search'), {
+            params: {
+                data: searchTerms
+            }
+        })
+
+        if (response.data) {
+            let results = { ...this.state.results }
+            let redirect = { ...this.state.redirect }
+            results = response.data
+            redirect = true
+            this.setState({ results, redirect })
+            console.log("state:" + this.state.redirect)
+            console.log("state:" + this.state.results)
+        }
+    }
+
+
+
+
     render() {
-        return (
+        const { redirect, results } = this.state;
+
+
+        if (redirect) {
+            return <Navigate to="/results"  state={ results }  />  // local storage ?? 
+
+        } else return (
             <div style={styles.main}>
                 <div style={styles.header} >
                     Find the expert to help you keep your project going
