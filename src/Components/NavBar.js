@@ -51,7 +51,7 @@ class NavBar extends Component {
                                 onClick={() => this.props.logout()}
                             >Log Out</Button>
 
-                                {this.props.tokens}55 Tokens
+                                {this.props.tokens} Tokens
 
                                 <MessageIcon style={styles.menuButton} />
 

@@ -3,6 +3,15 @@ import Result from './Result';
 const util = require('util')
 const styles = {
 
+    main: {
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+
+        flexFlow: "row",
+
+        height: "100%",
+    }
 }
 
 
@@ -21,14 +30,12 @@ class Results extends Component {
 
     render() {
         return (
-            <div>
-                <div>
-                    {this.props ? this.props.location.state[0].map((result, index) => {
-                        return (<div>
-                            <Result result={result} key={index} />
-                        </div>)
-                    }) : null}
-                </div>
+            <div style={styles.main}>
+                {this.props ? this.props.location.state[0].map((result, index) => {
+                    return (<div>
+                        <Result result={result} key={index} />
+                    </div>)
+                }) : null}
             </div>
         )
     }

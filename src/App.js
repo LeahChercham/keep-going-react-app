@@ -43,8 +43,10 @@ class App extends Component {
     let login
     if (localStorage.login) { // If the user did already connect through that browser, make him logged in automatically
       login = JSON.parse(localStorage.login)
+      console.log(login.user.tokens)
     } else {
-      login = { ...this.state.login } // Keep the state as it is
+      login = { ...this.state.login }
+      // Keep the state as it is
     }
     this.setState({ login }) // Update the state
   }
