@@ -12,9 +12,7 @@ router.post("/user", function (req, res) {
         if (err) { console.log(err) }
         req.body.password = hash
         let newUser = new User(req.body)
-        console.log(req.body);
         newUser.save().then(result => {
-            console.log('user saved!')
         })
         res.end()
     })
@@ -22,9 +20,8 @@ router.post("/user", function (req, res) {
 
 // Route for updating user profile
 router.put("/user/:username", function (req, res) {
-    console.log(req.body)
     let { username } = req.params
-    User.findAndModify({ username }, req.body, { new: true }).then(result => {
+    User.findOneAndUpdate({ username }, req.body, { new: true }).then(result => {
         res.send(result)
     })
 })
@@ -79,18 +76,14 @@ router.get('/login/:username/:password', function (req, res) {
 
 // Route for searching keywords in user data
 router.get('/user/search', async function (req, res) {
-    console.log("in search")
     let keywords = req.query.data
 
-    console.log(keywords)
     let data = []
     for (let i = 0; i < keywords.length; i++) {
-        let result = await User.find({ mainExpertiseKeywords: { $regex: keywords[i] } }).limit(10)
+        let result = await User.find({ mainExpertiseKeywords: { $regex: keywords[i] } })
         data.push(result)
-        console.log("inloop data: " + data)
     }
-
-    console.log("data:" + data)
+    console.log(data)
     res.send(data)
 }
 )

@@ -36,7 +36,7 @@ class App extends Component {
         },
       }, title: "", currentPage: ""
     }
-  } 
+  }
 
   //* Lifecycle Method */
   componentDidMount() {
@@ -101,7 +101,10 @@ class App extends Component {
                 <Login login={this.login} loginStatus={this.state.login} />}>
               </Route>
               <Route path="/results" element={
-                <WrappedResults />}>
+                (this.state.login.isLoggedIn ?
+                  (<WrappedResults />) :
+                  (<Navigate to="/" />))
+              }>
               </Route>
               <Route path="/register" element={
                 <Signup login={this.login} loginStatus={this.state.login} />}>
