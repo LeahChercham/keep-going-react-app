@@ -3,10 +3,12 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavBar from './Components/NavBar';
 import LandingPage from './Components/LandingPage';
 import SearchPage from './Components/SearchPage';
+import ExpertProfile from './Components/ExpertProfile';
 import Signup from './Components/Signup';
 import Login from './Components/Login';
 import Profile from './Components/Profile';
 import WrappedResults from './Components/WrappedResults';
+import WrappedExpert from './Components/WrappedExpert';
 import './App.css';
 import Axios from '../node_modules/axios';
 import consts from './consts'
@@ -43,7 +45,6 @@ class App extends Component {
     let login
     if (localStorage.login) { // If the user did already connect through that browser, make him logged in automatically
       login = JSON.parse(localStorage.login)
-      console.log(login.user.tokens)
     } else {
       login = { ...this.state.login }
       // Keep the state as it is
@@ -114,6 +115,13 @@ class App extends Component {
               <Route path="/profile" element={
                 (this.state.login.isLoggedIn ?
                   (<Profile user={this.state.login.user} />) :
+                  (<Navigate to="/" />))
+              }>
+              </Route>
+
+              <Route path="/expert" element={
+                (this.state.login.isLoggedIn ?
+                  (<WrappedExpert />) :
                   (<Navigate to="/" />))
               }>
               </Route>

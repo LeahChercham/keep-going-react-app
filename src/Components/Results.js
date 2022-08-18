@@ -7,9 +7,7 @@ const styles = {
         display: 'flex',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-
         flexFlow: "row",
-
         height: "100%",
     }
 }
@@ -32,7 +30,7 @@ class Results extends Component {
         return (
             <div style={styles.main}>
                 {this.props ? this.props.location.state[0].map((result, index) => {
-                    return (<div>
+                    return (<div key={index}>
                         <Result result={result} key={index} />
                     </div>)
                 }) : null}

@@ -61,7 +61,8 @@ router.get('/login/:username/:password', function (req, res) {
                         email: response.email,
                         mainExpertise: response.mainExpertise,
                         mainExpertiseKeywords: response.mainExpertiseKeywords,
-                        otherKeywords: response.otherKeywords
+                        otherKeywords: response.otherKeywords,
+                        tokens: response.tokens
                     }
                     data = { allowLogin: true, user }
                     res.send(data)
@@ -83,7 +84,6 @@ router.get('/user/search', async function (req, res) {
         let result = await User.find({ mainExpertiseKeywords: { $regex: keywords[i] } })
         data.push(result)
     }
-    console.log(data)
     res.send(data)
 }
 )

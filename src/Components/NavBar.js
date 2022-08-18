@@ -50,9 +50,9 @@ class NavBar extends Component {
                             <div style={styles.links}><Button style={styles.menuButton}
                                 onClick={() => this.props.logout()}
                             >Log Out</Button>
-
-                                {this.props.tokens} Tokens
-
+                                <div style={styles.links}>
+                                    {this.props.tokens} TOKENS
+                                </div >
                                 <MessageIcon style={styles.menuButton} />
 
                                 <RouterLink to={"/profile"} style={{ textDecoration: "none" }}>

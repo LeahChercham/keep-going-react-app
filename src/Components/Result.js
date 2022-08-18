@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Navigate } from 'react-router-dom';
 import { Button, List, ListItem } from '@mui/material';
 import Box from '@mui/material/Box';
 
@@ -61,16 +62,27 @@ class Result extends Component {
     constructor() {
         super();
         this.state = {
-
+            redirect: false,
+            result: null
         }
     }
 
+    handleSubmit = (e, expert) => {
+        e.preventDefault();
+        let redirect = true
+        let result = expert
+        this.setState({ redirect, result })
+
+    }
+
     render() {
-        console.log(util.inspect(this.props.result, false, 7))
-        console.log("in result component:" + this.props.result.username)
+        const { redirect, result } = this.state;
 
         let keywordsList = this.props ? this.props.result.mainExpertiseKeywords.split(";") : []
-        return (
+
+        if (redirect) {
+            return <Navigate to="/expert" state={this.props.result} />
+        } else return (
             <div style={styles.main}>
                 <Box style={styles.box}>
                     <div style={styles.username}>
@@ -82,11 +94,11 @@ class Result extends Component {
                     <div style={styles.keywords}>
                         {this.props.result.mainExpertiseKeywords}
                     </div>
-                    <Button style={styles.button}>
+                    <Button onClick={(e) => this.handleSubmit(e, this.props.result)} style={styles.button}>
                         SEE MORE
                     </Button>
                     <div style={styles.tokens}>
-                        {this.props.result.tokens}
+                        1 Token / 15 Minutes
                     </div>
                 </Box>
 

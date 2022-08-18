@@ -78,10 +78,8 @@ class SearchPage extends Component {
         event.preventDefault();
         let state = { ...this.state }
         let input = state.input
-        console.log(input)
         input = input.toLowerCase()
         let searchTerms = input.split(" ")
-        console.log(searchTerms[0])
 
 
         this.search(searchTerms);
@@ -102,8 +100,6 @@ class SearchPage extends Component {
             results = response.data
             redirect = true
             this.setState({ results, redirect })
-            console.log("state:" + this.state.redirect)
-            console.log("state:" + this.state.results)
         }
     }
 
