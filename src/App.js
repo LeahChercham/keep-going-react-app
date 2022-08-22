@@ -3,16 +3,18 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import NavBar from './Components/NavBar';
 import LandingPage from './Components/LandingPage';
 import SearchPage from './Components/SearchPage';
-import ExpertProfile from './Components/ExpertProfile';
+// import ExpertProfile from './Components/ExpertProfile';
 import Signup from './Components/Signup';
 import Login from './Components/Login';
 import Profile from './Components/Profile';
 import WrappedResults from './Components/WrappedResults';
 import WrappedExpert from './Components/WrappedExpert';
 import './App.css';
-import Axios from '../node_modules/axios';
+import Axios from 'axios';
 import consts from './consts'
+import './main.scss';
 const CREATE_ROUTE = consts.CREATE_ROUTE
+
 
 
 

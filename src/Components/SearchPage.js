@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { Input } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import Axios from '../../node_modules/axios';
+import Axios from 'axios';
 import consts from '../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
 

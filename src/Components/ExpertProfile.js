@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import { FormControl, Switch } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import Axios from '../../node_modules/axios';
+import Axios from 'axios';
 import consts from '../consts'
 import ChatRoom from './ChatRoom';
 const CREATE_ROUTE = consts.CREATE_ROUTE
