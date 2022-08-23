@@ -121,8 +121,7 @@ function Signup(props) {
     const signUp = () => {
         let userData = { ...state.newUser }
 
-        dispatch(userRegister, userData)
-        Axios.post(CREATE_ROUTE("user"), userData).then(() => {
+        dispatch(userRegister(userData)).then(() => {
             login()
         })
 
