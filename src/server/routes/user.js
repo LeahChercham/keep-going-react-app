@@ -8,12 +8,25 @@ const saltRounds = 10
 // Bcrypt = npm package that allows to encrypt passwords using hashing and salting
 router.post("/user", function (req, res) {
     let password = req.body.password
+    let error = ""
     bcrypt.hash(password, saltRounds, function (err, hash) {
-        if (err) { console.log(err) }
+        if (err) {
+            console.log(err)
+        }
         req.body.password = hash
         let newUser = new User(req.body)
-        newUser.save().then(result => {
-        })
+        try {
+            newUser.save().then(result => {
+                res.status(201).json({
+                    message: "User created"
+                })
+            })
+        }
+        catch (err) {
+            res.status(500).json({
+                error: { errorMessage: ['Internal Server Error'] }
+            })
+        }
         res.end()
     })
 })

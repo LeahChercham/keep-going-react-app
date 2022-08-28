@@ -31,8 +31,6 @@ const styles = {
 
 function Signup(props) {
 
-
-
     const [state, setState] = useState({
         newUser: {
             email: "",
@@ -57,6 +55,7 @@ function Signup(props) {
             case "username": handleUsername(event.target.value); break;
             case "email": handleEmail(event.target.value); break;
             case "password": {
+                // hier problem
                 let state = { ...state }
                 state.newUser.password = event.target.value
                 setState({ state })
