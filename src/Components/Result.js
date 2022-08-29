@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Button, List, ListItem } from '@mui/material';
 import Box from '@mui/material/Box';
-
 const util = require('util')
+
 const styles = {
     main: {
         display: "flex",
@@ -58,54 +58,52 @@ const styles = {
     },
 }
 
-class Result extends Component {
-    constructor() {
-        super();
-        this.state = {
-            redirect: false,
-            result: null
-        }
-    }
+function Result(props) {
+    const [state, setState] = useState({
+        redirect: false,
+        result: null
+    })
 
-    handleSubmit = (e, expert) => {
+
+    const handleSubmit = (e, expert) => {
         e.preventDefault();
         let redirect = true
         let result = expert
-        this.setState({ redirect, result })
+        setState({ ...state, redirect, result })
 
     }
 
-    render() {
-        const { redirect, result } = this.state;
 
-        let keywordsList = this.props ? this.props.result.mainExpertiseKeywords.split(";") : []
+    const { redirect, result } = state;
 
-        if (redirect) {
-            return <Navigate to="/expert" state={this.props.result} />
-        } else return (
-            <div style={styles.main}>
-                <Box style={styles.box}>
-                    <div style={styles.username}>
-                        {this.props.result.username}
-                    </ div>
-                    <div style={styles.expertise}>
-                        {this.props.result.mainExpertise}
-                    </div>
-                    <div style={styles.keywords}>
-                        {this.props.result.mainExpertiseKeywords}
-                    </div>
-                    <Button onClick={(e) => this.handleSubmit(e, this.props.result)} style={styles.button}>
-                        SEE MORE
-                    </Button>
-                    <div style={styles.tokens}>
-                        1 Token / 15 Minutes
-                    </div>
-                </Box>
+    let keywordsList = props ? props.result.mainExpertiseKeywords.split(";") : []
 
-            </div>
-        )
-    }
+    if (redirect) {
+        return <Navigate to="/expert" state={props.result} />
+    } else return (
+        <div style={styles.main}>
+            <Box style={styles.box}>
+                <div style={styles.username}>
+                    {props.result.username}
+                </ div>
+                <div style={styles.expertise}>
+                    {props.result.mainExpertise}
+                </div>
+                <div style={styles.keywords}>
+                    {props.result.mainExpertiseKeywords}
+                </div>
+                <Button onClick={(e) => handleSubmit(e, props.result)} style={styles.button}>
+                    SEE MORE
+                </Button>
+                <div style={styles.tokens}>
+                    1 Token / 15 Minutes
+                </div>
+            </Box>
 
+        </div>
+    )
 }
+
+
 
 export default Result;

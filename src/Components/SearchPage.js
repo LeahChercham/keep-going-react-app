@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from "react-router-dom";
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { Input } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Axios from 'axios';
 import consts from '../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
-
+const util = require('util')
 
 
 const styles = {
@@ -57,35 +57,34 @@ const styles = {
     }
 
 }
-class SearchPage extends Component {
-    constructor() {
-        super();
-        this.state = {
-            redirect: false,
-            input: "",
-            results: []
-        }
-    }
+function SearchPage(props) {
 
-    handleChange = (event) => {
+    const [state, setState] = useState({
+        redirect: false,
+        input: "",
+        results: []
+    })
+
+    const navigate = useNavigate();
+    const handleChange = (event) => {
         event.preventDefault();
-        this.setState({
+        setState({
+            ...state,
             [event.target.id]: event.target.value
         })
     }
 
-    handleSubmit = (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
-        let state = { ...this.state }
         let input = state.input
         input = input.toLowerCase()
         let searchTerms = input.split(" ")
 
 
-        this.search(searchTerms);
+        search(searchTerms);
     }
 
-    search = async (searchTerms) => {
+    const search = async (searchTerms) => {
         let results = []
 
         let response = await Axios.get(CREATE_ROUTE('user/search'), {
@@ -95,46 +94,48 @@ class SearchPage extends Component {
         })
 
         if (response.data) {
-            let results = { ...this.state.results }
-            let redirect = { ...this.state.redirect }
+            let results = state.results
+            let redirect = state.redirect
             results = response.data
             redirect = true
-            this.setState({ results, redirect })
+            setState({ ...state, results, redirect })
         }
     }
 
 
 
 
-    render() {
-        const { redirect, results } = this.state;
+    console.log("props searchpage:" + util.inspect(props, false, 7))
 
+    useEffect(() => {
+        if (state.redirect) {
+            console.log(util.inspect(state.results, false, 7))
+            return navigate('/results', { state: { results: state.results } })
+        }
+    }, [state.redirect])
 
-        if (redirect) {
-            return <Navigate to="/results"  state={ results }  />  // local storage ?? 
-
-        } else return (
-            <div style={styles.main}>
-                <div style={styles.header} >
-                    Find the expert to help you keep your project going
+    return (
+        <div style={styles.main}>
+            <div style={styles.header} >
+                Find the expert to help you keep your project going
+            </div>
+            <div style={styles.secondRow}>
+                <SearchIcon style={styles.icon} />
+                <div style={styles.inputDiv}>
+                    <Input id="input" onChange={handleChange} style={styles.input} type="search" placeholder="Try “React Native navigation”" />
                 </div>
-                <div style={styles.secondRow}>
-                    <SearchIcon style={styles.icon} />
-                    <div style={styles.inputDiv}>
-                        <Input id="input" onChange={this.handleChange} style={styles.input} type="search" placeholder="Try “React Native navigation”" />
-                    </div>
-                    <div style={styles.buttonDiv}>
-                        <RouterLink to="/results" style={{ textDecoration: "none" }}>
-                            <Button
-                                onClick={this.handleSubmit}
-                                style={styles.menuButton}>Search</Button>
-                        </RouterLink>
-                    </div>
+                <div style={styles.buttonDiv}>
+                    <RouterLink to="/results" style={{ textDecoration: "none" }}>
+                        <Button
+                            onClick={handleSubmit}
+                            style={styles.menuButton}>Search</Button>
+                    </RouterLink>
                 </div>
             </div>
-        )
-    }
-
+        </div>
+    )
 }
+
+
 
 export default SearchPage;

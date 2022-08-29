@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { useLocation } from 'react-router-dom';
 import Result from './Result';
 const util = require('util')
 const styles = {
@@ -13,31 +14,20 @@ const styles = {
 }
 
 
-class Results extends Component {
-    constructor() {
-        super();
-        this.state = {
+function Results(props) {
 
-        }
-    }
+    const location = useLocation();
 
+    console.log("Props in Result: " + util.inspect(location, false, 7))
 
-    componentDidMount() {
-
-    }
-
-    render() {
-        return (
-            <div style={styles.main}>
-                {this.props ? this.props.location.state[0].map((result, index) => {
-                    return (<div key={index}>
-                        <Result result={result} key={index} />
-                    </div>)
-                }) : null}
-            </div>
-        )
-    }
-
+    return (
+        <div style={styles.main}>
+            {location ? location.state.results[0].map((result, index) => {
+                return (<div key={index}>
+                    <Result result={result} key={index} />
+                </div>)
+            }) : null}
+        </div>
+    )
 }
-
 export default Results;

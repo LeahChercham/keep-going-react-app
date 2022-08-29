@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import { FormControl, Switch } from "@mui/material";
 import { TextField } from "@mui/material";
@@ -43,61 +43,59 @@ const styles = {
     }
 
 }
-class ExpertProfile extends Component {
-    constructor() {
-        super();
-        this.state = {
-            expert: {
-                email: "",
-                password: "",
-                username: "",
-                usernameTaken: false,
-                emailTaken: false,
-                mainExpertise: "",
-                mainExpertiseKeywords: "",
-                otherKeywords: "",
-                tokens: 0,
-            },
-        }
-    }
+function ExpertProfile(props) {
+
+    const [state, setState] = useState({
+        expert: {
+            email: "",
+            password: "",
+            username: "",
+            usernameTaken: false,
+            emailTaken: false,
+            mainExpertise: "",
+            mainExpertiseKeywords: "",
+            otherKeywords: "",
+            tokens: 0,
+        },
+    })
 
 
-    render() {
-        let expert = this.props.location.state
-        return (
-            <div style={styles.main}>
-                <div style={styles.containerOne}>
-                    <div style={styles.username}>
-                        {expert.username}
-                    </div>
-                    <div style={styles.mainExpertise}>
-                        {expert.mainExpertise}
-                    </div>
 
-                    <div style={styles.keywords}>
-                        {expert.mainExpertiseKeywords}
-                    </div>
-                    <div>
-                        1 Token / 15 Minutes
-                    </div>
 
-                    <div>
-
-                        <Button
-                            variant="contained"
-                            color="primary"
-                        // onClick={(e) => this.handleSubmit(e)}
-                        >
-                            CONTACT ME
-                        </Button>
-
-                    </div>
+    let expert = props.location.state
+    return (
+        <div style={styles.main}>
+            <div style={styles.containerOne}>
+                <div style={styles.username}>
+                    {expert.username}
                 </div>
-                <ChatRoom />
-            </div>
-        )
-    }
+                <div style={styles.mainExpertise}>
+                    {expert.mainExpertise}
+                </div>
 
+                <div style={styles.keywords}>
+                    {expert.mainExpertiseKeywords}
+                </div>
+                <div>
+                    1 Token / 15 Minutes
+                </div>
+
+                <div>
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                    // onClick={(e) => handleSubmit(e)}
+                    >
+                        CONTACT ME
+                    </Button>
+
+                </div>
+            </div>
+            <ChatRoom />
+        </div>
+    )
 }
+
 
 export default ExpertProfile;

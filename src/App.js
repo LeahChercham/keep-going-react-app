@@ -6,13 +6,12 @@ import SearchPage from './Components/SearchPage';
 import Signup from './Components/Signup';
 import Login from './Components/Login';
 import Profile from './Components/Profile';
-import WrappedResults from './Components/WrappedResults';
-import WrappedExpert from './Components/WrappedExpert';
+import Results from './Components/Results';
 import './App.css';
-import Axios from 'axios';
 import consts from './consts'
 import './main.scss';
 import { useDispatch, useSelector } from 'react-redux';
+import ExpertProfile from './Components/ExpertProfile';
 const CREATE_ROUTE = consts.CREATE_ROUTE
 
 
@@ -69,7 +68,7 @@ function App(props) {
             </Route>
             <Route path="/results" element={
               (authenticated ?
-                (<WrappedResults />) :
+                (<Results />) :
                 (<Navigate to="/" />))
             }>
             </Route>
@@ -85,7 +84,7 @@ function App(props) {
 
             <Route path="/expert" element={
               (authenticated ?
-                (<WrappedExpert />) :
+                (<ExpertProfile />) :
                 (<Navigate to="/" />))
             }>
             </Route>
