@@ -3,8 +3,7 @@ import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Button } from "@mui/material";
-import { Navigate } from 'react-router';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux' // dispatch actions to the store
 import { userLogin } from '../store/actions/authActions';
 
@@ -66,7 +65,6 @@ function Login(props) {
 
     useEffect(() => {
         if (authenticated) {
-            
             navigate("/search")
         }
         if (error) {

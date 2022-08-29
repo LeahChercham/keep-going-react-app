@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import consts from '../../consts'
-import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, CLEAR_ERROR, USER_LOGOUT } from '../types/authType';
+import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, CLEAR_ERROR, USER_LOGOUT, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL } from '../types/authType';
 const CREATE_ROUTE = consts.CREATE_ROUTE
 
 export const userRegister = (user) => {
@@ -9,7 +9,6 @@ export const userRegister = (user) => {
 
         try {
             const response = await Axios.post(CREATE_ROUTE("user"), user)
-            // console.log(response)
             dispatch({
                 type: AUTH_SUCCESS,
                 payload: {
@@ -18,7 +17,6 @@ export const userRegister = (user) => {
                 }
             })
         } catch (error) {
-            // console.log(error.response.data)
             dispatch({
                 type: AUTH_FAIL,
                 payload: { error: error.response.data.error.errorMessage }
@@ -61,4 +59,31 @@ export const userLogin = (data) => {
 
 }
 
-export const userLogout = (user) => { }
+export const userLogout = () => {
+    localStorage.clear()
+    return dispatch => dispatch({ type: USER_LOGOUT })
+}
+
+export const userUpdate = (data) => {
+    let {updateUser, username} = data
+    return async dispatch => {
+        try {
+            let response = await Axios.put(CREATE_ROUTE(`user/${username}`), updateUser)
+            dispatch({
+                type: USER_UPDATE_SUCCESS,
+                payload: {
+                    successMessage: response.data.successMessage,
+                    user: response.data.user
+                }
+            })
+        }
+        catch (error) {
+            dispatch({
+                type: USER_UPDATE_FAIL,
+                payload: {
+                    error: error.response.data.error.errorMessage
+                }
+            })
+        }
+    }
+}

@@ -32,13 +32,6 @@ router.post("/user", function (req, res) {
     })
 })
 
-// Route for updating user profile
-router.put("/user/:username", function (req, res) {
-    let { username } = req.params
-    User.findOneAndUpdate({ username }, req.body, { new: true }).then(result => {
-        res.send(result)
-    })
-})
 
 
 // route to see if username already exists 
@@ -56,6 +49,18 @@ router.get("/user/email/:email", function (req, res) {
         res.send(response)
     })
 })
+
+// Route for updating user profile
+router.put("/user/:username", function (req, res) {
+    let { username } = req.params
+    let data
+    User.findOneAndUpdate({ username }, req.body, { new: true }).then(result => {
+        let successMessage = "User updated"
+        error = {errorMessage : "Update went wrong"}
+        res.send(result)
+    })
+})
+
 
 // route for log in
 router.get('/login/:username/:password', function (req, res) {

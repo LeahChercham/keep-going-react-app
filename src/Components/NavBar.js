@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import logo from '../Logo Group.png';
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import '../styles/navbar.css';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import MessageIcon from '@mui/icons-material/Message';
 import { flexbox } from '@mui/system';
-
+import { useDispatch, useSelector } from 'react-redux' // dispatch actions to the store
+import { userLogout } from '../store/actions/authActions';
 const pages = [{ label: "Sign In", href: "/register" }, { label: "Log In", href: "/login" }];
 
 const styles = {
@@ -30,51 +31,57 @@ const styles = {
     }
 }
 
-class NavBar extends Component {
-    constructor() {
-        super();
-        this.state = {
-        }
+function NavBar(props) {
+    const [state, setState] = useState()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
+
+    const logout = () => {
+        dispatch(userLogout()).then(() => {
+            navigate("/")
+
+        })
     }
 
-    render() {
-        return (
-            <AppBar style={styles.appbar}>
-                <Toolbar style={styles.toolbar}>
-                    <div>
-                        <RouterLink to="/"> <img src={logo} alt="logo" /></RouterLink>
-                    </div>
-                    <div style={styles.links}>
-                        {this.props.isLoggedIn ?
+    return (
+        <AppBar style={styles.appbar}>
+            <Toolbar style={styles.toolbar}>
+                <div>
+                    <RouterLink to="/"> <img src={logo} alt="logo" /></RouterLink>
+                </div>
+                <div style={styles.links}>
+                    {authenticated ?
 
-                            <div style={styles.links}><Button style={styles.menuButton}
-                                onClick={() => this.props.logout()}
-                            >Log Out</Button>
-                                <div style={styles.links}>
-                                    {this.props.tokens} TOKENS
-                                </div >
-                                <MessageIcon style={styles.menuButton} />
+                        <div style={styles.links}><Button style={styles.menuButton}
+                            onClick={() => logout()}
+                        >Log Out</Button>
+                            <div style={styles.links}>
+                                {user.tokens} TOKENS
+                            </div >
+                            <MessageIcon style={styles.menuButton} />
 
-                                <RouterLink to={"/profile"} style={{ textDecoration: "none" }}>
-                                    <Button style={styles.menuButton}>{this.props.username}</Button>
-                                </RouterLink>
+                            <RouterLink to={"/profile"} style={{ textDecoration: "none" }}>
+                                <Button style={styles.menuButton}>{user.username}</Button>
+                            </RouterLink>
 
 
-                            </div>
-                            :
+                        </div>
+                        :
 
-                            (pages.map((page) => (
-                                <RouterLink to={page.href} key={page.label} style={{ textDecoration: "none" }}>
-                                    <Button style={styles.menuButton}>{page.label}</Button>
-                                </RouterLink>)))}
+                        (pages.map((page) => (
+                            <RouterLink to={page.href} key={page.label} style={{ textDecoration: "none" }}>
+                                <Button style={styles.menuButton}>{page.label}</Button>
+                            </RouterLink>)))}
 
-                    </div>
+                </div>
 
-                </Toolbar>
+            </Toolbar>
 
-            </AppBar>
-        )
-    }
+        </AppBar>
+    )
+
 }
 
 export default NavBar

@@ -3,7 +3,7 @@ import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Button } from "@mui/material";
-import { Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import Axios from 'axios';
 import consts from '../consts'
 
@@ -49,6 +49,9 @@ function Signup(props) {
     })
 
     const dispatch = useDispatch();
+
+    const navigate = useNavigate();
+
 
     const handleChange = async (event) => {
         let newUser = { ...state.newUser }
