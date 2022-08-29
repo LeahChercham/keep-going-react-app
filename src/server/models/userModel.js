@@ -7,9 +7,10 @@ const UserSchema = new Schema({
     password: String, // The password will not be the real password, but the encryption of the password.
     mainExpertise: String,
     mainExpertiseKeywords: String,
-    mainExpertiseKeywordsArray:[String],
+    mainExpertiseKeywordsArray: [String],
     otherKeywords: String,
     tokens: Number,
+    contacts: [{ user: { type: Schema.Types.ObjectId, ref: 'User' }, draft: Boolean }]
 })
 
 const User = mongoose.model('user', UserSchema)
