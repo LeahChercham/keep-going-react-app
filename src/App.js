@@ -55,20 +55,20 @@ class App extends Component {
   }
 
 
-  login = async (username, password) => {
-    if (!password) { alert("Please enter your password.") }
+  // login = async (username, password) => {
+  //   if (!password) { alert("Please enter your password.") }
 
-    let response = await Axios.get(CREATE_ROUTE(`login/${username}/${password}`)) // asynchronous function
-    if (response.data.allowLogin) {
-      let login = { isLoggedIn: true, user: response.data.user }
-      localStorage.login = JSON.stringify(login)
-      this.setState({ login: login })
-      return true
-    } else {
-      // alert("The combination of password and username is not correct.")
-      return false
-    }
-  }
+  //   let response = await Axios.get(CREATE_ROUTE(`login/${username}/${password}`)) // asynchronous function
+  //   if (response.data.allowLogin) {
+  //     let login = { isLoggedIn: true, user: response.data.user }
+  //     localStorage.login = JSON.stringify(login)
+  //     this.setState({ login: login })
+  //     return true
+  //   } else {
+  //     // alert("The combination of password and username is not correct.")
+  //     return false
+  //   }
+  // }
 
   logout = () => {
     localStorage.clear()

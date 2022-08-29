@@ -51,9 +51,7 @@ function Signup(props) {
     const dispatch = useDispatch();
 
     const handleChange = async (event) => {
-        debugger
         let newUser = { ...state.newUser }
-        debugger
         switch (event.target.id) {
             case "username": handleUsername(event.target.value); break;
             case "email": handleEmail(event.target.value); break;
@@ -92,7 +90,7 @@ function Signup(props) {
         })
 
         if (inputUsernameValue) {
-            let response = await Axios.get(CREATE_ROUTE(`user/username/${inputUsernameValue}`))
+            let response = await Axios.get(CREATE_ROUTE(`user/username/${inputUsernameValue}`)) // Later in Auth Actions
             if (response.data) {
                 newUser.usernameTaken = true
             } else {
@@ -116,7 +114,8 @@ function Signup(props) {
 
 
         if (inputEmailValue) {
-            let response = await Axios.get(CREATE_ROUTE(`user/email/${inputEmailValue}`))
+            let response = await Axios.get(CREATE_ROUTE(`user/email/${inputEmailValue}`)) // Later in Auth Actions
+
             if (response.data) {
                 newUser.emailTaken = true
             } else {

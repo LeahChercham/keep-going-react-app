@@ -17,8 +17,9 @@ router.post("/user", function (req, res) {
         let newUser = new User(req.body)
         try {
             newUser.save().then(result => {
+                let user = result
                 res.status(201).json({
-                    message: "User created"
+                    successMessage: "User created", user
                 })
             })
         }
@@ -62,7 +63,7 @@ router.get('/login/:username/:password', function (req, res) {
     User.findOne({ username }, function (err, response) {
         let data
         if (!response) {
-            data = { allowLogin: false }
+            data = { error: { errorMessage: "Wrong username or password" } }
             res.send(data)
             res.end()
         } else {
@@ -77,10 +78,10 @@ router.get('/login/:username/:password', function (req, res) {
                         otherKeywords: response.otherKeywords,
                         tokens: response.tokens
                     }
-                    data = { allowLogin: true, user }
+                    data = { user, successMessage: "Login successfull" }
                     res.send(data)
                 } else {
-                    data = { allowLogin: false }
+                    data = { error: { errorMessage: "Wrong username or password" } }
                     res.send(data)
                 }
             })

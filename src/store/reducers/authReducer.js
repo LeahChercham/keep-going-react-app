@@ -1,4 +1,4 @@
-import { REGISTER_FAIL } from "../types/authType";
+import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_SUCCESS, CLEAR_ERROR, USER_LOGOUT } from "../types/authType";
 
 const authState = {
     loading: true,
@@ -11,52 +11,54 @@ const authState = {
 export const authReducer = (state = authState, action) => {
     const { payload, type } = action;
     switch (type) {
-        case REGISTER_FAIL:
+        case AUTH_FAIL || USER_LOGIN_FAIL:
             return {
                 ...state,
                 error: payload.error,
                 authenticated: false,
-                user:'',
-                loading:true
+                user: '',
+                loading: true
             }
-        case "AUTH_LOADING":
+        case USER_LOGIN_FAIL:
             return {
                 ...state,
-                loading: true,
+                error: payload.error,
+                authenticated: false,
+                user: '',
+                loading: true
             }
-        case "AUTH_SUCCESS":
+        case AUTH_SUCCESS || USER_LOGIN_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 authenticated: true,
                 error: "",
-                successMessage: "",
+                successMessage: payload.successMessage,
+                user: payload.user,
             }
-        case "AUTH_FAILURE":
+
+        case USER_LOGIN_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                authenticated: false,
-                error: payload,
-                successMessage: "",
+                authenticated: true,
+                error: "",
+                successMessage: payload.successMessage,
+                user: payload.user,
             }
-        case "AUTH_LOGOUT":
+        case CLEAR_ERROR:
             return {
                 ...state,
-                loading: false,
+                error: ""
+            }
+        case USER_LOGOUT:
+            return {
+                ...state,
+                loading: true,
                 authenticated: false,
                 error: "",
                 successMessage: "",
-            }
-        case "AUTH_SUCCESS_MESSAGE":
-            return {
-                ...state,
-                successMessage: payload,
-            }
-        case "AUTH_ERROR_MESSAGE":
-            return {
-                ...state,
-                error: payload,
+                user: '',
             }
         default:
             return state;
