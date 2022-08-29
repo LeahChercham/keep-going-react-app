@@ -1,13 +1,11 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import { FormControl, Switch } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useDispatch, useSelector } from 'react-redux'
-import Axios from 'axios';
 import consts from '../consts'
-const CREATE_ROUTE = consts.CREATE_ROUTE
-import {userUpdate} from '../store/actions/authActions'
+import { userUpdate } from '../store/actions/authActions'
 
 const styles = {
     main: {
@@ -54,12 +52,13 @@ function Profile(props) {
         }
     })
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
 
     useEffect(() => {
-        setState({ ...state, user })
+        let updateUser = user
+        setState({ ...state, user, updateUser })
     }, [])
 
 
@@ -69,7 +68,8 @@ function Profile(props) {
         setState({ ...state, updateUser })
     }
 
-    const handleSubmit = (event, status) => {
+    const handleSubmit = (event) => {
+        let status = state.status
         event.preventDefault();
 
         switch (status) {
@@ -102,7 +102,7 @@ function Profile(props) {
                     <div style={styles.containerOne}>
                         <div>
                             <TextField
-                                disabled={state.status === "View" ? true : false}
+                                disabled={true}
                                 error={state.updateUser.usernameTaken}
                                 id="username"
                                 label="Username"
@@ -176,7 +176,7 @@ function Profile(props) {
                                 variant="contained"
                                 color="primary"
                                 // currentStatus="Edit"
-                                onClick={(e) => handleSubmit(e, state.status)}>
+                                onClick={(e) => handleSubmit(e)}>
                                 {state.status === "View" ? "Edit" : "Save"}
                             </Button>
 

@@ -2,6 +2,7 @@ import Axios from 'axios';
 import consts from '../../consts'
 import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, CLEAR_ERROR, USER_LOGOUT, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL } from '../types/authType';
 const CREATE_ROUTE = consts.CREATE_ROUTE
+const util = require("util")
 
 export const userRegister = (user) => {
 
@@ -37,7 +38,7 @@ export const userLogin = (data) => {
             let login = { isLoggedIn: true, user: response.data.user }
             localStorage.login = JSON.stringify(login)
 
-            console.log(response.data)
+            console.log(response.data.user)
             dispatch({
                 type: USER_LOGIN_SUCCESS,
                 payload: {
@@ -65,10 +66,14 @@ export const userLogout = () => {
 }
 
 export const userUpdate = (data) => {
-    let {updateUser, username} = data
+    let updateUser = data.updateUser
+    let username = updateUser.username
+    console.log(updateUser)
+    console.log(username)
     return async dispatch => {
         try {
             let response = await Axios.put(CREATE_ROUTE(`user/${username}`), updateUser)
+            console.log("response userUpdate :" + util.inspect(response.data, false, 6))
             dispatch({
                 type: USER_UPDATE_SUCCESS,
                 payload: {

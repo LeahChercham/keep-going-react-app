@@ -4,6 +4,7 @@ const router = express.Router()
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
+const util = require("util")
 
 // Bcrypt = npm package that allows to encrypt passwords using hashing and salting
 router.post("/user", function (req, res) {
@@ -51,14 +52,23 @@ router.get("/user/email/:email", function (req, res) {
 })
 
 // Route for updating user profile
-router.put("/user/:username", function (req, res) {
+router.put("/user/:username", async function (req, res) {
     let { username } = req.params
-    let data
-    User.findOneAndUpdate({ username }, req.body, { new: true }).then(result => {
-        let successMessage = "User updated"
-        error = {errorMessage : "Update went wrong"}
-        res.send(result)
-    })
+    try {
+        let user = await User.findOneAndUpdate({ username: username }, req.body, { new: true })
+
+        console.log("user doc: " + user.username)
+        res.status(201).json({
+            successMessage: "User updated",
+            user
+        })
+    }
+    catch {
+        res.status(500).json({
+            error: { errorMessage: ['Internal Server Error', "Updating User went wrong"] }
+        })
+    }
+
 })
 
 

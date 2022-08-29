@@ -74,7 +74,7 @@ export const authReducer = (state = authState, action) => {
                 ...state,
                 error: payload.error,
                 authenticated: true,
-                loading: false
+                loading: true
             }
         default:
             return state;

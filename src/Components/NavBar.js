@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import logo from '../Logo Group.png';
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -32,7 +32,9 @@ const styles = {
 }
 
 function NavBar(props) {
-    const [state, setState] = useState()
+    const [state, setState] = useState({
+        user: {},
+    })
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
