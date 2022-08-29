@@ -38,7 +38,6 @@ export const userLogin = (data) => {
             let login = { isLoggedIn: true, user: response.data.user }
             localStorage.login = JSON.stringify(login)
 
-            console.log(response.data.user)
             dispatch({
                 type: USER_LOGIN_SUCCESS,
                 payload: {
@@ -68,12 +67,11 @@ export const userLogout = () => {
 export const userUpdate = (data) => {
     let updateUser = data.updateUser
     let username = updateUser.username
-    console.log(updateUser)
-    console.log(username)
+
     return async dispatch => {
         try {
             let response = await Axios.put(CREATE_ROUTE(`user/${username}`), updateUser)
-            console.log("response userUpdate :" + util.inspect(response.data, false, 6))
+            // console.log("response userUpdate :" + util.inspect(response.data, false, 6))
             dispatch({
                 type: USER_UPDATE_SUCCESS,
                 payload: {

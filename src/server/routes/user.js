@@ -12,7 +12,6 @@ router.post("/user", function (req, res) {
     let error = ""
     bcrypt.hash(password, saltRounds, function (err, hash) {
         if (err) {
-            console.log(err)
         }
         req.body.password = hash
         let newUser = new User(req.body)

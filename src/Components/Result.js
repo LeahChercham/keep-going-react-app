@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Button, List, ListItem } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -79,10 +79,13 @@ function Result(props) {
 
     let keywordsList = props ? props.result.mainExpertiseKeywords.split(";") : []
 
-    if (redirect) {
-        return navigate('/expert', {state: {expert: props.result}})
-    
-    } else return (
+    useEffect(() => {
+        if (redirect) {
+            return navigate('/expert', { state: { expert: props.result } })
+        }
+    }, [redirect])
+
+    return (
         <div style={styles.main}>
             <Box style={styles.box}>
                 <div style={styles.username}>

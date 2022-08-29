@@ -104,7 +104,6 @@ function SearchPage(props) {
 
     useEffect(() => {
         if (state.redirect) {
-            console.log(util.inspect(state.results, false, 7))
             return navigate('/results', { state: { results: state.results } })
         }
     }, [state.redirect])

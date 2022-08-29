@@ -129,7 +129,6 @@ function Signup(props) {
     }
 
     const handleSubmit = event => {
-        console.log(state)
         event.preventDefault();
         let newUser = { ...state.newUser }
 

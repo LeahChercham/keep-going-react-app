@@ -18,7 +18,6 @@ function Results(props) {
 
     const location = useLocation();
 
-    console.log("Props in Result: " + util.inspect(location, false, 7))
 
     return (
         <div style={styles.main}>

@@ -46,20 +46,6 @@ const styles = {
 }
 function ExpertProfile(props) {
 
-    // const [state, setState] = useState({
-    //     expert: {
-    //         email: "",
-    //         password: "",
-    //         username: "",
-    //         usernameTaken: false,
-    //         emailTaken: false,
-    //         mainExpertise: "",
-    //         mainExpertiseKeywords: "",
-    //         otherKeywords: "",
-    //         tokens: 0,
-    //     },
-    // })
-
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -67,7 +53,7 @@ function ExpertProfile(props) {
 
     const handleSubmit = e => {
         alert("nothing happens yet")
-        // return navigate('/chatroom', { state: { expert: expert } })
+        return navigate('/chat', { state: { expert: expert } })
     }
 
 
