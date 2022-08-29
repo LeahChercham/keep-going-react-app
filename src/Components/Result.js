@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Button, List, ListItem } from '@mui/material';
 import Box from '@mui/material/Box';
 const util = require('util')
@@ -75,11 +75,13 @@ function Result(props) {
 
 
     const { redirect, result } = state;
+    const navigate = useNavigate();
 
     let keywordsList = props ? props.result.mainExpertiseKeywords.split(";") : []
 
     if (redirect) {
-        return <Navigate to="/expert" state={props.result} />
+        return navigate('/expert', {state: {expert: props.result}})
+    
     } else return (
         <div style={styles.main}>
             <Box style={styles.box}>

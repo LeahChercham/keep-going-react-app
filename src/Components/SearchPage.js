@@ -102,11 +102,6 @@ function SearchPage(props) {
         }
     }
 
-
-
-
-    console.log("props searchpage:" + util.inspect(props, false, 7))
-
     useEffect(() => {
         if (state.redirect) {
             console.log(util.inspect(state.results, false, 7))

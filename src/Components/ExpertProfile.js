@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import Button from '@mui/material/Button';
 import { FormControl, Switch } from "@mui/material";
 import { TextField } from "@mui/material";
@@ -45,24 +46,31 @@ const styles = {
 }
 function ExpertProfile(props) {
 
-    const [state, setState] = useState({
-        expert: {
-            email: "",
-            password: "",
-            username: "",
-            usernameTaken: false,
-            emailTaken: false,
-            mainExpertise: "",
-            mainExpertiseKeywords: "",
-            otherKeywords: "",
-            tokens: 0,
-        },
-    })
+    // const [state, setState] = useState({
+    //     expert: {
+    //         email: "",
+    //         password: "",
+    //         username: "",
+    //         usernameTaken: false,
+    //         emailTaken: false,
+    //         mainExpertise: "",
+    //         mainExpertiseKeywords: "",
+    //         otherKeywords: "",
+    //         tokens: 0,
+    //     },
+    // })
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    let expert = location.state.expert;
+
+    const handleSubmit = e => {
+        alert("nothing happens yet")
+        // return navigate('/chatroom', { state: { expert: expert } })
+    }
 
 
-
-
-    let expert = props.location.state
     return (
         <div style={styles.main}>
             <div style={styles.containerOne}>
@@ -85,7 +93,7 @@ function ExpertProfile(props) {
                     <Button
                         variant="contained"
                         color="primary"
-                    // onClick={(e) => handleSubmit(e)}
+                        onClick={(e) => handleSubmit(e)}
                     >
                         CONTACT ME
                     </Button>

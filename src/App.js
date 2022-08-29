@@ -12,6 +12,7 @@ import consts from './consts'
 import './main.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import ExpertProfile from './Components/ExpertProfile';
+import Messenger from './Components/messenger/Messenger';
 const CREATE_ROUTE = consts.CREATE_ROUTE
 
 
@@ -89,6 +90,12 @@ function App(props) {
             }>
             </Route>
 
+            <Route path="/chat" element={
+              (authenticated ?
+                (<Messenger />) :
+                (<Navigate to="/" />))
+            }>
+            </Route>
 
           </Routes>
 
