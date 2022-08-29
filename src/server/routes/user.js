@@ -27,7 +27,7 @@ router.post("/user", function (req, res) {
                 error: { errorMessage: ['Internal Server Error'] }
             })
         }
-        res.end()
+
     })
 })
 
