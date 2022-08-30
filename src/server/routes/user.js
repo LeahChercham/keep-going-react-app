@@ -56,7 +56,6 @@ router.put("/user/:username", async function (req, res) {
     try {
         let user = await User.findOneAndUpdate({ username: username }, req.body, { new: true })
 
-        console.log("user doc: " + user.username)
         res.status(201).json({
             successMessage: "User updated",
             user

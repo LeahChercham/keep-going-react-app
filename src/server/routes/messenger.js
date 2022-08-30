@@ -4,15 +4,47 @@ const router = express.Router()
 const User = require('../models/userModel')
 const Message = require('../models/messageModel')
 
-router.get('/messenger/get-contacts', async function (req, res) {
-    const myId = req.myId;
+const getLastMessage = async (myId, expertId) => {
+    const msg = await messageModel.findOne({
+        $or: [{
+            $and: [{
+                senderId: {
+                    $eq: myId
+                }
+            }, {
+                receiverId: {
+                    $eq: expertId
+                }
+            }]
+        }, {
+            $and: [{
+                senderId: {
+                    $eq: expertId
+                }
+            }, {
+                receiverId: {
+                    $eq: myId
+                }
+            }]
+        }]
+
+    }).sort({
+        updatedAt: -1
+    });
+    return msg;
+}
+
+router.get('/messenger/get-contacts/:myId', async function (req, res) {
+    const myId = req.params.myId;
+    console.log(myId)
     let contactMessages = [];
     try {
         const getContacts = await User.find({
             // Here something to populate contacts in user model and then get them Users
         });
+        console.log(getContacts)
         for (let i = 0; i < getContacts.length; i++) { // Here it gets the last message of each conversation
-            let lastMessage = await getLastMessage(myId, getContacts[i].id);
+            let lastMessage = await getLastMessage(myId, getContacts[i].id); // TODO hier fehler
             contactMessages = [...contactMessages, {
                 contactInfo: getContacts[i],
                 messageInfo: lastMessage
@@ -33,14 +65,12 @@ router.get('/messenger/get-contacts', async function (req, res) {
 });
 
 router.post('/messenger/send-message', async function (req, res) {
-    console.log("in message Upload DB, req.body is: ", req);
     const {
         senderName,
         receiverId,
         message,
         senderId
     } = req.body
-    // const senderId = req.myId;
 
     let newMessage = new Message({
         senderId: senderId,

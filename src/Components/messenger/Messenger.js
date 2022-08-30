@@ -179,13 +179,14 @@ function Messenger(props) {
             msg: ''
         })
 
-        console.log("data before dispatch message send: " + util.inspect(data, false, 7))
         dispatch(messageSend(data));
-        console.log("just after dispatch send")
         setState({ ...state, newMessage: '' })
     }
 
     useEffect(() => {
+        debugger
+        console.log("messageSendSuccess: " + messageSendSuccess)
+        console.log("message: " + message)
         if (messageSendSuccess) { // from redux state
             socket.current.emit('sendMessage', message[message.length - 1]);
             dispatch({
@@ -201,7 +202,9 @@ function Messenger(props) {
     }, [messageSendSuccess]);
 
     useEffect(() => {
-        dispatch(getContacts());
+        // let data = myInfo.id
+        console.log(myInfo.id)
+        dispatch(getContacts(myInfo.id));
         dispatch({ type: 'NEW_USER_ADD_CLEAR' })
     }, [new_user_add]);
 

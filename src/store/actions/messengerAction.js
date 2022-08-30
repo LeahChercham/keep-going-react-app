@@ -4,9 +4,9 @@ import consts from '../../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
 const util = require("util")
 
-export const getContacts = () => async (dispatch) => {
+export const getContacts = (myId) => async (dispatch) => {
     try {
-        const response = await axios.get(CREATE_ROUTE('messenger/get-contacts'));
+        const response = await axios.get(CREATE_ROUTE(`messenger/get-contacts/${myId}`));
         dispatch({
             type: CONTACT_GET_SUCCESS,
             payload: {
@@ -20,10 +20,9 @@ export const getContacts = () => async (dispatch) => {
 }
 
 export const messageSend = (data) => async (dispatch) => {
-    console.log("in message Send")
-    console.log("data: " + util.inspect(data, false, 7))
     try {
         const response = await axios.post(CREATE_ROUTE('messenger/send-message'), data);
+        debugger
         dispatch({
             type: MESSAGE_SEND_SUCCESS,
             payload: {
