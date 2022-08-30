@@ -34,7 +34,7 @@ function Messenger(props) {
     const myInfo = user
 
     const [state, setState] = useState({
-        currentContact: "null",
+        currentContact: expert,
         newMessage: "",
         socketMessage: "",
         typingMessage: "",
@@ -208,7 +208,7 @@ function Messenger(props) {
 
 
     useEffect(() => {
-        dispatch(getMessage(state.currentContact._id));
+        dispatch(getMessage(state.currentContact._id, myInfo.id));
         if (contacts.length > 0) {
 
         }

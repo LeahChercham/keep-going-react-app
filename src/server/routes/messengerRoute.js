@@ -4,7 +4,7 @@ const { getContacts, messageUploadDB, messageGet, ImageMessageSend, messageSeen,
 
 router.get('/messenger/get-contacts', getContacts);
 router.post('/messenger/send-message', messageUploadDB);
-router.get('/messenger/get-message/:id', messageGet);
+router.get('/messenger/get-message/:expertId/:myId', messageGet);
 // router.post('/messenger/image-message-send', ImageMessageSend); Not in use
 
 router.post('/messenger/seen-message', messageSeen);

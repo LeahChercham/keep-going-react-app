@@ -90,7 +90,8 @@ router.get('/login/:username/:password', function (req, res) {
                         mainExpertise: response.mainExpertise,
                         mainExpertiseKeywords: response.mainExpertiseKeywords,
                         otherKeywords: response.otherKeywords,
-                        tokens: response.tokens
+                        tokens: response.tokens,
+                        id: response._id
                     }
                     data = { user, successMessage: "Login successfull" }
                     res.send(data)

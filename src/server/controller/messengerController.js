@@ -97,8 +97,8 @@ module.exports.messageUploadDB = async (req, res) =>{
      
 }
 module.exports.messageGet = async(req,res) => {
-     const myId = req.myId;
-     const expertId = req.params.id;
+     const expertId = req.params.expertId;
+     const myId = req.params.myId;
 
      try{
           let getAllMessage = await messageModel.find({

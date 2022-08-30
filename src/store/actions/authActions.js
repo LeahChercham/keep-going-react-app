@@ -36,6 +36,7 @@ export const userLogin = (data) => {
         try {
             let response = await Axios.get(CREATE_ROUTE(`login/${username}/${password}`)) // asynchronous function
             let login = { isLoggedIn: true, user: response.data.user }
+            console.log(login.user)
             localStorage.login = JSON.stringify(login)
 
             dispatch({

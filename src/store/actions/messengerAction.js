@@ -33,18 +33,22 @@ export const messageSend = (data) => async (dispatch) => {
 }
 
 
-export const getMessage = (id) => {
+export const getMessage = (expertId, myId) => {
+
     return async (dispatch) => {
         try {
-            const response = await axios.get(CREATE_ROUTE(`messenger/get-message/${id}`))
+            const response = await axios.get(CREATE_ROUTE(`messenger/get-message/${expertId}/${myId}`));
             dispatch({
+
                 type: MESSAGE_GET_SUCCESS,
                 payload: {
                     message: response.data.message
                 }
             })
+
         } catch (error) {
-            console.log(error.response.data)
+            debugger
+            console.log("error:" + error)
         }
     }
 }
