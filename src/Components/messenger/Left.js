@@ -14,7 +14,7 @@ const myStyles = {
 
 function Left(props) {
     return (
-        <div style={myStyles.main}><Sidebar position="left" scrollable={false}>
+        <div style={myStyles.main}><Sidebar position="left" scrollable={true}>
             <Search placeholder="Search..." />
             <ConversationList>
                 {/* Map conversations here */}

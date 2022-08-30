@@ -67,9 +67,9 @@ export const messengerReducer = (state=messengerState,action) => {
         };
     }
 
-    if(type === DELIVARED_MESSAGE){
+    if(type === DELIVERED_MESSAGE){
          const index = state.contacts.findIndex(c=>c.contactInfo._id === payload.messageInfo.receiverId || c.contactInfo._id === payload.messageInfo.senderId);
-         state.contacts[index].messageInfo.status = 'delivared';
+         state.contacts[index].messageInfo.status = 'delivered';
         return {
              ...state
         };

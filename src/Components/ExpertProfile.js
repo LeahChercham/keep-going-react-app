@@ -6,7 +6,6 @@ import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import Axios from 'axios';
 import consts from '../consts'
-import ChatRoom from './ChatRoom';
 const CREATE_ROUTE = consts.CREATE_ROUTE
 const util = require('util')
 
@@ -52,7 +51,6 @@ function ExpertProfile(props) {
     let expert = location.state.expert;
 
     const handleSubmit = e => {
-        alert("nothing happens yet")
         return navigate('/chat', { state: { expert: expert } })
     }
 
@@ -86,7 +84,6 @@ function ExpertProfile(props) {
 
                 </div>
             </div>
-            <ChatRoom />
         </div>
     )
 }
