@@ -5,6 +5,8 @@ const PORT = 7777
 const path = require('path')
 const cors = require('cors');
 const user = require('./routes/user')
+const messenger = require('./routes/messenger')
+// const messengerRoute = require('./routes/Not in Use messengerRoute')
 
 let app = express();
 
@@ -25,7 +27,9 @@ app.use(express.static('node_modules'));
 // Necessary to parse the JSON from requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use('/', user)
+app.use('/', messenger)
 
 mongoose.connect(process.env.MONGODB_URI
   || 'mongodb://127.0.0.1:27017/KeepGoingDB',

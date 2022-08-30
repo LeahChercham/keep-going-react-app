@@ -4,7 +4,7 @@ const router = express.Router()
 const User = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
-const util = require("util")
+
 
 // Bcrypt = npm package that allows to encrypt passwords using hashing and salting
 router.post("/user", function (req, res) {

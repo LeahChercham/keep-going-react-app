@@ -4,32 +4,33 @@ const messageModel = require('../models/messageModel');
 const fs = require('fs');
 
 
-const getLastMessage = async(myId, expertId) => {
+
+const getLastMessage = async (myId, expertId) => {
      const msg = await messageModel.findOne({
           $or: [{
                $and: [{
-                    senderId : {
-                        $eq: myId
+                    senderId: {
+                         $eq: myId
                     }
-               },{
-                    receiverId : {
-                        $eq : expertId 
+               }, {
+                    receiverId: {
+                         $eq: expertId
                     }
                }]
           }, {
-               $and : [{
-                    senderId : {
-                         $eq : expertId
-                    } 
-               },{
-                    receiverId : {
-                         $eq : myId
+               $and: [{
+                    senderId: {
+                         $eq: expertId
+                    }
+               }, {
+                    receiverId: {
+                         $eq: myId
                     }
                }]
           }]
 
      }).sort({
-          updatedAt : -1
+          updatedAt: -1
      });
      return msg;
 }
@@ -37,111 +38,111 @@ const getLastMessage = async(myId, expertId) => {
 module.exports.getContacts = async (req, res) => {
      const myId = req.myId;
      let contactMessages = [];
-     try{
+     try {
           const getContacts = await User.find({
-            // Here something to populate contacts in user model and then get them Users
+               // Here something to populate contacts in user model and then get them Users
           });
-          for (let i = 0; i < getContacts.length; i++ ){ // Here it gets the last message of each conversation
-               let lastMessage = await getLastMessage(myId,getContacts[i].id);
+          for (let i = 0; i < getContacts.length; i++) { // Here it gets the last message of each conversation
+               let lastMessage = await getLastMessage(myId, getContacts[i].id);
                contactMessages = [...contactMessages, {
-                    contactInfo : getContacts[i],
-                    messageInfo : lastMessage
+                    contactInfo: getContacts[i],
+                    messageInfo: lastMessage
                }]
-               
+
           }
 
-          res.status(200).json({success:true, contacts : contactMessages})
+          res.status(200).json({ success: true, contacts: contactMessages })
 
-     }catch (error) {
+     } catch (error) {
           res.status(500).json({
                error: {
-                    errorMessage :'Internal Sever Error'
+                    errorMessage: 'Internal Sever Error'
                }
           })
-     } 
+     }
 }
 
-module.exports.messageUploadDB = async (req, res) =>{
-
+module.exports.messageUploadDB = async (req, res) => {
+     console.log("in message Upload DB, req.body is: ", req.body);
      const {
           senderName,
           receiverId,
-          message
+          message,
+          senderId
      } = req.body
-     const senderId = req.myId;
+     // const senderId = req.myId;
 
-     try{
+     try {
           const insertMessage = await messageModel.create({
-            // Here populate the sender thanks to senderId mongoose
-               senderId : senderId,
-               senderName : senderName,
-               receiverId : receiverId,
-               message : {
-                    text: message,
-                    image : ''
+               // Here populate the sender thanks to senderId mongoose
+               senderId: senderId,
+               senderName: senderName,
+               receiverId: receiverId,
+               message: {
+                    text: message
                }
           })
           res.status(201).json({
-               success : true,
+               success: true,
                message: insertMessage
           })
 
-     }catch (error){
+     } catch (error) {
           res.status(500).json({
                error: {
-                    errorMessage : 'Internal Sever Error'
+                    errorMessage: 'Internal Sever Error'
                }
           })
      }
 
-     
+
 }
-module.exports.messageGet = async(req,res) => {
+module.exports.messageGet = async (req, res) => {
      const expertId = req.params.expertId;
      const myId = req.params.myId;
 
-     try{
+     try {
           let getAllMessage = await messageModel.find({
-               
+
                $or: [{
                     $and: [{
-                         senderId : {
-                             $eq: myId
+                         senderId: {
+                              $eq: myId
                          }
-                    },{
-                         receiverId : {
-                             $eq : expertId 
+                    }, {
+                         receiverId: {
+                              $eq: expertId
                          }
                     }]
                }, {
-                    $and : [{
-                         senderId : {
-                              $eq : expertId
-                         } 
-                    },{
-                         receiverId : {
-                              $eq : myId
+                    $and: [{
+                         senderId: {
+                              $eq: expertId
+                         }
+                    }, {
+                         receiverId: {
+                              $eq: myId
                          }
                     }]
                }]
           })
-          
+
           // getAllMessage = getAllMessage.filter(m=>m.senderId === myId && m.receiverId === expertId || m.receiverId ===  myId && m.senderId === expertId );
-          
+
           res.status(200).json({
                success: true,
                message: getAllMessage
           })
 
-     }catch (error){
+     } catch (error) {
           res.status(500).json({
                error: {
-                    errorMessage : 'Internal Server error'
+                    errorMessage: 'Internal Server error'
                }
           })
 
      }
-      
+
 }
 
 // Not using image sending
@@ -198,41 +199,41 @@ module.exports.messageGet = async(req,res) => {
 //      })
 // }
 
-module.exports.messageSeen = async (req,res) => {
+module.exports.messageSeen = async (req, res) => {
      const messageId = req.body._id;
 
      await messageModel.findByIdAndUpdate(messageId, {
-         status : 'seen' 
+          status: 'seen'
      })
-     .then(() => {
-          res.status(200).json({
-               success : true
+          .then(() => {
+               res.status(200).json({
+                    success: true
+               })
+          }).catch(() => {
+               res.status(500).json({
+                    error: {
+                         errorMessage: 'Internal Server Error'
+                    }
+               })
           })
-     }).catch(() => {
-          res.status(500).json({
-               error : {
-                    errorMessage : 'Internal Server Error'
-               }
-          })
-     })
 }
 
 
-module.exports.deliveredMessage = async (req,res) => {
+module.exports.deliveredMessage = async (req, res) => {
      const messageId = req.body._id;
 
      await messageModel.findByIdAndUpdate(messageId, {
-         status : 'delivered' 
+          status: 'delivered'
      })
-     .then(() => {
-          res.status(200).json({
-               success : true
+          .then(() => {
+               res.status(200).json({
+                    success: true
+               })
+          }).catch(() => {
+               res.status(500).json({
+                    error: {
+                         errorMessage: 'Internal Server Error'
+                    }
+               })
           })
-     }).catch(() => {
-          res.status(500).json({
-               error : {
-                    errorMessage : 'Internal Server Error'
-               }
-          })
-     })
 }

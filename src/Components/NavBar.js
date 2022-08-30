@@ -41,10 +41,8 @@ function NavBar(props) {
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
 
     const logout = () => {
-        dispatch(userLogout()).then(() => {
-            navigate("/")
-
-        })
+        dispatch(userLogout())
+        navigate("/")
     }
 
     return (

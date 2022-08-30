@@ -11,6 +11,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, updateMessage, } from '../../store/actions/messengerAction';
 
 import { io } from 'socket.io-client';
+const util = require("util")
 
 const myStyles = {
     main: {
@@ -151,24 +152,24 @@ function Messenger(props) {
     }, [state.socketMessage]);
     // end fith use effect
 
-    const inputHandle = (e) => { // TODO need main in here then
-        setState({ ...state, newMessage: e.target.value })
+    const handleInput = (newMessage) => { // TODO need main in here then
+        setState({ ...state, newMessage })
 
         socket.current.emit('typingMessage', {
             senderId: myInfo.id,
             receiverId: state.currentContact._id,
-            msg: e.target.value
+            msg: newMessage
         })
 
     }
 
-    const sendMessage = (e) => { //TODO need button here
-        e.preventDefault();
+    const sendMessage = (msg) => { //TODO need button here
         // sendingSPlay();
         const data = {
-            senderName: myInfo.userName,
-            receiver: state.currentContact._id,
-            message: state.newMessage ? state.newMessage : '❤'
+            senderName: myInfo.username,
+            receiverId: state.currentContact._id,
+            message: state.newMessage ? state.newMessage : '❤',
+            senderId: myInfo.id,
         }
 
 
@@ -178,7 +179,9 @@ function Messenger(props) {
             msg: ''
         })
 
+        console.log("data before dispatch message send: " + util.inspect(data, false, 7))
         dispatch(messageSend(data));
+        console.log("just after dispatch send")
         setState({ ...state, newMessage: '' })
     }
 
@@ -261,13 +264,17 @@ function Messenger(props) {
                     <ConversationList>
                         {/* Map conversations here */}
 
-                        {contacts && contacts.length > 0 ? contacts.map((contact, index) => <div key={index}
-                            onClick={() => { setState({ ...state, currentContact: contact.contactInfo }) }}>
+                        {contacts && contacts.length > 0 ? contacts.map((contact, index) =>
 
-                            <Conversation active={state.currentContact._id === contact.contactInfo._id ? true : false} activeUser={state.activeUser} name={contact.username} info="Last Message">
+                            <Conversation
+                                key={index}
+                                onClick={() => { setState({ ...state, currentContact: contact.contactInfo }) }}
+                                active={state.currentContact._id === contact.contactInfo._id ? true : false}
+                                // activeUser={state.activeUser} 
+                                name={contact.username} info="Last Message">
                                 {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
                             </Conversation>
-                        </div>) : <Conversation name={"No Contacts"} info="No Messages">
+                        ) : <Conversation name={"No Contacts"} info="No Messages">
                             {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
                         </Conversation>}
 
@@ -379,7 +386,10 @@ function Messenger(props) {
                             {/* <Avatar src={zoeIco} name="Zoe" /> */}
                         </Message>
                     </MessageList>
-                    <MessageInput placeholder="Type message here" />
+                    <MessageInput placeholder="Type message here"
+                        onSend={(e) => sendMessage(e)}
+                        onChange={(e) => handleInput(e)}
+                    />
                 </ChatContainer>
 
                 <Sidebar position="right">

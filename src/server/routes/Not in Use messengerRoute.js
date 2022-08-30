@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { getContacts, messageUploadDB, messageGet, ImageMessageSend, messageSeen, deliveredMessage } = require('../controller/messengerController');
+const { getContacts, messageUploadDB, messageGet, ImageMessageSend, messageSeen, deliveredMessage } = require('../controller/not in use messengerController');
 
 router.get('/messenger/get-contacts', getContacts);
 router.post('/messenger/send-message', messageUploadDB);

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { CONTACT_GET_SUCCESS, MESSAGE_GET_SUCCESS, MESSAGE_SEND_SUCCESS } from "../types/messengerType";
 import consts from '../../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
+const util = require("util")
 
 export const getContacts = () => async (dispatch) => {
     try {
@@ -19,8 +20,10 @@ export const getContacts = () => async (dispatch) => {
 }
 
 export const messageSend = (data) => async (dispatch) => {
+    console.log("in message Send")
+    console.log("data: " + util.inspect(data, false, 7))
     try {
-        const response = await axios.post(CREATE_ROUTE('messenger/send-message', data));
+        const response = await axios.post(CREATE_ROUTE('messenger/send-message'), data);
         dispatch({
             type: MESSAGE_SEND_SUCCESS,
             payload: {
@@ -47,7 +50,6 @@ export const getMessage = (expertId, myId) => {
             })
 
         } catch (error) {
-            debugger
             console.log("error:" + error)
         }
     }
@@ -73,7 +75,7 @@ export const getMessage = (expertId, myId) => {
 
 export const seenMessage = (msg) => async (dispatch) => {
     try {
-        const response = await axios.post(CREATE_ROUTE('messenger/seen-message', msg));
+        const response = await axios.post(CREATE_ROUTE('messenger/seen-message'), msg);
         console.log(response.data);
     } catch (error) {
         console.log(error.response.message)
@@ -84,7 +86,7 @@ export const seenMessage = (msg) => async (dispatch) => {
 
 export const updateMessage = (msg) => async (dispatch) => {
     try {
-        const response = await axios.post(CREATE_ROUTE('messenger/delivered-message', msg));
+        const response = await axios.post(CREATE_ROUTE('messenger/delivered-message'), msg);
         console.log(response.data);
     } catch (error) {
         console.log(error.response.message)
