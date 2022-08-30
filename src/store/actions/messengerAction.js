@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { CONTACT_GET_SUCCESS, MESSAGE_GET_SUCCESS, MESSAGE_SEND_SUCCESS } from "../types/messengerType";
+import consts from '../../consts'
+const CREATE_ROUTE = consts.CREATE_ROUTE
 
 export const getContacts = () => async (dispatch) => {
     try {
-        const response = await axios.get('/api/messenger/get-contacts');
+        const response = await axios.get(CREATE_ROUTE('messenger/get-contacts'));
         dispatch({
             type: CONTACT_GET_SUCCESS,
             payload: {
@@ -18,7 +20,7 @@ export const getContacts = () => async (dispatch) => {
 
 export const messageSend = (data) => async (dispatch) => {
     try {
-        const response = await axios.post('/api/messenger/send-message', data);
+        const response = await axios.post(CREATE_ROUTE('messenger/send-message', data));
         dispatch({
             type: MESSAGE_SEND_SUCCESS,
             payload: {
@@ -34,7 +36,7 @@ export const messageSend = (data) => async (dispatch) => {
 export const getMessage = (id) => {
     return async (dispatch) => {
         try {
-            const response = await axios.get(`/api/messenger/get-message/${id}`)
+            const response = await axios.get(CREATE_ROUTE(`messenger/get-message/${id}`))
             dispatch({
                 type: MESSAGE_GET_SUCCESS,
                 payload: {
@@ -67,7 +69,7 @@ export const getMessage = (id) => {
 
 export const seenMessage = (msg) => async (dispatch) => {
     try {
-        const response = await axios.post('/api/messenger/seen-message', msg);
+        const response = await axios.post(CREATE_ROUTE('messenger/seen-message', msg));
         console.log(response.data);
     } catch (error) {
         console.log(error.response.message)
@@ -78,7 +80,7 @@ export const seenMessage = (msg) => async (dispatch) => {
 
 export const updateMessage = (msg) => async (dispatch) => {
     try {
-        const response = await axios.post('/api/messenger/delivared-message', msg);
+        const response = await axios.post(CREATE_ROUTE('messenger/delivered-message', msg));
         console.log(response.data);
     } catch (error) {
         console.log(error.response.message)

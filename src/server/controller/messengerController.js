@@ -34,7 +34,7 @@ const getLastMessage = async(myId, expertId) => {
      return msg;
 }
 
-module.exports.getFriends = async (req, res) => {
+module.exports.getContacts = async (req, res) => {
      const myId = req.myId;
      let contactMessages = [];
      try{

@@ -41,7 +41,7 @@ function Messenger(props) {
         activeUser: "",
         hide: true,
     })
-
+    const scrollRef = useRef();
     const socket = useRef();
     useEffect(() => {
         socket.current = io('ws://localhost:8000');
@@ -215,27 +215,27 @@ function Messenger(props) {
     }, [state.currentContact?._id]);
 
     useEffect(() => {
-        if (state.message.length > 0) {
-            if (state.message[state.message.length - 1].senderId !== myInfo.id && state.message[state.message.length - 1].status !== 'seen') {
+        if (message.length > 0) {
+            if (message[message.length - 1].senderId !== myInfo.id && message[message.length - 1].status !== 'seen') {
                 dispatch({
                     type: 'UPDATE',
                     payload: {
                         id: state.currentContact._id
                     }
                 })
-                socket.current.emit('seen', { senderId: currentContact._id, receiverId: myInfo.id })
-                dispatch(seenMessage({ _id: state.message[state.message.length - 1]._id }))
+                socket.current.emit('seen', { senderId: state.currentContact._id, receiverId: myInfo.id })
+                dispatch(seenMessage({ _id: message[message.length - 1]._id }))
             }
         }
         dispatch({
             type: 'MESSAGE_GET_SUCCESS_CLEAR'
         })
 
-    }, [message_get_success]);
+    }, [messageGetSuccess]);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [state.message]);
+    }, [message]);
 
 
 
