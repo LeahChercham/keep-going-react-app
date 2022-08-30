@@ -4,7 +4,8 @@ const messengerState = {
     contacts: [],
     message: [],
     messageSendSuccess: false,
-    messageGetSuccess: false
+    messageGetSuccess: false, 
+    new_user_add:'',
 }
 
 export const messengerReducer = (state=messengerState,action) => {
@@ -112,19 +113,19 @@ export const messengerReducer = (state=messengerState,action) => {
          }
     }
 
-    // if(type === 'NEW_USER_ADD'){
-    //      return{
-    //           ...state,
-    //           new_user_add : payload.new_user_add
-    //      }
-    // }
+    if(type === 'NEW_USER_ADD'){
+         return{
+              ...state,
+              new_user_add : payload.new_user_add
+         }
+    }
 
-    // if(type === 'NEW_USER_ADD_CLEAR'){
-    //      return{
-    //           ...state,
-    //           new_user_add : ''
-    //      }
-    // }
+    if(type === 'NEW_USER_ADD_CLEAR'){
+         return{
+              ...state,
+              new_user_add : ''
+         }
+    }
 
 
 

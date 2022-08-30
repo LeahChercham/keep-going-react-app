@@ -1,15 +1,14 @@
 
 import React, { useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom';
-import Main from './Main';
-import Left from './Left';
-import Right from './Right';
+
+
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
+import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Sidebar, Search, ConversationList, Conversation, ExpansionPanel, ConversationHeader, VoiceCallButton, VideoCallButton, InfoButton, TypingIndicator, MessageSeparator } from '@chatscope/chat-ui-kit-react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import toast, { Toaster } from 'react-hot-toast';
-import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, updateMessage, getTheme, themeSet } from '../../store/actions/messengerAction';
+import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, updateMessage, } from '../../store/actions/messengerAction';
 
 import { io } from 'socket.io-client';
 
@@ -28,8 +27,10 @@ function Messenger(props) {
     const location = useLocation();
     const expert = location.state.expert;
     const dispatch = useDispatch();
+    const scrollRef = useRef();
+    const socket = useRef();
 
-    const { contacts, message, messageSendSuccess, messageGetSuccess } = useSelector(state => state.messenger);
+    const { contacts, message, messageSendSuccess, messageGetSuccess, new_user_add } = useSelector(state => state.messenger);
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
     const myInfo = user
 
@@ -41,8 +42,8 @@ function Messenger(props) {
         activeUser: "",
         hide: true,
     })
-    const scrollRef = useRef();
-    const socket = useRef();
+
+
     useEffect(() => {
         socket.current = io('ws://localhost:8000');
         socket.current.on('getMessage', (data) => {
@@ -121,14 +122,14 @@ function Messenger(props) {
             setState({ ...state, activeUser: filterUser })
         })
 
-        // socket.current.on('new_user_add', data => {
-        //     dispatch({
-        //         type: 'NEW_USER_ADD',
-        //         payload: {
-        //             new_user_add: data
-        //         }
-        //     })
-        // })
+        socket.current.on('new_user_add', data => {
+            dispatch({
+                type: 'NEW_USER_ADD',
+                payload: {
+                    new_user_add: data
+                }
+            })
+        })
     }, []);
     // end fourth use effect
 
@@ -196,10 +197,10 @@ function Messenger(props) {
         }
     }, [messageSendSuccess]);
 
-    //   useEffect(() => {
-    //        dispatch(getContacts());
-    //     //    dispatch({type:'NEW_USER_ADD_CLEAR'})
-    //   },[new_user_add]);
+    useEffect(() => {
+        dispatch(getContacts());
+        dispatch({ type: 'NEW_USER_ADD_CLEAR' })
+    }, [new_user_add]);
 
     useEffect(() => {
         if (contacts && contacts.length > 0)
@@ -255,10 +256,164 @@ function Messenger(props) {
         <div style={myStyles.main}>
 
             <MainContainer responsive style={{ width: '100%' }}>
-                <Left />
-                <Main />
-                <Right />
+                <Sidebar position="left" scrollable={true}>
+                    {/* <Search placeholder="Search..." /> */}
+                    <ConversationList>
+                        {/* Map conversations here */}
 
+                        {contacts && contacts.length > 0 ? contacts.map((contact, index) => <div key={index}
+                            onClick={() => { setState({ ...state, currentContact: contact.contactInfo }) }}>
+
+                            <Conversation active={state.currentContact._id === contact.contactInfo._id ? true : false} activeUser={state.activeUser} name={contact.username} info="Last Message">
+                                {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
+                            </Conversation>
+                        </div>) : <Conversation name={"No Contacts"} info="No Messages">
+                            {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
+                        </Conversation>}
+
+                    </ConversationList>
+                </Sidebar>
+                <ChatContainer>
+                    <ConversationHeader>
+                        <ConversationHeader.Back />
+                        {/* <Avatar src={zoeIco} name="Zoe" /> */}
+                        <ConversationHeader.Content userName={state.currentContact.username}
+                        // info="Active 10 mins ago" 
+                        />
+                        <ConversationHeader.Actions>
+                            <VoiceCallButton />
+                            <VideoCallButton />
+                            <InfoButton />
+                        </ConversationHeader.Actions>
+                    </ConversationHeader>
+                    <MessageList typingIndicator={state.typingMessage ? <TypingIndicator content={state.currentContact.username + " is typing"} /> : false} >
+
+                        <MessageSeparator content="Saturday, 30 November 2019" />
+
+
+
+
+
+
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Patrik",
+                            direction: "outgoing",
+                            position: "single"
+                        }} avatarSpacer />
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Zoe",
+                            direction: "incoming",
+                            position: "first"
+                        }} avatarSpacer />
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Zoe",
+                            direction: "incoming",
+                            position: "normal"
+                        }} avatarSpacer />
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Zoe",
+                            direction: "incoming",
+                            position: "normal"
+                        }} avatarSpacer />
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Zoe",
+                            direction: "incoming",
+                            position: "last"
+                        }}>
+                            {/* <Avatar src={zoeIco} name="Zoe" /> */}
+                        </Message>
+
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Patrik",
+                            direction: "outgoing",
+                            position: "first"
+                        }} />
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Patrik",
+                            direction: "outgoing",
+                            position: "normal"
+                        }} />
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Patrik",
+                            direction: "outgoing",
+                            position: "normal"
+                        }} />
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Patrik",
+                            direction: "outgoing",
+                            position: "last"
+                        }} />
+
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Zoe",
+                            direction: "incoming",
+                            position: "first"
+                        }} avatarSpacer />
+                        <Message model={{
+                            message: "Hello my friend",
+                            sentTime: "15 mins ago",
+                            sender: "Zoe",
+                            direction: "incoming",
+                            position: "last"
+                        }}>
+                            {/* <Avatar src={zoeIco} name="Zoe" /> */}
+                        </Message>
+                    </MessageList>
+                    <MessageInput placeholder="Type message here" />
+                </ChatContainer>
+
+                <Sidebar position="right">
+                    <ExpansionPanel open title="INFO">
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                    </ExpansionPanel>
+                    <ExpansionPanel title="LOCALIZATION">
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                    </ExpansionPanel>
+                    <ExpansionPanel title="MEDIA">
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                    </ExpansionPanel>
+                    <ExpansionPanel title="SURVEY">
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                    </ExpansionPanel>
+                    <ExpansionPanel title="OPTIONS">
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                        <p>Lorem ipsum</p>
+                    </ExpansionPanel>
+                </Sidebar>
             </MainContainer>
         </div></div>
     )
