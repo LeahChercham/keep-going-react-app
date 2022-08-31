@@ -267,15 +267,15 @@ function Messenger(props) {
                     <ConversationList>
 
                         {contacts && contacts.length > 0 ? contacts.map((contact, index) =>
-
-                            <Conversation
-                                key={index}
-                                onClick={() => { setState({ ...state, currentContact: contact.contactInfo }) }}
-                                active={state.currentContact._id === contact.contactInfo._id ? true : false}
-                                // activeUser={state.activeUser} 
-                                name={contact.contactInfo.username} info={contact.messageInfo ? contact.messageInfo.message.text : "no messages yet"}>
-                                {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
-                            </Conversation>
+                            contact.messageInfo ?
+                                <Conversation
+                                    key={index}
+                                    onClick={() => { setState({ ...state, currentContact: contact.contactInfo }) }}
+                                    active={state.currentContact._id === contact.contactInfo._id ? true : false}
+                                    // activeUser={state.activeUser} 
+                                    name={contact.contactInfo.username} info={contact.messageInfo ? contact.messageInfo.message.text : "no messages yet"}>
+                                    {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
+                                </Conversation> : null
                         ) : <Conversation name={"No Contacts"} info="No Messages">
                             {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
                         </Conversation>}
