@@ -165,10 +165,11 @@ function Messenger(props) {
 
     const sendMessage = (msg) => { //TODO need button here
         // sendingSPlay();
+        const oldState = { ...state }
         const data = {
             senderName: myInfo.username,
-            receiverId: state.currentContact._id,
-            message: state.newMessage ? state.newMessage : '❤',
+            receiverId: oldState.currentContact._id,
+            message: oldState.newMessage ? oldState.newMessage : '❤',
             senderId: myInfo.id,
         }
 
@@ -184,7 +185,6 @@ function Messenger(props) {
     }
 
     useEffect(() => {
-        debugger
         console.log("messageSendSuccess: " + messageSendSuccess)
         console.log("message: " + message)
         if (messageSendSuccess) { // from redux state
@@ -265,7 +265,6 @@ function Messenger(props) {
                 <Sidebar position="left" scrollable={true}>
                     {/* <Search placeholder="Search..." /> */}
                     <ConversationList>
-                        {/* Map conversations here */}
 
                         {contacts && contacts.length > 0 ? contacts.map((contact, index) =>
 
@@ -274,7 +273,7 @@ function Messenger(props) {
                                 onClick={() => { setState({ ...state, currentContact: contact.contactInfo }) }}
                                 active={state.currentContact._id === contact.contactInfo._id ? true : false}
                                 // activeUser={state.activeUser} 
-                                name={contact.username} info="Last Message">
+                                name={contact.contactInfo.username} info={contact.messageInfo ? contact.messageInfo.message.text : "no messages yet"}>
                                 {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
                             </Conversation>
                         ) : <Conversation name={"No Contacts"} info="No Messages">
@@ -300,94 +299,17 @@ function Messenger(props) {
 
                         <MessageSeparator content="Saturday, 30 November 2019" />
 
+                        {message && message.length > 0 ? message.map((msg, index) => <Message key={index}
+                            model={{
+                                message: msg.message.text,
+                                sentTime: "15 mins ago",
+                                sender: "Patrik",
+                                direction: "outgoing",
+                                position: "single"
+                            }} avatarSpacer />
 
+                        ) : null}
 
-
-
-
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Patrik",
-                            direction: "outgoing",
-                            position: "single"
-                        }} avatarSpacer />
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Zoe",
-                            direction: "incoming",
-                            position: "first"
-                        }} avatarSpacer />
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Zoe",
-                            direction: "incoming",
-                            position: "normal"
-                        }} avatarSpacer />
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Zoe",
-                            direction: "incoming",
-                            position: "normal"
-                        }} avatarSpacer />
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Zoe",
-                            direction: "incoming",
-                            position: "last"
-                        }}>
-                            {/* <Avatar src={zoeIco} name="Zoe" /> */}
-                        </Message>
-
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Patrik",
-                            direction: "outgoing",
-                            position: "first"
-                        }} />
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Patrik",
-                            direction: "outgoing",
-                            position: "normal"
-                        }} />
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Patrik",
-                            direction: "outgoing",
-                            position: "normal"
-                        }} />
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Patrik",
-                            direction: "outgoing",
-                            position: "last"
-                        }} />
-
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Zoe",
-                            direction: "incoming",
-                            position: "first"
-                        }} avatarSpacer />
-                        <Message model={{
-                            message: "Hello my friend",
-                            sentTime: "15 mins ago",
-                            sender: "Zoe",
-                            direction: "incoming",
-                            position: "last"
-                        }}>
-                            {/* <Avatar src={zoeIco} name="Zoe" /> */}
-                        </Message>
                     </MessageList>
                     <MessageInput placeholder="Type message here"
                         onSend={(e) => sendMessage(e)}

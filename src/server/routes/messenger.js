@@ -5,7 +5,7 @@ const User = require('../models/userModel')
 const Message = require('../models/messageModel')
 
 const getLastMessage = async (myId, expertId) => {
-    const msg = await messageModel.findOne({
+    const msg = await Message.findOne({
         $or: [{
             $and: [{
                 senderId: {
@@ -31,27 +31,30 @@ const getLastMessage = async (myId, expertId) => {
     }).sort({
         updatedAt: -1
     });
+    console.log("message: ", msg)
     return msg;
 }
 
 router.get('/messenger/get-contacts/:myId', async function (req, res) {
     const myId = req.params.myId;
-    console.log(myId)
     let contactMessages = [];
     try {
         const getContacts = await User.find({
-            // Here something to populate contacts in user model and then get them Users
+            _id: {
+                $ne: myId
+            }
         });
-        console.log(getContacts)
-        for (let i = 0; i < getContacts.length; i++) { // Here it gets the last message of each conversation
-            let lastMessage = await getLastMessage(myId, getContacts[i].id); // TODO hier fehler
+        console.log('length: ' + getContacts.length)
+        for (let i = 0; i < getContacts.length; i++) {
+            console.log("in loop " + i + " myID / expert ID: " + myId + " / " + getContacts[i]._id)
+            let lastMessage = await getLastMessage(myId, getContacts[i]._id);
             contactMessages = [...contactMessages, {
                 contactInfo: getContacts[i],
                 messageInfo: lastMessage
             }]
 
         }
-
+        console.log("after loop" + contactMessages)
         res.status(200).json({ success: true, contacts: contactMessages })
 
     } catch (error) {
@@ -105,7 +108,7 @@ router.get('/messenger/get-message/:expertId/:myId', async function (req, res) {
     const myId = req.params.myId;
 
     try {
-        let getAllMessage = await messageModel.find({
+        let getAllMessage = await Message.find({
 
             $or: [{
                 $and: [{
@@ -154,7 +157,7 @@ router.get('/messenger/get-message/:expertId/:myId', async function (req, res) {
 router.post('/messenger/seen-message', async function (req, res) {
     const messageId = req.body._id;
 
-    await messageModel.findByIdAndUpdate(messageId, {
+    await Message.findByIdAndUpdate(messageId, {
         status: 'seen'
     })
         .then(() => {
@@ -174,7 +177,7 @@ router.post('/messenger/seen-message', async function (req, res) {
 router.post('/messenger/delivered-message', async function (req, res) {
     const messageId = req.body._id;
 
-    await messageModel.findByIdAndUpdate(messageId, {
+    await Message.findByIdAndUpdate(messageId, {
         status: 'delivered'
     })
         .then(() => {
