@@ -297,14 +297,14 @@ function Messenger(props) {
                     </ConversationHeader>
                     <MessageList typingIndicator={state.typingMessage ? <TypingIndicator content={state.currentContact.username + " is typing"} /> : false} >
 
-                        <MessageSeparator content="Saturday, 30 November 2019" />
+                        {/* <MessageSeparator content="Saturday, 30 November 2019" /> */}
 
                         {message && message.length > 0 ? message.map((msg, index) => <Message key={index}
                             model={{
                                 message: msg.message.text,
                                 sentTime: "15 mins ago",
-                                sender: "Patrik",
-                                direction: "outgoing",
+                                sender: msg.message.senderName,
+                                direction: (msg.message.senderName == myInfo.username ? "outgoing" : "incoming"),
                                 position: "single"
                             }} avatarSpacer />
 

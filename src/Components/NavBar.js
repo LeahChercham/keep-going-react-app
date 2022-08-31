@@ -60,7 +60,10 @@ function NavBar(props) {
                             <div style={styles.links}>
                                 {user.tokens} TOKENS
                             </div >
-                            <MessageIcon style={styles.menuButton} />
+                            {/* <RouterLink to={"/chat"}>
+
+                                <MessageIcon style={styles.menuButton} />
+                            </RouterLink> */}
 
                             <RouterLink to={"/profile"} style={{ textDecoration: "none" }}>
                                 <Button style={styles.menuButton}>{user.username}</Button>
