@@ -61,7 +61,7 @@ function NavBar(props) {
                                 {user.tokens} TOKENS
                             </div >
                             {/* <RouterLink to={"/chat"}>
-
+    DOESNT WORK BECAUSE EXPERTS FROM PROPS
                                 <MessageIcon style={styles.menuButton} />
                             </RouterLink> */}
 
