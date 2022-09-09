@@ -22,7 +22,7 @@ export const getContacts = (myId) => async (dispatch) => {
 export const messageSend = (data) => async (dispatch) => {
     try {
         const response = await axios.post(CREATE_ROUTE('messenger/send-message'), data);
-        debugger
+        
         dispatch({
             type: MESSAGE_SEND_SUCCESS,
             payload: {
@@ -75,7 +75,7 @@ export const getMessage = (expertId, myId) => {
 export const seenMessage = (msg) => async (dispatch) => {
     try {
         const response = await axios.post(CREATE_ROUTE('messenger/seen-message'), msg);
-        console.log(response.data);
+         console.log(response.data);
     } catch (error) {
         console.log(error.response.message)
 
@@ -86,7 +86,7 @@ export const seenMessage = (msg) => async (dispatch) => {
 export const updateMessage = (msg) => async (dispatch) => {
     try {
         const response = await axios.post(CREATE_ROUTE('messenger/delivered-message'), msg);
-        console.log(response.data);
+         console.log(response.data);
     } catch (error) {
         console.log(error.response.message)
 

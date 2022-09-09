@@ -26,35 +26,43 @@ const myStyles = {
 
 function Messenger(props) {
     const location = useLocation();
-    const expert = location.state.expert;
+    const expert = location.state ? location.expert : "";
+
     const dispatch = useDispatch();
     const scrollRef = useRef();
     const socket = useRef();
 
     const { contacts, message, messageSendSuccess, messageGetSuccess, new_user_add } = useSelector(state => state.messenger);
+
+
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
     const myInfo = user
 
-    const [state, setState] = useState({
-        currentContact: expert,
-        newMessage: "",
-        socketMessage: "",
-        typingMessage: "",
-        activeUser: "",
-        hide: true,
-    })
+
+    const [currentContact, setCurrentContact] = useState(expert);
+    const [socketMessage, setSocketMessage] = useState("");
+    const [activeUser, setActiveUser] = useState("");
+    const [hide, setHide] = useState(true);
+
+    const [typingMessage, setTypingMessage] = useState('');
+
+    const [newMessage, setNewMessage] = useState('');
+
+
+
+
 
 
     useEffect(() => {
         socket.current = io('ws://localhost:8000');
         socket.current.on('getMessage', (data) => {
-            setState({ ...state, socketMessage: data })
-            // setSocketMessage(data);
+
+            setSocketMessage(data)
         })
 
         socket.current.on('typingMessageGet', (data) => {
-            // setTypingMessage(data);
-            setState({ ...state, typingMessage: data })
+            // console.log("typingMessage: " + util.inspect(data, false, 7))
+            setTypingMessage(data)
         })
 
         socket.current.on('msgSeenResponse', msg => {
@@ -86,28 +94,27 @@ function Messenger(props) {
     // end first use effect
 
     useEffect(() => {
-        if (state.socketMessage && state.currentContact) {
-            if (state.socketMessage.senderId === state.currentContact._id && state.socketMessage.receiverId === myInfo.id) {
+        if (socketMessage && currentContact !== "") {
+            if (socketMessage.senderId === currentContact._id && socketMessage.receiverId === myInfo.id) {
                 dispatch({
                     type: 'SOCKET_MESSAGE',
                     payload: {
-                        message: state.socketMessage
+                        message: socketMessage
                     }
                 })
-                dispatch(seenMessage(state.socketMessage));
-                socket.current.emit('messageSeen', state.socketMessage);
+                dispatch(seenMessage(socketMessage));
+                socket.current.emit('messageSeen', socketMessage);
                 dispatch({
                     type: 'UPDATE_CONTACT_MESSAGE',
                     payload: {
-                        messageInfo: state.socketMessage,
+                        messageInfo: socketMessage,
                         status: 'seen'
                     }
                 })
             }
         }
-        // setSocketMessage('')
-        setState({ ...state, socketMessage: '' })
-    }, [state.socketMessage]);
+        setSocketMessage('')
+    }, [socketMessage]);
     // end second use effect
 
 
@@ -118,9 +125,8 @@ function Messenger(props) {
 
     useEffect(() => {
         socket.current.on('getUser', (users) => {
-            const filterUser = users.filter(u => u.userId !== myInfo.id)
-            // setActiveUser(filterUser);
-            setState({ ...state, activeUser: filterUser })
+            const activeUser = users.filter(u => u.userId !== myInfo.id)
+            setActiveUser(activeUser)
         })
 
         socket.current.on('new_user_add', data => {
@@ -135,29 +141,28 @@ function Messenger(props) {
     // end fourth use effect
 
     useEffect(() => {
-        if (state.socketMessage && state.socketMessage.senderId !== state.currentContact._id && state.socketMessage.receiverId === myInfo.id) {
+        if (socketMessage && socketMessage.senderId !== currentContact._id && socketMessage.receiverId === myInfo.id) {
             //  notificationSPlay();
-            toast.success(`${state.socketMessage.senderName} Send a New Message`)
-            dispatch(updateMessage(state.socketMessage));
-            socket.current.emit('deliveredMessage', state.socketMessage);
+            toast.success(`${socketMessage.senderName} Send a New Message`)
+            dispatch(updateMessage(socketMessage));
+            socket.current.emit('deliveredMessage', socketMessage);
             dispatch({
                 type: 'UPDATE_CONTACT_MESSAGE',
                 payload: {
-                    messageInfo: state.socketMessage,
+                    messageInfo: socketMessage,
                     status: 'delivered'
                 }
             })
 
         }
-    }, [state.socketMessage]);
+    }, [socketMessage]);
     // end fith use effect
 
     const handleInput = (newMessage) => { // TODO need main in here then
-        setState({ ...state, newMessage })
-
+        setNewMessage(newMessage)
         socket.current.emit('typingMessage', {
             senderId: myInfo.id,
-            receiverId: state.currentContact._id,
+            receiverId: currentContact._id,
             msg: newMessage
         })
 
@@ -165,28 +170,28 @@ function Messenger(props) {
 
     const sendMessage = (msg) => { //TODO need button here
         // sendingSPlay();
-        const oldState = { ...state }
+
         const data = {
             senderName: myInfo.username,
-            receiverId: oldState.currentContact._id,
-            message: oldState.newMessage ? oldState.newMessage : '❤',
+            receiverId: currentContact._id,
+            message: newMessage ? newMessage : '❤',
             senderId: myInfo.id,
         }
 
 
         socket.current.emit('typingMessage', {
             senderId: myInfo.id,
-            receiver: state.currentContact._id,
+            receiver: currentContact._id,
             msg: ''
         })
 
         dispatch(messageSend(data));
-        setState({ ...state, newMessage: '' })
+        setNewMessage('');
     }
 
     useEffect(() => {
-        console.log("messageSendSuccess: " + messageSendSuccess)
-        console.log("message: " + message)
+        // console.log("messageSendSuccess: " + messageSendSuccess)
+        // console.log("message: " + message)
         if (messageSendSuccess) { // from redux state
             socket.current.emit('sendMessage', message[message.length - 1]);
             dispatch({
@@ -203,23 +208,27 @@ function Messenger(props) {
 
     useEffect(() => {
         // let data = myInfo.id
-        console.log(myInfo.id)
-        dispatch(getContacts(myInfo.id));
+        // console.log(myInfo.id)
+        dispatch(getContacts(myInfo.id))
         dispatch({ type: 'NEW_USER_ADD_CLEAR' })
     }, [new_user_add]);
 
+
+    // DAS HIER TESTEN
     useEffect(() => {
-        if (contacts && contacts.length > 0)
-            setState({ ...state, currentContact: contacts[0].contactInfo })
+        if (contacts && contacts.length > 0) {
+            let currentContact = contacts[0].contactInfo
+            setCurrentContact(currentContact)
+        }
     }, [contacts]);
 
 
     useEffect(() => {
-        dispatch(getMessage(state.currentContact._id, myInfo.id));
+        dispatch(getMessage(currentContact._id, myInfo.id));
         if (contacts.length > 0) {
 
         }
-    }, [state.currentContact?._id]);
+    }, [currentContact?._id]);
 
     useEffect(() => {
         if (message.length > 0) {
@@ -227,10 +236,10 @@ function Messenger(props) {
                 dispatch({
                     type: 'UPDATE',
                     payload: {
-                        id: state.currentContact._id
+                        id: currentContact._id
                     }
                 })
-                socket.current.emit('seen', { senderId: state.currentContact._id, receiverId: myInfo.id })
+                socket.current.emit('seen', { senderId: currentContact._id, receiverId: myInfo.id })
                 dispatch(seenMessage({ _id: message[message.length - 1]._id }))
             }
         }
@@ -243,8 +252,6 @@ function Messenger(props) {
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [message]);
-
-
 
 
     return (<div>
@@ -270,23 +277,24 @@ function Messenger(props) {
                             contact.messageInfo ?
                                 <Conversation
                                     key={index}
-                                    onClick={() => { setState({ ...state, currentContact: contact.contactInfo }) }}
-                                    active={state.currentContact._id === contact.contactInfo._id ? true : false}
-                                    // activeUser={state.activeUser} 
+                                    onClick={() => { setCurrentContact(contact.contactInfo) }}
+                                    active={currentContact._id === contact.contactInfo._id ? true : false}
+                                    // activeUser={activeUser} 
                                     name={contact.contactInfo.username} info={contact.messageInfo ? contact.messageInfo.message.text : "no messages yet"}>
-                                    {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
+
                                 </Conversation> : null
                         ) : <Conversation name={"No Contacts"} info="No Messages">
-                            {/* <Avatar src={lillyIco} name="Lilly" status="available" /> */}
+
                         </Conversation>}
 
                     </ConversationList>
                 </Sidebar>
+
                 <ChatContainer>
                     <ConversationHeader>
                         <ConversationHeader.Back />
                         {/* <Avatar src={zoeIco} name="Zoe" /> */}
-                        <ConversationHeader.Content userName={state.currentContact.username}
+                        <ConversationHeader.Content userName={currentContact.username}
                         // info="Active 10 mins ago" 
                         />
                         <ConversationHeader.Actions>
@@ -295,20 +303,40 @@ function Messenger(props) {
                             <InfoButton />
                         </ConversationHeader.Actions>
                     </ConversationHeader>
-                    <MessageList typingIndicator={state.typingMessage ? <TypingIndicator content={state.currentContact.username + " is typing"} /> : false} >
+                    <MessageList typingIndicator={typingMessage ? <TypingIndicator content={currentContact.username + " is typing"} /> : false} >
+                        {/* 
+                        {typingMessage.senderId === currentContact._id ? <TypingIndicator content=" is typing" /> : null} */}
+
 
                         {/* <MessageSeparator content="Saturday, 30 November 2019" /> */}
+                        {message && message.length > 0 ?
 
-                        {message && message.length > 0 ? message.map((msg, index) => <Message key={index}
-                            model={{
-                                message: msg.message.text,
-                                sentTime: "15 mins ago",
-                                sender: msg.message.senderName,
-                                direction: (msg.message.senderName == myInfo.username ? "outgoing" : "incoming"),
-                                position: "single"
-                            }} avatarSpacer />
+                            message.map((msg, index) =>
+                            (msg.senderId === myInfo.id ?
+                                < Message key={index}
+                                    model={{
+                                        message: msg.message.text,
+                                        sentTime: "15 mins ago",
+                                        sender: msg.senderName,
+                                        direction: "outgoing",
+                                        position: "normal"
+                                    }} avatarSpacer /> :
+                                <Message key={index}
+                                    model={{
+                                        message: msg.message.text,
+                                        sentTime: "15 mins ago",
+                                        sender: msg.senderName,
+                                        direction: "incoming",
+                                        position: "single"
+                                    }} avatarSpacer />
+                            ))
 
-                        ) : null}
+
+
+                            : null}
+
+
+
 
                     </MessageList>
                     <MessageInput placeholder="Type message here"
@@ -350,7 +378,7 @@ function Messenger(props) {
                     </ExpansionPanel>
                 </Sidebar>
             </MainContainer>
-        </div></div>
+        </div></div >
     )
 }
 export default Messenger;
