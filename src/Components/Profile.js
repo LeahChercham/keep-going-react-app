@@ -130,7 +130,6 @@ function Profile(props) {
         updateUser.keywords = tags
         let username = { ...state.user.username }
         let data = { updateUser, username }
-        debugger
         dispatch(userUpdate(data))
     }
 
@@ -155,7 +154,8 @@ function Profile(props) {
                         </div>
                         <div>
                             <TextField
-                                disabled={state.status === "View" ? true : false}
+                                // disabled={state.status === "View" ? true : false}
+                                disabled={true}
                                 error={state.updateUser.emailTaken}
                                 id="email"
                                 label="Email"
@@ -214,7 +214,7 @@ function Profile(props) {
                                 <h1>{state.status === "View" ? "Tags" : "Add Tags"}</h1>
                                 <li style={styles.li}>
                                     {tags.map((tag, index) => (
-                                        <ul style={{ ...styles.ul, backgroundColor: randomColor() }} backgroundColor={randomColor()} key={index}>{tag}</ul>
+                                        <ul style={{ ...styles.ul, backgroundColor: randomColor() }} key={index}>{tag}</ul>
                                     ))}
 
                                 </li>
