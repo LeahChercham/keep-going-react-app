@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // import consts from '../consts'
 import { userUpdate } from '../store/actions/authActions'
 import { TagsInput } from "react-tag-input-component";
+const util = require('util')
 
 const tagColors = ["#8CDFD6", "#1481BA", "#EEC584", "#2A7F62", "#BEA7E5", "#695958", "#B74F6F"]
 
@@ -96,7 +97,11 @@ function Profile(props) {
     useEffect(() => {
         let updateUser = user
         setState({ ...state, user, updateUser })
+        console.log(util.inspect(user, false, 7))
+        // setTags(user.keywords)
     }, [])
+
+
 
 
     const handleChange = (event) => {
@@ -208,6 +213,7 @@ function Profile(props) {
                                 variant="outlined"
                                 style={{ width: "100%" }}
                             /> */}
+
                             {/* Npm Package react-tag-input-component
   */}
                             <div>

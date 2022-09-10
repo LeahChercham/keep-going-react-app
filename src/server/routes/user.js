@@ -139,13 +139,17 @@ router.put("/user/:username", async function (req, res) {
 // route for log in
 router.get('/login/:username/:password', function (req, res) {
     let { username, password } = req.params
-    User.findOne({ username }, function (err, response) {
+    User.findOne({ username }).populate('keywords').exec(function (err, response) {
         let data
         if (!response) {
             data = { error: { errorMessage: "Wrong username or password" } }
             res.send(data)
             res.end()
         } else {
+            let getKeywords = []
+            console.log("response: " + response.keywords[0].keyword)
+            response.keywords.map(keyword => { getKeywords.push(keyword.keyword) })
+            console.log("get keywords? " + getKeywords)
             let hash = response.password
             bcrypt.compare(password, hash, function (err, answer) {
                 if (answer === true) {
@@ -154,6 +158,7 @@ router.get('/login/:username/:password', function (req, res) {
                         email: response.email,
                         mainExpertise: response.mainExpertise,
                         mainExpertiseKeywords: response.mainExpertiseKeywords,
+                        keywords: getKeywords,
                         otherKeywords: response.otherKeywords,
                         tokens: response.tokens,
                         id: response._id

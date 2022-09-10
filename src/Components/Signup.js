@@ -6,7 +6,7 @@ import { Button } from "@mui/material";
 import { useNavigate, Navigate } from 'react-router-dom';
 import Axios from 'axios';
 import consts from '../consts'
-
+import { userLogin } from '../store/actions/authActions';
 import { useDispatch } from 'react-redux' // dispatch actions to the store
 import { userRegister } from '../store/actions/authActions';
 const CREATE_ROUTE = consts.CREATE_ROUTE
@@ -40,6 +40,7 @@ function Signup(props) {
             emailTaken: false,
             mainExpertise: "",
             mainExpertiseKeywords: "",
+            keywords: [],
             otherKeywords: "",
             tokens: 50,
         },
@@ -152,15 +153,18 @@ function Signup(props) {
         let userData = { ...state.newUser }
 
         dispatch(userRegister(userData)).then(() => {
-            login()
+            // login()
+            userLogin(state.newUser.username, state.newUser.password)
         })
 
     }
 
-    const login = async () => {
-        let loginSuccessfull = await props.login(state.newUser.username, state.newUser.password);
-        loginSuccessfull ? setState({ ...state, redirect: true }) : setState({ ...state, error: "Login failed" });
-    }
+    // const login = async () => {
+    //     let loginSuccessfull = await props.login(state.newUser.username, state.newUser.password);
+
+
+    //     loginSuccessfull ? setState({ ...state, redirect: true }) : setState({ ...state, error: "Login failed" });
+    // }
 
 
     const { redirect, error } = { ...state };
