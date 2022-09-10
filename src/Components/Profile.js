@@ -56,6 +56,7 @@ const styles = {
     }
 
 }
+
 function Profile(props) {
 
     const [state, setState] = useState({
@@ -68,6 +69,7 @@ function Profile(props) {
             emailTaken: false,
             mainExpertise: "",
             mainExpertiseKeywords: "",
+            keywords: [],
             otherKeywords: "",
             tokens: 0,
         },
@@ -79,6 +81,7 @@ function Profile(props) {
             emailTaken: false,
             mainExpertise: "",
             mainExpertiseKeywords: "",
+            keywords: [],
             otherKeywords: "",
             tokens: 0,
         }
@@ -124,8 +127,10 @@ function Profile(props) {
 
     const updateUser = () => {
         let updateUser = { ...state.updateUser }
+        updateUser.keywords = tags
         let username = { ...state.user.username }
         let data = { updateUser, username }
+        debugger
         dispatch(userUpdate(data))
     }
 

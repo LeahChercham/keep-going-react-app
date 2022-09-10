@@ -51,17 +51,51 @@ router.get("/user/email/:email", function (req, res) {
     })
 })
 
-// Route for updating user profile
+// Route for updating user profile // Fabrice
 router.put("/user/:username", async function (req, res) {
     let { username } = req.params
 
-    // For each Keyword
-        // check if it exists in the keyword collection
-            // if so check if the user is already in the user array
-                // if so do nothing
-                // else add User to user array of keyword document
-            // else create new keyword document and add User to user array
+    let oldKeywords = await Keyword.find({}).populate({
+        path: 'users',
+        match: { username: username }
+    })
+    console.log("oldKeywords: " + oldKeywords)
+
+    let keywordsToRemoveUserFrom = []
+    // let keywordsToAddUserTo = []
+    let keywordsToKeep = []
+
+
     try {
+
+        for (let i = 0; i < oldKeywords.length; i++) {
+            req.body.keywords.includes(oldKeywords[i]._id) ?
+                keywordsToKeep.push(oldKeywords[i]._id) :
+                keywordsToRemoveUserFrom.push(oldKeywords[i]._id)
+        }
+
+        for (let i = 0; i < req.body.keywords.length; i++) {
+            let keyword = req.body.keywords[i]
+            console.log("forloop keyword: " + keyword)
+            if (!oldKeywords.includes(keyword)) { //" keywordsToAddUserTo "
+                let keywordExists = await Keyword.findOne({ keyword })
+                console.log("keywordExists: " + keywordExists)
+                if (keywordExists) {
+                    console.log('in If Keyword Exists statement, now updating ?')
+                    // add user._id to keyword.user
+                    await Keyword.findOneAndUpdate({ keyword }, { $push: { users: user._id } })
+
+                    // keywordExists.users.push(req.user._id) // geht das ? direkt in der DB // Fabrice
+
+                } else {// hier sicherstellen alles vom Keyword wird ausgefüllt
+                    console.log('in Else Keyword Exists statement, now creating new Keyword with user in it?')
+                    let newKeyword = new Keyword({ keyword, amountUsedAsKeyword: 1, users: [user._id] }) // add User to user array
+                    await newKeyword.save() // hier id in ein Array um das array dann in den User zu pushen ? 
+                }
+            }
+        }
+
+        // user push keyword
         let user = await User.findOneAndUpdate({ username: username }, req.body, { new: true })
 
         res.status(201).json({

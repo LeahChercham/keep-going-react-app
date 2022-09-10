@@ -5,9 +5,9 @@ const KeywordSchema = new Schema({
     keyword: String,
     synonyms: [{ keyword: { type: Schema.Types.ObjectId, ref: 'Keyword' } }],
     oftenUsedTogether: [{ keyword: { type: Schema.Types.ObjectId, ref: 'Keyword' } }],
-    searchedTimes: Integer,
-    amountUsedAsMainExpertise: Integer,
-    amountUsedAsKeyword: Integer,
+    searchedTimes: Number,
+    amountUsedAsMainExpertise: Number,
+    amountUsedAsKeyword: Number,
     users: [{ user: { type: Schema.Types.ObjectId, ref: 'User' } }]
 })
 
