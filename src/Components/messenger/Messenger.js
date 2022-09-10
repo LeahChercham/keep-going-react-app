@@ -303,8 +303,8 @@ function Messenger(props) {
                             model={{
                                 message: msg.message.text,
                                 sentTime: "15 mins ago",
-                                sender: msg.message.senderName,
-                                direction: (msg.message.senderName == myInfo.username ? "outgoing" : "incoming"),
+                                sender: msg.senderName,
+                                direction: (msg.senderName == myInfo.username ? "outgoing" : "incoming"),
                                 position: "single"
                             }} avatarSpacer />
 
