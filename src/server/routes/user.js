@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 const User = require('../models/userModel')
+const Keyword = require('../models/keywordModel')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 
@@ -53,6 +54,13 @@ router.get("/user/email/:email", function (req, res) {
 // Route for updating user profile
 router.put("/user/:username", async function (req, res) {
     let { username } = req.params
+
+    // For each Keyword
+        // check if it exists in the keyword collection
+            // if so check if the user is already in the user array
+                // if so do nothing
+                // else add User to user array of keyword document
+            // else create new keyword document and add User to user array
     try {
         let user = await User.findOneAndUpdate({ username: username }, req.body, { new: true })
 
