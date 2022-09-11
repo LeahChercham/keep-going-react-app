@@ -1,9 +1,11 @@
+const User = require('../models/userModel')
+const Keyword = require('../models/keywordModel')
+
 const express = require("express")
 const router = express.Router()
 
-const User = require('../models/userModel')
-const Keyword = require('../models/keywordModel')
 const bcrypt = require('bcrypt')
+const { isArray, util } = require('util')
 const saltRounds = 10
 
 
@@ -53,39 +55,55 @@ router.get("/user/email/:email", function (req, res) {
 
 // Route for updating user profile // Fabrice
 router.put("/user/:username", async function (req, res) {
+    console.log(req.body)
     try {
-        let mainExpertise = req.body.mainExpertise
+        let mainExpertise = req.body.updateUser.mainExpertise
+        let oldKeywords = []
+        if (isArray(req.body.oldKeywords)) {
+            oldKeywords = req.body.oldKeywords
+        } else {
+            oldKeywords.push(req.body.oldKeywords)
+        }
         let { username } = req.params
 
-        // let oldKeywords = await Keyword.find({}).populate({ // das findet alle keywords leider und nicht nur die des users
-        //     path: 'users',
-        //     match: { username: username }
+        console.log('in put route')
+        console.log("oldKeywords" + oldKeywords)
+
+        // await User.findOne({ username: username }).populate({ path: 'keywords' }).exec((err, res) => {
+        //     console.log("userkeywords: for old keywords" + res)
+        //     console.log("reskeywords: " + res.keywords)
+        //     if (res.keywords) {
+        //         oldKeywords = res.keywords
+        //     } else {
+        //         oldKeywords = []
+        //     }
+        //     console.log("oldkeywords2: " + oldKeywords)
         // })
-        let oldKeywords
-        await User.findOne({ username: username }).populate({ path: 'keywords' }).then((user) => {
-            console.log("userkeywords: for old keywords" + user.keywords)
-            oldKeywords = user.keywords
-        })
-        console.log("oldKeywords: " + oldKeywords)
 
         let keywordsToRemoveUserFrom = []
-        // let keywordsToAddUserTo = []
         let keywordsToKeep = []
 
 
         let user = await User.findOne({ username })
 
-        for (let i = 0; i < oldKeywords.length; i++) {
-            req.body.keywords.includes(oldKeywords[i]._id) ?
-                keywordsToKeep.push(oldKeywords[i]._id) :
-                keywordsToRemoveUserFrom.push(oldKeywords[i]._id)
+        if (oldKeywords.length > 0) {
+
+            for (let i = 0; i < oldKeywords.length; i++) {
+                console.log("oldKeywords[i]: " + oldKeywords) // AM I STUPID ? Fabrice
+                req.body.updateUser.keywords.includes(oldKeywords[i].word) ?
+                    keywordsToKeep.push(oldKeywords[i]._id) :
+                    keywordsToRemoveUserFrom.push(oldKeywords[i]._id)
+            }
         }
+
 
         console.log("keywordsToRemoveUserFrom: " + keywordsToRemoveUserFrom)
         console.log("keywordsToKeep: " + keywordsToKeep)
 
-        for (let i = 0; i < req.body.keywords.length; i++) {
-            let word = req.body.keywords[i]
+        return null
+
+        for (let i = 0; i < req.body.updateUser.keywords.length; i++) {
+            let word = req.body.updateUser.keywords[i]
 
             console.log("forloop word: " + word)
             if (!oldKeywords.includes(word)) { //" keywordsToAddUserTo "
@@ -145,10 +163,11 @@ router.get('/login/:username/:password', function (req, res) {
     let { username, password } = req.params
     console.log('in get route')
     console.log('username: ' + username)
-    User.findOne({ username: username }).populate('keywords').exec(function (err, response) {
+
+    User.findOne({ username: username }).populate({ path: 'keywords' }).exec(function (err, response) {
         console.log("in test: " + response)
     })
-    User.findOne({ username: username }).populate('keywords').exec(function (err, response) {
+    User.findOne({ username: username }).populate({ path: 'keywords' }).exec(function (err, response) {
         let data
         if (!response) {
             data = { error: { errorMessage: "No Response" } }

@@ -8,11 +8,11 @@ const UserSchema = new Schema({
     mainExpertise: String,
     mainExpertiseKeywords: String, // old
     mainExpertiseKeywordsArray: [String], // old
-    keywords: [{ keyword: { type: Schema.Types.ObjectId, ref: 'Keyword' } }], //new
+    keywords: [ { type: Schema.Types.ObjectId, ref: 'Keyword' } ], //new
     otherKeywords: String, // old
     tokens: Number,
-    contacts: [{ user: { type: Schema.Types.ObjectId, ref: 'User' }, draft: Boolean }]
+    contacts: [ { type: Schema.Types.ObjectId, ref: 'User' }]
 })
 
-const User = mongoose.model('user', UserSchema)
+const User = mongoose.model('User', UserSchema)
 module.exports = User

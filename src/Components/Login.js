@@ -51,7 +51,6 @@ function Login(props) {
     }
 
     const handleSubmit = async (event) => {
-        debugger
         event.preventDefault();
         login(state.username, state.password);
     }

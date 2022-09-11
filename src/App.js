@@ -48,7 +48,6 @@ function App(props) {
 
 
   useEffect(() => {
-    debugger
     let user = localStorage.login ? JSON.parse(localStorage.login).user : null
     console.log("useEffect" + user)
     if (user) {

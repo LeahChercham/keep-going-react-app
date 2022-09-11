@@ -98,7 +98,12 @@ function Profile(props) {
         let updateUser = user
         setState({ ...state, user, updateUser })
         console.log(util.inspect(user, false, 7))
-        // setTags(user.keywords)
+        let kw = []
+        user.keywords.map(keyword => {
+            console.log(keyword)
+            kw.push(keyword.word)
+        })
+        kw.length > 0 ? setTags(kw) : console.log('no keywords')
     }, [])
 
 
@@ -133,8 +138,9 @@ function Profile(props) {
     const updateUser = () => {
         let updateUser = { ...state.updateUser }
         updateUser.keywords = tags
+        let oldKeywords = {...state.user.keywords}
         let username = { ...state.user.username }
-        let data = { updateUser, username }
+        let data = { updateUser, username, oldKeywords }
         dispatch(userUpdate(data))
     }
 

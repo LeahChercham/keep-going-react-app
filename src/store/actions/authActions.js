@@ -69,10 +69,16 @@ export const userLogout = () => {
 export const userUpdate = (data) => {
     let updateUser = data.updateUser
     let username = updateUser.username
+    let oldKeywords = data.oldKeywords
+
+    let transferData = {
+        updateUser, 
+        oldKeywords
+    }
 
     return async dispatch => {
         try {
-            let response = await Axios.put(CREATE_ROUTE(`user/${username}`), updateUser)
+            let response = await Axios.put(CREATE_ROUTE(`user/${username}`), transferData)
             dispatch({
                 type: USER_UPDATE_SUCCESS,
                 payload: {
