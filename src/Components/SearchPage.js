@@ -97,6 +97,8 @@ function SearchPage(props) {
             let results = state.results
             let redirect = state.redirect
             results = response.data
+            console.log("results")
+            console.log(results)
             redirect = true
             setState({ ...state, results, redirect })
         }

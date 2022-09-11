@@ -209,26 +209,31 @@ router.get('/user/search', async function (req, res) {
     let foundKeywords = []
     let users = []
     let data = [] // users to be send back, populated obviously
-
+    // let found
 
     for (let i = 0; i < keywords.length; i++) {
-        found = await Keyword.findOneAndUpdate({ word: { $regex: keywords[i] } }, { $inc: { searchedTimes: +1 } }, { new: true }).populate({
+        multipleFound = await Keyword.find({ word: { $regex: keywords[i], $options: 'i' } }).populate({
             path: 'users', populate: {
                 path: 'keywords',
             }
         })
-        doc = { ...found._doc }
-        console.log('doc')
-        console.log(doc)
-        foundKeywords.push(doc)
-        users.push(doc.users)
+        // found = await Keyword.findOneAndUpdate({ word: { $regex: reg, "$options": "i" } }, { $inc: { searchedTimes: +1 } }, { new: true }).populate({
+        //     path: 'users', populate: {
+        //         path: 'keywords',
+        //     }
+        // })
+        multipleFound.map(found => {
+            doc = { ...found._doc }
+            foundKeywords.push(doc)
+            doc.users.map((user) => { users.push(user) })
+            // users.push(doc.users)
+        })
+
     }
 
     // Remove duplicates
     let uniqueIds = []
     let uniqueUsers = users.filter(element => {
-        console.log('element id:')
-        console.log(element)
 
         let isDuplicate = uniqueIds.includes(element.id)
         if (!isDuplicate) {
@@ -238,6 +243,8 @@ router.get('/user/search', async function (req, res) {
         return false
     })
 
+    console.log("uniqueUsers: ")
+    console.log(uniqueUsers)
     data = uniqueUsers
 
     res.send(data)

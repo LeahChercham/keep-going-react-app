@@ -26,7 +26,9 @@ const myStyles = {
 
 function Messenger(props) {
     const location = useLocation();
-    const expert = location.state ? location.expert : "";
+    console.log("messenger location (state expert)")
+    console.log(location)
+    let expert = location.state ? location.state.expert : "";
 
     const dispatch = useDispatch();
     const scrollRef = useRef();
@@ -48,10 +50,15 @@ function Messenger(props) {
 
     const [newMessage, setNewMessage] = useState('');
 
-
-
-
-
+    // DAS HIER TESTEN
+    useEffect(() => {
+        console.log("currentContact")
+        console.log(currentContact)
+        if (contacts && contacts.length > 0) {
+            let currentContact = contacts[0].contactInfo
+            setCurrentContact(currentContact)
+        }
+    }, [contacts]);
 
     useEffect(() => {
         socket.current = io('ws://localhost:8000');
@@ -214,13 +221,7 @@ function Messenger(props) {
     }, [new_user_add]);
 
 
-    // DAS HIER TESTEN
-    useEffect(() => {
-        if (contacts && contacts.length > 0) {
-            let currentContact = contacts[0].contactInfo
-            setCurrentContact(currentContact)
-        }
-    }, [contacts]);
+
 
 
     useEffect(() => {

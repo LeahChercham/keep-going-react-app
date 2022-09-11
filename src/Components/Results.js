@@ -21,11 +21,11 @@ function Results(props) {
 
     return (
         <div style={styles.main}>
-            {location ? location.state.results[0].map((result, index) => {
+            {location && location.state.results.length > 0 ? location.state.results.map((result, index) => {
                 return (<div key={index}>
                     <Result result={result} key={index} />
                 </div>)
-            }) : null}
+            }) : <div>No results</div>}
         </div>
     )
 }
