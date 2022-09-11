@@ -95,6 +95,7 @@ function Profile(props) {
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
 
     useEffect(() => {
+        console.log("=========================================================================================================================================================================")
         let updateUser = user
         setState({ ...state, user, updateUser })
         console.log(util.inspect(user, false, 7))
@@ -104,10 +105,7 @@ function Profile(props) {
             kw.push(keyword.word)
         })
         kw.length > 0 ? setTags(kw) : console.log('no keywords')
-    }, [])
-
-
-
+    }, [user])
 
     const handleChange = (event) => {
         let updateUser = { ...state.updateUser }
@@ -138,7 +136,7 @@ function Profile(props) {
     const updateUser = () => {
         let updateUser = { ...state.updateUser }
         updateUser.keywords = tags
-        let oldKeywords = {...state.user.keywords}
+        let oldKeywords = [...state.user.keywords]
         let username = { ...state.user.username }
         let data = { updateUser, username, oldKeywords }
         dispatch(userUpdate(data))

@@ -58,12 +58,8 @@ router.put("/user/:username", async function (req, res) {
     console.log(req.body)
     try {
         let mainExpertise = req.body.updateUser.mainExpertise
-        let oldKeywords = []
-        if (isArray(req.body.oldKeywords)) {
-            oldKeywords = req.body.oldKeywords
-        } else {
-            oldKeywords.push(req.body.oldKeywords)
-        }
+        let oldKeywords = req.body.oldKeywords
+
         let { username } = req.params
 
         console.log('in put route')
@@ -89,7 +85,7 @@ router.put("/user/:username", async function (req, res) {
         if (oldKeywords.length > 0) {
 
             for (let i = 0; i < oldKeywords.length; i++) {
-                console.log("oldKeywords[i]: " + oldKeywords) // AM I STUPID ? Fabrice
+                console.log(oldKeywords[i]) // AM I STUPID ? Fabrice
                 req.body.updateUser.keywords.includes(oldKeywords[i].word) ?
                     keywordsToKeep.push(oldKeywords[i]._id) :
                     keywordsToRemoveUserFrom.push(oldKeywords[i]._id)
@@ -100,13 +96,18 @@ router.put("/user/:username", async function (req, res) {
         console.log("keywordsToRemoveUserFrom: " + keywordsToRemoveUserFrom)
         console.log("keywordsToKeep: " + keywordsToKeep)
 
-        return null
+        // return null
+        let oldKeywordsWords = oldKeywords.map(keyword => {
+
+            return keyword.word
+        })
+        console.log(oldKeywordsWords)
 
         for (let i = 0; i < req.body.updateUser.keywords.length; i++) {
             let word = req.body.updateUser.keywords[i]
 
             console.log("forloop word: " + word)
-            if (!oldKeywords.includes(word)) { //" keywordsToAddUserTo "
+            if (!oldKeywordsWords.includes(word)) { //" keywordsToAddUserTo "
                 let keywordExists = await Keyword.findOne({ word })
                 console.log("keywordExists: " + keywordExists)
                 if (keywordExists) {
@@ -119,9 +120,9 @@ router.put("/user/:username", async function (req, res) {
                 } else {// WORKS
                     console.log('Else Statement Running')
 
-                    let newlySavedKeyword = new Keyword({ word: word, synonyms: [], oftenUsedTogether: [], searchedTimes: 0, amountUsedAsMainExpertise: 0, amountUsedAsKeyword: 1, users: [user._id] })
+                    let newlySavedKeyword = await new Keyword({ word: word, synonyms: [], oftenUsedTogether: [], searchedTimes: 0, amountUsedAsMainExpertise: 0, amountUsedAsKeyword: 1, users: [user._id] })
 
-                    newlySavedKeyword.save().then((res) => {
+                    await newlySavedKeyword.save().then((res) => {
                         console.log(" newlySavedKeyword save res: " + res)
 
                         User.findOneAndUpdate({ username: username }, { $push: { keywords: res } }, { new: true }).then((res) => {
@@ -133,23 +134,29 @@ router.put("/user/:username", async function (req, res) {
         }
 
         for (let i = 0; i < keywordsToRemoveUserFrom.length; i++) {
-            let keyword = keywordsToRemoveUserFrom[i]
-            console.log("keyword: " + keyword)
-            await Keyword.findOneAndUpdate({ word: keyword }, { $pull: { users: user._id }, $inc: { amountUsedAsKeyword: -1 } }, { new: true })
+             let keyword = keywordsToRemoveUserFrom[i]
+             console.log("keyword: " + keyword)
+             await Keyword.findOneAndUpdate({ _id: keyword }, { $pull: { users: user._id }, $inc: { amountUsedAsKeyword: -1 } }, { new: true })
 
-            await User.findOneAndUpdate({ username: username }, { $pull: { keywords: keyword } }, { new: true })
-        }
+             await User.findOneAndUpdate({ username: username }, { $pull: { keywords: keyword } }, { new: true })
+         }
 
-        await User.findOneAndUpdate({ username: username }, { $set: { mainExpertise: mainExpertise } }, { new: true }).then(result => {
-            console.log('updated Main Expertise' + result)
-        })
+        console.log("before foau")
+        user = await User.findOneAndUpdate({ username: username }, { $set: { mainExpertise: mainExpertise } }, { new: true }).populate({ path: 'keywords' })
 
+
+        let sendUser = { ...user }
+        console.log("sendUser: ")
+        console.log(sendUser)
         res.status(201).json({
             successMessage: "User updated",
-            user
+            user: sendUser._doc
         })
+
+
     }
-    catch {
+    catch (e) {
+        console.log(e)
         res.status(500).json({
             error: { errorMessage: ['Internal Server Error', "Updating User went wrong"] }
         })
