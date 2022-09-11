@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom';
-
+import { Button } from '@mui/material';
 
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Sidebar, Search, ConversationList, Conversation, ExpansionPanel, ConversationHeader, VoiceCallButton, VideoCallButton, InfoButton, TypingIndicator, MessageSeparator } from '@chatscope/chat-ui-kit-react';
@@ -22,12 +22,31 @@ const myStyles = {
         width: "100%",
         height: "100%",
     },
+    offerContainer: {
+        display: "flex",
+        flexFlow: "row",
+        justifyContent: "space-evenly",
+        alignContent: "center",
+        width: "100%",
+        height: "100%",
+    },
+    button: {
+        fontWeight: 500,
+        fontSize: "1em",
+    },
+    price: {
+        display: 'flex',
+        alignSelf: 'center',
+        fontSize: "1em",
+        fontWeight: 900,
+    }, sidebar: {
+        display: 'flex'
+
+    }
 }
 
 function Messenger(props) {
     const location = useLocation();
-    console.log("messenger location (state expert)")
-    console.log(location)
     let expert = location.state ? location.state.expert : "";
 
     const dispatch = useDispatch();
@@ -50,15 +69,18 @@ function Messenger(props) {
 
     const [newMessage, setNewMessage] = useState('');
 
+    const [price, setPrice] = useState(0);
+    const [offerFromMe, setOfferFromMe] = useState(false);
+    const [offer, setOffer] = useState(false) // gibt es ein offer ? // Das alles in Redux
+
     // DAS HIER TESTEN
     useEffect(() => {
-        console.log("currentContact")
-        console.log(currentContact)
         if (contacts && contacts.length > 0) {
             let currentContact = contacts[0].contactInfo
             setCurrentContact(currentContact)
         }
     }, [contacts]);
+
 
     useEffect(() => {
         socket.current = io('ws://localhost:8000');
@@ -70,6 +92,10 @@ function Messenger(props) {
         socket.current.on('typingMessageGet', (data) => {
             // console.log("typingMessage: " + util.inspect(data, false, 7))
             setTypingMessage(data)
+        })
+
+        socket.current.on('getOffer', (data) => {
+            setPrice(data.price)
         })
 
         socket.current.on('msgSeenResponse', msg => {
@@ -174,8 +200,26 @@ function Messenger(props) {
         })
 
     }
+    const sendOffer = () => {
+        const data = {
+            senderName: myInfo.username,
+            receiverId: currentContact._id,
+            price: price,
+            senderId: myInfo.id,
+        }
 
-    const sendMessage = (msg) => { //TODO need button here
+        socket.current.emit('sendOffer', {
+            senderId: myInfo.id,
+            receiver: currentContact._id,
+            price: price
+        })
+
+        dispatch(sendOffer(data));
+        setOfferFromMe(true)
+        setOffer(true)
+    }
+
+    const sendMessage = (msg) => {
         // sendingSPlay();
 
         const data = {
@@ -254,6 +298,21 @@ function Messenger(props) {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [message]);
 
+    const updatePrice = (updateDirection) => {
+        debugger
+        let newPrice
+        let oldPrice = price
+        if (updateDirection === "up") {
+
+            newPrice = ++oldPrice
+            setPrice(newPrice)
+        }
+        if (updateDirection === "down") {
+            newPrice = --oldPrice
+            setPrice(newPrice)
+        }
+
+    }
 
     return (<div>
         <Toaster // notification
@@ -346,37 +405,13 @@ function Messenger(props) {
                     />
                 </ChatContainer>
 
-                <Sidebar position="right">
-                    <ExpansionPanel open title="INFO">
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                    </ExpansionPanel>
-                    <ExpansionPanel title="LOCALIZATION">
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                    </ExpansionPanel>
-                    <ExpansionPanel title="MEDIA">
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                    </ExpansionPanel>
-                    <ExpansionPanel title="SURVEY">
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                    </ExpansionPanel>
-                    <ExpansionPanel title="OPTIONS">
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                        <p>Lorem ipsum</p>
-                    </ExpansionPanel>
+                <Sidebar position="right" style={styles.sidebar}>
+                    <div style={styles.offerContainer}>
+                        <Button style={styles.button} onClick={() => updatePrice("down")}>-</Button>
+                        <div style={styles.price}>{price}</div>
+                        <Button style={styles.button} onClick={() => updatePrice("up")}>+</Button>
+                        <Button style={styles.button} onClick={(e) => sendOffer(e)}>Send Offer</Button>
+                    </div>
                 </Sidebar>
             </MainContainer>
         </div></div >
