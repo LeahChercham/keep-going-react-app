@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Result from './Result';
 const util = require('util')

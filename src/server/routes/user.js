@@ -65,16 +65,6 @@ router.put("/user/:username", async function (req, res) {
         console.log('in put route')
         console.log("oldKeywords" + oldKeywords)
 
-        // await User.findOne({ username: username }).populate({ path: 'keywords' }).exec((err, res) => {
-        //     console.log("userkeywords: for old keywords" + res)
-        //     console.log("reskeywords: " + res.keywords)
-        //     if (res.keywords) {
-        //         oldKeywords = res.keywords
-        //     } else {
-        //         oldKeywords = []
-        //     }
-        //     console.log("oldkeywords2: " + oldKeywords)
-        // })
 
         let keywordsToRemoveUserFrom = []
         let keywordsToKeep = []
@@ -85,7 +75,7 @@ router.put("/user/:username", async function (req, res) {
         if (oldKeywords.length > 0) {
 
             for (let i = 0; i < oldKeywords.length; i++) {
-                console.log(oldKeywords[i]) // AM I STUPID ? Fabrice
+                console.log(oldKeywords[i])
                 req.body.updateUser.keywords.includes(oldKeywords[i].word) ?
                     keywordsToKeep.push(oldKeywords[i]._id) :
                     keywordsToRemoveUserFrom.push(oldKeywords[i]._id)
@@ -134,12 +124,12 @@ router.put("/user/:username", async function (req, res) {
         }
 
         for (let i = 0; i < keywordsToRemoveUserFrom.length; i++) {
-             let keyword = keywordsToRemoveUserFrom[i]
-             console.log("keyword: " + keyword)
-             await Keyword.findOneAndUpdate({ _id: keyword }, { $pull: { users: user._id }, $inc: { amountUsedAsKeyword: -1 } }, { new: true })
+            let keyword = keywordsToRemoveUserFrom[i]
+            console.log("keyword: " + keyword)
+            await Keyword.findOneAndUpdate({ _id: keyword }, { $pull: { users: user._id }, $inc: { amountUsedAsKeyword: -1 } }, { new: true })
 
-             await User.findOneAndUpdate({ username: username }, { $pull: { keywords: keyword } }, { new: true })
-         }
+            await User.findOneAndUpdate({ username: username }, { $pull: { keywords: keyword } }, { new: true })
+        }
 
         console.log("before foau")
         user = await User.findOneAndUpdate({ username: username }, { $set: { mainExpertise: mainExpertise } }, { new: true }).populate({ path: 'keywords' })
@@ -213,12 +203,48 @@ router.get('/login/:username/:password', function (req, res) {
 router.get('/user/search', async function (req, res) {
     let keywords = req.query.data
 
-    let data = []
+    console.log("keywords:")
+    console.log(keywords)
+
+    let foundKeywords = []
+    let users = []
+    let data = [] // users to be send back, populated obviously
+
+
     for (let i = 0; i < keywords.length; i++) {
-        let result = await User.find({ mainExpertiseKeywords: { $regex: keywords[i] } })
-        data.push(result)
+        found = await Keyword.findOneAndUpdate({ word: { $regex: keywords[i] } }, { $inc: { searchedTimes: +1 } }, { new: true }).populate({
+            path: 'users', populate: {
+                path: 'keywords',
+            }
+        })
+        doc = { ...found._doc }
+        console.log('doc')
+        console.log(doc)
+        foundKeywords.push(doc)
+        users.push(doc.users)
     }
+
+    // Remove duplicates
+    const uniqueUsers = users.filter((value, index) => {
+        const _value = JSON.stringify(value);
+        return index === users.findIndex(obj => {
+          return JSON.stringify(obj) === _value;
+        });
+      });
+
+
+    console.log("uniqueUsers: ")
+    console.log(uniqueUsers);
+    data = uniqueUsers
+
     res.send(data)
+
+    // OLD CODE FOR WHEN WE USED STRING SEARCH
+    // for (let i = 0; i < keywords.length; i++) {
+    //     let result = await User.find({ mainExpertiseKeywords: { $regex: keywords[i] } })
+    //     data.push(result)
+    // }
+    // res.send(data)
 }
 )
 

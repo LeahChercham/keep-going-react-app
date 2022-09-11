@@ -102,7 +102,7 @@ function Profile(props) {
         let kw = []
         user.keywords.map(keyword => {
             console.log(keyword)
-            kw.push(keyword.word)
+            kw.push(keyword.word.toLowerCase())
         })
         kw.length > 0 ? setTags(kw) : console.log('no keywords')
     }, [user])
@@ -224,7 +224,7 @@ function Profile(props) {
                                 <h1>{state.status === "View" ? "Tags" : "Add Tags"}</h1>
                                 <li style={styles.li}>
                                     {tags.map((tag, index) => (
-                                        <ul style={{ ...styles.ul, backgroundColor: randomColor() }} key={index}>{tag}</ul>
+                                        <ul style={{ ...styles.ul, backgroundColor: randomColor() }} key={index}>{tag.toLowerCase()}</ul>
                                     ))}
 
                                 </li>
