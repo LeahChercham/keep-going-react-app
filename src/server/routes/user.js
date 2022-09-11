@@ -225,16 +225,19 @@ router.get('/user/search', async function (req, res) {
     }
 
     // Remove duplicates
-    const uniqueUsers = users.filter((value, index) => {
-        const _value = JSON.stringify(value);
-        return index === users.findIndex(obj => {
-          return JSON.stringify(obj) === _value;
-        });
-      });
+    let uniqueIds = []
+    let uniqueUsers = users.filter(element => {
+        console.log('element id:')
+        console.log(element)
 
+        let isDuplicate = uniqueIds.includes(element.id)
+        if (!isDuplicate) {
+            uniqueIds.push(element.id)
+            return true
+        }
+        return false
+    })
 
-    console.log("uniqueUsers: ")
-    console.log(uniqueUsers);
     data = uniqueUsers
 
     res.send(data)
