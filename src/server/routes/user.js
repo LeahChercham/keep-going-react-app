@@ -53,13 +53,17 @@ router.get("/user/email/:email", function (req, res) {
 
 // Route for updating user profile // Fabrice
 router.put("/user/:username", async function (req, res) {
-    let mainExpertise = req.body.mainExpertise
     try {
+        let mainExpertise = req.body.mainExpertise
         let { username } = req.params
 
-        let oldKeywords = await Keyword.find({}).populate({
-            path: 'users',
-            match: { username: username }
+        // let oldKeywords = await Keyword.find({}).populate({ // das findet alle keywords leider und nicht nur die des users
+        //     path: 'users',
+        //     match: { username: username }
+        // })
+        let oldKeywords = []
+        await User.findOne({ username: username }).populate({ path: 'keywords' }).then((user) => {
+            oldKeywords = user.keywords
         })
         console.log("oldKeywords: " + oldKeywords)
 
@@ -70,6 +74,7 @@ router.put("/user/:username", async function (req, res) {
 
         let user = await User.findOne({ username })
         console.log("user: " + user)
+        // Bis hier alles ok
 
         for (let i = 0; i < oldKeywords.length; i++) {
             req.body.keywords.includes(oldKeywords[i]._id) ?
@@ -77,51 +82,44 @@ router.put("/user/:username", async function (req, res) {
                 keywordsToRemoveUserFrom.push(oldKeywords[i]._id)
         }
 
+        console.log("keywordsToRemoveUserFrom: " + keywordsToRemoveUserFrom)
+        console.log("keywordsToKeep: " + keywordsToKeep)
+
         for (let i = 0; i < req.body.keywords.length; i++) {
-            let keyword = req.body.keywords[i]
-            console.log("forloop keyword: " + keyword)
-            if (!oldKeywords.includes(keyword)) { //" keywordsToAddUserTo "
-                let keywordExists = await Keyword.findOne({ keyword })
+            let word = req.body.keywords[i]
+            let newlySavedKeyword
+            console.log("forloop word: " + word)
+            if (!oldKeywords.includes(word)) { //" keywordsToAddUserTo "
+                let keywordExists = await Keyword.findOne({ word })
                 console.log("keywordExists: " + keywordExists)
                 if (keywordExists) {
                     console.log('in If Keyword Exists statement, now updating ?')
                     // add user._id to keyword.user
-                    await Keyword.findOneAndUpdate({ keyword }, { $push: { users: user._id } })
-
+                    let existKeyw = await Keyword.findOneAndUpdate({ word }, { $push: { users: user._id } }, { new: true })
+                    console.log("existKeyw: " + existKeyw)
+                    await User.findOneAndUpdate({ username: username }, { $push: { keywords: existKeyw } }) // wenn das geht im Else statement das (find one) entfernen
                     // keywordExists.users.push(req.user._id) // geht das ? direkt in der DB // Fabrice
 
-                } else {// hier sicherstellen alles vom Keyword wird ausgefüllt
-                    console.log('in Else Keyword Exists statement, now creating new Keyword with user in it? userID: ')
-                    console.log("user in else:" + user)
+                } else {// WORKS
+                    console.log('Else Statement Running')
 
-                    let newKeyword = new Keyword({ keyword: keyword, synonyms: [], oftenUsedTogether: [], searchedTimes: 0, amountUsedAsMainExpertise: 0, amountUsedAsKeyword: 1, users: [user._id] }) // add User to user array
+                    let newlySavedKeyword = new Keyword({ word: word, synonyms: [], oftenUsedTogether: [], searchedTimes: 0, amountUsedAsMainExpertise: 0, amountUsedAsKeyword: 1, users: [user._id] })
 
-                    await newKeyword.save().then(result => {
-                        console.log("newKeyword saved: " + result)
+                    newlySavedKeyword.save().then((res) => {
+                        console.log(" newlySavedKeyword save res: " + res)
+
+                        User.findOneAndUpdate({ username: username }, { $push: { keywords: res } }, { new: true }).then((res) => {
+                            console.log("updated " + res)
+                        })
                     })
-
-                    user.keywords.push(newKeyword)
-
-
-                    // user.save().then(result => {
-                    //     console.log("user saved: " + result)
-                    // })
                 }
             }
         }
 
-        user.mainExpertise = mainExpertise
-        user.save().then(result => {
-            console.log("user saved: " + result)
-        })
-        // user push keyword
-        console.log("user before saving: " + user) // BIS HIER GEHT, alles andere herausgenommen weil bug
+        await User.findOneAndUpdate({ username: username }, { $set: { mainExpertise: mainExpertise } }, { new: true }).then(result => {
+            console.log('updated Main Expertise' + result)
+        })  
 
-        // console.log("new keyword id: " + keywordResult._id)
-
-        // let updatedUser = await User.findOneAndUpdate({ username: username }, { $set: { mainExpertise: req.body.mainExpertise, email: req.body.email }, $push: { keywords: keywordResult._id } }, { new: true })
-
-        // console.log("updated User: " + updatedUser)
         res.status(201).json({
             successMessage: "User updated",
             user
@@ -139,16 +137,21 @@ router.put("/user/:username", async function (req, res) {
 // route for log in
 router.get('/login/:username/:password', function (req, res) {
     let { username, password } = req.params
-    User.findOne({ username }).populate('keywords.keyword').exec(function (err, response) {
+    console.log('in get route')
+    console.log('username: ' + username)
+    User.findOne({ username: username }).populate('keywords').exec(function (err, response) {
+        console.log("in test: " + response)
+    })
+    User.findOne({ username: username }).populate('keywords').exec(function (err, response) {
         let data
         if (!response) {
-            data = { error: { errorMessage: "Wrong username or password" } }
+            data = { error: { errorMessage: "No Response" } }
             res.send(data)
             res.end()
         } else {
             let getKeywords = []
             console.log("response: " + response)
-            response.keywords.map(keyword => { getKeywords.push(keyword) })
+            response.keywords ? response.keywords.map(keyword => { getKeywords.push(keyword) }) : null
             console.log("get keywords? " + getKeywords)
             let hash = response.password
             bcrypt.compare(password, hash, function (err, answer) {

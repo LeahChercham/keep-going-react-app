@@ -2,9 +2,9 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const KeywordSchema = new Schema({
-    keyword: String,
-    synonyms: [{ keyword: { type: Schema.Types.ObjectId, ref: 'Keyword' } }],
-    oftenUsedTogether: [{ keyword: { type: Schema.Types.ObjectId, ref: 'Keyword' } }],
+    word: String,
+    synonyms: [{ word: { type: Schema.Types.ObjectId, ref: 'Keyword' } }],
+    oftenUsedTogether: [{ word: { type: Schema.Types.ObjectId, ref: 'Keyword' } }],
     searchedTimes: Number,
     amountUsedAsMainExpertise: Number,
     amountUsedAsKeyword: Number,
