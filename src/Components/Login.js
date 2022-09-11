@@ -51,6 +51,7 @@ function Login(props) {
     }
 
     const handleSubmit = async (event) => {
+        debugger
         event.preventDefault();
         login(state.username, state.password);
     }
@@ -60,7 +61,7 @@ function Login(props) {
             username,
             password
         }
-        dispatch(userLogin(data))
+        await dispatch(userLogin(data))
     }
 
     useEffect(() => {

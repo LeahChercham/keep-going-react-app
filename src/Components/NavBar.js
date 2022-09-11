@@ -58,7 +58,7 @@ function NavBar(props) {
                             onClick={() => logout()}
                         >Log Out</Button>
                             <div style={styles.links}>
-                                {user.tokens} TOKENS
+                                {user ? user.tokens : null} TOKENS
                             </div >
                             {/* <RouterLink to={"/chat"}>
     DOESNT WORK BECAUSE EXPERTS FROM PROPS
@@ -66,7 +66,7 @@ function NavBar(props) {
                             </RouterLink> */}
 
                             <RouterLink to={"/profile"} style={{ textDecoration: "none" }}>
-                                <Button style={styles.menuButton}>{user.username}</Button>
+                                <Button style={styles.menuButton}>{user ? user.username : null}</Button>
                             </RouterLink>
 
 
