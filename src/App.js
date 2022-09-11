@@ -36,6 +36,7 @@ function App(props) {
         emailTaken: false,
         mainExpertise: "",
         mainExpertiseKeywords: [],
+        keywords: [],
         otherKeywords: [],
         tokens: 0,
       },

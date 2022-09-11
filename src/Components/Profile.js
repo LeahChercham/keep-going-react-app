@@ -4,8 +4,16 @@ import { FormControl, Switch } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useDispatch, useSelector } from 'react-redux'
-import consts from '../consts'
+// import consts from '../consts'
 import { userUpdate } from '../store/actions/authActions'
+import { TagsInput } from "react-tag-input-component";
+const util = require('util')
+
+const tagColors = ["#8CDFD6", "#1481BA", "#EEC584", "#2A7F62", "#BEA7E5", "#695958", "#B74F6F"]
+
+const randomColor = () => {
+    return tagColors[Math.floor(Math.random() * tagColors.length)];
+}
 
 const styles = {
     main: {
@@ -22,8 +30,34 @@ const styles = {
     },
     containerOne: {},
     containerTwo: {},
+    li: {
+        listStyle: "none",
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    ul: {
+        display: "inline",
+        paddingLeft: "1rem",
+        paddingRight: "1rem",
+        listStyle: "none",
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "center",
+        lineHeight: "2.5rem",
+        // backgroundColor: "green",
+        margin: "1rem",
+        borderRadius: "1rem",
+    },
+    button: {
+        marginTop: "2rem",
+
+    }
 
 }
+
 function Profile(props) {
 
     const [state, setState] = useState({
@@ -36,6 +70,7 @@ function Profile(props) {
             emailTaken: false,
             mainExpertise: "",
             mainExpertiseKeywords: "",
+            keywords: [],
             otherKeywords: "",
             tokens: 0,
         },
@@ -47,10 +82,13 @@ function Profile(props) {
             emailTaken: false,
             mainExpertise: "",
             mainExpertiseKeywords: "",
+            keywords: [],
             otherKeywords: "",
             tokens: 0,
         }
     })
+    const [tags, setTags] = useState([])
+    const [expertiseTag, setExpertiseTag] = useState([])
 
     const dispatch = useDispatch();
 
@@ -59,7 +97,11 @@ function Profile(props) {
     useEffect(() => {
         let updateUser = user
         setState({ ...state, user, updateUser })
+        console.log(util.inspect(user, false, 7))
+        // setTags(user.keywords)
     }, [])
+
+
 
 
     const handleChange = (event) => {
@@ -90,6 +132,7 @@ function Profile(props) {
 
     const updateUser = () => {
         let updateUser = { ...state.updateUser }
+        updateUser.keywords = tags
         let username = { ...state.user.username }
         let data = { updateUser, username }
         dispatch(userUpdate(data))
@@ -116,7 +159,8 @@ function Profile(props) {
                         </div>
                         <div>
                             <TextField
-                                disabled={state.status === "View" ? true : false}
+                                // disabled={state.status === "View" ? true : false}
+                                disabled={true}
                                 error={state.updateUser.emailTaken}
                                 id="email"
                                 label="Email"
@@ -155,9 +199,10 @@ function Profile(props) {
                                 variant="outlined"
                                 style={{ width: "100%" }}
                             />
-                            <div>Enter Keywords separated by semicolons ;</div>
+
+                            {/* <div>Enter Keywords separated by semicolons ;</div> */}
                             {/* Hier vorschläge für schon existierende Stichwörter vorschlagen */}
-                            <TextField
+                            {/* <TextField
                                 multiline
                                 disabled={state.status === "View" ? true : false}
                                 id="mainExpertiseKeywords"
@@ -167,10 +212,37 @@ function Profile(props) {
                                 margin="normal"
                                 variant="outlined"
                                 style={{ width: "100%" }}
-                            />
+                            /> */}
+
+                            {/* Npm Package react-tag-input-component
+  */}
+                            <div>
+                                <h1>{state.status === "View" ? "Tags" : "Add Tags"}</h1>
+                                <li style={styles.li}>
+                                    {tags.map((tag, index) => (
+                                        <ul style={{ ...styles.ul, backgroundColor: randomColor() }} key={index}>{tag}</ul>
+                                    ))}
+
+                                </li>
+                                {state.status === "View" ? null : <div><TagsInput
+                                    value={tags}
+                                    onChange={setTags}
+                                    name="tags"
+                                    placeHolder="enter tags"
+                                />
+                                    <em>press enter to add new tag</em> </div>
+                                }
+                                {/* <TagsInput
+                                    value={tags}
+                                    onChange={setTags}
+                                    name="tags"
+                                    placeHolder="enter tags"
+                                /> */}
+                            </div>
+
                         </div>
 
-                        <div>
+                        <div style={styles.button}>
 
                             <Button
                                 variant="contained"

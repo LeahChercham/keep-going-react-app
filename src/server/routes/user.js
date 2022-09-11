@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 const User = require('../models/userModel')
+const Keyword = require('../models/keywordModel')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 
@@ -50,12 +51,77 @@ router.get("/user/email/:email", function (req, res) {
     })
 })
 
-// Route for updating user profile
+// Route for updating user profile // Fabrice
 router.put("/user/:username", async function (req, res) {
-    let { username } = req.params
+    let mainExpertise = req.body.mainExpertise
     try {
-        let user = await User.findOneAndUpdate({ username: username }, req.body, { new: true })
+        let { username } = req.params
 
+        let oldKeywords = await Keyword.find({}).populate({
+            path: 'users',
+            match: { username: username }
+        })
+        console.log("oldKeywords: " + oldKeywords)
+
+        let keywordsToRemoveUserFrom = []
+        // let keywordsToAddUserTo = []
+        let keywordsToKeep = []
+
+
+        let user = await User.findOne({ username })
+        console.log("user: " + user)
+
+        for (let i = 0; i < oldKeywords.length; i++) {
+            req.body.keywords.includes(oldKeywords[i]._id) ?
+                keywordsToKeep.push(oldKeywords[i]._id) :
+                keywordsToRemoveUserFrom.push(oldKeywords[i]._id)
+        }
+
+        for (let i = 0; i < req.body.keywords.length; i++) {
+            let keyword = req.body.keywords[i]
+            console.log("forloop keyword: " + keyword)
+            if (!oldKeywords.includes(keyword)) { //" keywordsToAddUserTo "
+                let keywordExists = await Keyword.findOne({ keyword })
+                console.log("keywordExists: " + keywordExists)
+                if (keywordExists) {
+                    console.log('in If Keyword Exists statement, now updating ?')
+                    // add user._id to keyword.user
+                    await Keyword.findOneAndUpdate({ keyword }, { $push: { users: user._id } })
+
+                    // keywordExists.users.push(req.user._id) // geht das ? direkt in der DB // Fabrice
+
+                } else {// hier sicherstellen alles vom Keyword wird ausgefüllt
+                    console.log('in Else Keyword Exists statement, now creating new Keyword with user in it? userID: ')
+                    console.log("user in else:" + user)
+
+                    let newKeyword = new Keyword({ keyword: keyword, synonyms: [], oftenUsedTogether: [], searchedTimes: 0, amountUsedAsMainExpertise: 0, amountUsedAsKeyword: 1, users: [user._id] }) // add User to user array
+
+                    await newKeyword.save().then(result => {
+                        console.log("newKeyword saved: " + result)
+                    })
+
+                    user.keywords.push(newKeyword)
+
+
+                    // user.save().then(result => {
+                    //     console.log("user saved: " + result)
+                    // })
+                }
+            }
+        }
+
+        user.mainExpertise = mainExpertise
+        user.save().then(result => {
+            console.log("user saved: " + result)
+        })
+        // user push keyword
+        console.log("user before saving: " + user) // BIS HIER GEHT, alles andere herausgenommen weil bug
+
+        // console.log("new keyword id: " + keywordResult._id)
+
+        // let updatedUser = await User.findOneAndUpdate({ username: username }, { $set: { mainExpertise: req.body.mainExpertise, email: req.body.email }, $push: { keywords: keywordResult._id } }, { new: true })
+
+        // console.log("updated User: " + updatedUser)
         res.status(201).json({
             successMessage: "User updated",
             user
@@ -73,13 +139,17 @@ router.put("/user/:username", async function (req, res) {
 // route for log in
 router.get('/login/:username/:password', function (req, res) {
     let { username, password } = req.params
-    User.findOne({ username }, function (err, response) {
+    User.findOne({ username }).populate('keywords').exec(function (err, response) {
         let data
         if (!response) {
             data = { error: { errorMessage: "Wrong username or password" } }
             res.send(data)
             res.end()
         } else {
+            let getKeywords = []
+            console.log("response: " + response.keywords[0].keyword)
+            response.keywords.map(keyword => { getKeywords.push(keyword.keyword) })
+            console.log("get keywords? " + getKeywords)
             let hash = response.password
             bcrypt.compare(password, hash, function (err, answer) {
                 if (answer === true) {
@@ -88,6 +158,7 @@ router.get('/login/:username/:password', function (req, res) {
                         email: response.email,
                         mainExpertise: response.mainExpertise,
                         mainExpertiseKeywords: response.mainExpertiseKeywords,
+                        keywords: getKeywords,
                         otherKeywords: response.otherKeywords,
                         tokens: response.tokens,
                         id: response._id

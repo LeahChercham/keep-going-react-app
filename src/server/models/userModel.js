@@ -6,9 +6,10 @@ const UserSchema = new Schema({
     email: String,
     password: String, // The password will not be the real password, but the encryption of the password.
     mainExpertise: String,
-    mainExpertiseKeywords: String,
-    mainExpertiseKeywordsArray: [String],
-    otherKeywords: String,
+    mainExpertiseKeywords: String, // old
+    mainExpertiseKeywordsArray: [String], // old
+    keywords: [{ keyword: { type: Schema.Types.ObjectId, ref: 'Keyword' } }], //new
+    otherKeywords: String, // old
     tokens: Number,
     contacts: [{ user: { type: Schema.Types.ObjectId, ref: 'User' }, draft: Boolean }]
 })
