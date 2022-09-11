@@ -61,8 +61,9 @@ router.put("/user/:username", async function (req, res) {
         //     path: 'users',
         //     match: { username: username }
         // })
-        let oldKeywords = []
+        let oldKeywords
         await User.findOne({ username: username }).populate({ path: 'keywords' }).then((user) => {
+            console.log("userkeywords: for old keywords" + user.keywords)
             oldKeywords = user.keywords
         })
         console.log("oldKeywords: " + oldKeywords)
@@ -73,8 +74,6 @@ router.put("/user/:username", async function (req, res) {
 
 
         let user = await User.findOne({ username })
-        console.log("user: " + user)
-        // Bis hier alles ok
 
         for (let i = 0; i < oldKeywords.length; i++) {
             req.body.keywords.includes(oldKeywords[i]._id) ?
@@ -87,18 +86,17 @@ router.put("/user/:username", async function (req, res) {
 
         for (let i = 0; i < req.body.keywords.length; i++) {
             let word = req.body.keywords[i]
-            let newlySavedKeyword
+
             console.log("forloop word: " + word)
             if (!oldKeywords.includes(word)) { //" keywordsToAddUserTo "
                 let keywordExists = await Keyword.findOne({ word })
                 console.log("keywordExists: " + keywordExists)
                 if (keywordExists) {
-                    console.log('in If Keyword Exists statement, now updating ?')
+                    console.log('in If Keyword Exists statement, now updating')
                     // add user._id to keyword.user
-                    let existKeyw = await Keyword.findOneAndUpdate({ word }, { $push: { users: user._id } }, { new: true })
+                    let existKeyw = await Keyword.findOneAndUpdate({ word }, { $push: { users: user._id }, $inc: { amountUsedAsKeyword: 1 } }, { new: true })
                     console.log("existKeyw: " + existKeyw)
-                    await User.findOneAndUpdate({ username: username }, { $push: { keywords: existKeyw } }) // wenn das geht im Else statement das (find one) entfernen
-                    // keywordExists.users.push(req.user._id) // geht das ? direkt in der DB // Fabrice
+                    await User.findOneAndUpdate({ username: username }, { $push: { keywords: existKeyw } }) // 
 
                 } else {// WORKS
                     console.log('Else Statement Running')
@@ -116,9 +114,17 @@ router.put("/user/:username", async function (req, res) {
             }
         }
 
+        for (let i = 0; i < keywordsToRemoveUserFrom.length; i++) {
+            let keyword = keywordsToRemoveUserFrom[i]
+            console.log("keyword: " + keyword)
+            await Keyword.findOneAndUpdate({ word: keyword }, { $pull: { users: user._id }, $inc: { amountUsedAsKeyword: -1 } }, { new: true })
+
+            await User.findOneAndUpdate({ username: username }, { $pull: { keywords: keyword } }, { new: true })
+        }
+
         await User.findOneAndUpdate({ username: username }, { $set: { mainExpertise: mainExpertise } }, { new: true }).then(result => {
             console.log('updated Main Expertise' + result)
-        })  
+        })
 
         res.status(201).json({
             successMessage: "User updated",
