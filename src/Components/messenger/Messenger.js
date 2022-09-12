@@ -422,7 +422,7 @@ function Messenger(props) {
             <div style={myStyles.offer}>
                 {/* das alles in separate componente */}
                 {console.log(offer)}
-                {offer.length >0 ?
+                {offer ?
                     offer.senderName === myInfo.username ?
                         offer.status !== 'accepted' ?
                             <span
