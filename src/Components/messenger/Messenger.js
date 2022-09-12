@@ -89,6 +89,12 @@ function Messenger(props) {
             setSocketMessage(data)
         })
 
+        socket.current.on('getOffer', (data) => {
+
+            setSocketMessage(data)
+        })
+
+
         socket.current.on('typingMessageGet', (data) => {
             // console.log("typingMessage: " + util.inspect(data, false, 7))
             setTypingMessage(data)
@@ -198,7 +204,7 @@ function Messenger(props) {
 
         }
     }, [socketMessage]);
-    
+
     useEffect(() => {
         if (socketOffer && socketOffer.senderId !== currentContact._id && socketOffer.receiverId === myInfo.id) {
             //  notificationSPlay();
