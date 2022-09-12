@@ -199,7 +199,7 @@ function Messenger(props) {
     }, [socketOffer]);
 
 
-    
+
 
     useEffect(() => {
         socket.current.emit('addUser', myInfo.id, myInfo)
@@ -421,7 +421,8 @@ function Messenger(props) {
         <div style={myStyles.container}>
             <div style={myStyles.offer}>
                 {/* das alles in separate componente */}
-                {offer ?
+                {console.log(offer)}
+                {offer.length >0 ?
                     offer.senderName === myInfo.username ?
                         offer.status !== 'accepted' ?
                             <span

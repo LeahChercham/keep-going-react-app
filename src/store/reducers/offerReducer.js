@@ -4,7 +4,7 @@ import { OFFER_GET_SUCCESS, OFFER_SEND_SUCCESS_CLEAR, OFFER_GET_SUCCESS_CLEAR, C
 
 const offerState = {
     offerContacts: [],
-    offer: "",
+    offer: [],
     offerSendSuccess: false,
     offerGetSuccess: false,
     // price: 0,
@@ -49,7 +49,7 @@ export const offerReducer = (state = offerState, action) => {
         }
     }
 
-    if (type === UPDATE_CONTACT_OFFER) { 
+    if (type === UPDATE_CONTACT_OFFER) {
         const index = state.offerContacts.findIndex(c => c.contactInfo._id === payload.offerInfo.receiverId || c.contactInfo._id === payload.offerInfo.senderId);
         state.offerContacts[index].offerInfo = payload.offerInfo;
         state.offerContacts[index].offerInfo.status = payload.status;

@@ -25,11 +25,11 @@ export const offerSend = (data) => async (dispatch) => {
         dispatch({
             type: OFFER_SEND_SUCCESS,
             payload: {
-                offer: response.data.offer
+                offer: response.offer
             }
         })
     } catch (error) {
-        console.log(error.response.data);
+        console.log(error);
     }
 }
 

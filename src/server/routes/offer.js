@@ -142,9 +142,11 @@ router.post('/offer/send-offer', async function (req, res) {
 
     try {
         newOffer.save().then(result => {
-            let offer = result
+            console.log("saved ok")
+            console.log(result)
             res.status(201).json({
-                successMessage: "Offer created", offer
+                successMessage: "Offer created",
+                offer: result
             })
         })
     } catch (error) {
