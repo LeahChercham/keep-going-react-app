@@ -55,16 +55,12 @@ router.get("/user/email/:email", function (req, res) {
 
 // Route for updating user profile // Fabrice
 router.put("/user/:username", async function (req, res) {
-    console.log(req.body)
+    
     try {
         let mainExpertise = req.body.updateUser.mainExpertise
         let oldKeywords = req.body.oldKeywords
 
         let { username } = req.params
-
-        console.log('in put route')
-        console.log("oldKeywords" + oldKeywords)
-
 
         let keywordsToRemoveUserFrom = []
         let keywordsToKeep = []
@@ -75,7 +71,6 @@ router.put("/user/:username", async function (req, res) {
         if (oldKeywords.length > 0) {
 
             for (let i = 0; i < oldKeywords.length; i++) {
-                console.log(oldKeywords[i])
                 req.body.updateUser.keywords.includes(oldKeywords[i].word) ?
                     keywordsToKeep.push(oldKeywords[i]._id) :
                     keywordsToRemoveUserFrom.push(oldKeywords[i]._id)
@@ -83,40 +78,29 @@ router.put("/user/:username", async function (req, res) {
         }
 
 
-        console.log("keywordsToRemoveUserFrom: " + keywordsToRemoveUserFrom)
-        console.log("keywordsToKeep: " + keywordsToKeep)
-
         // return null
         let oldKeywordsWords = oldKeywords.map(keyword => {
 
             return keyword.word
         })
-        console.log(oldKeywordsWords)
 
         for (let i = 0; i < req.body.updateUser.keywords.length; i++) {
             let word = req.body.updateUser.keywords[i]
 
-            console.log("forloop word: " + word)
             if (!oldKeywordsWords.includes(word)) { //" keywordsToAddUserTo "
                 let keywordExists = await Keyword.findOne({ word })
-                console.log("keywordExists: " + keywordExists)
                 if (keywordExists) {
-                    console.log('in If Keyword Exists statement, now updating')
                     // add user._id to keyword.user
                     let existKeyw = await Keyword.findOneAndUpdate({ word }, { $push: { users: user._id }, $inc: { amountUsedAsKeyword: 1 } }, { new: true })
-                    console.log("existKeyw: " + existKeyw)
                     await User.findOneAndUpdate({ username: username }, { $push: { keywords: existKeyw } }) // 
 
                 } else {// WORKS
-                    console.log('Else Statement Running')
 
                     let newlySavedKeyword = await new Keyword({ word: word, synonyms: [], oftenUsedTogether: [], searchedTimes: 0, amountUsedAsMainExpertise: 0, amountUsedAsKeyword: 1, users: [user._id] })
 
                     await newlySavedKeyword.save().then((res) => {
-                        console.log(" newlySavedKeyword save res: " + res)
 
                         User.findOneAndUpdate({ username: username }, { $push: { keywords: res } }, { new: true }).then((res) => {
-                            console.log("updated " + res)
                         })
                     })
                 }
@@ -125,19 +109,16 @@ router.put("/user/:username", async function (req, res) {
 
         for (let i = 0; i < keywordsToRemoveUserFrom.length; i++) {
             let keyword = keywordsToRemoveUserFrom[i]
-            console.log("keyword: " + keyword)
             await Keyword.findOneAndUpdate({ _id: keyword }, { $pull: { users: user._id }, $inc: { amountUsedAsKeyword: -1 } }, { new: true })
 
             await User.findOneAndUpdate({ username: username }, { $pull: { keywords: keyword } }, { new: true })
         }
 
-        console.log("before foau")
         user = await User.findOneAndUpdate({ username: username }, { $set: { mainExpertise: mainExpertise } }, { new: true }).populate({ path: 'keywords' })
 
 
         let sendUser = { ...user }
-        console.log("sendUser: ")
-        console.log(sendUser)
+      
         res.status(201).json({
             successMessage: "User updated",
             user: sendUser._doc
@@ -158,12 +139,7 @@ router.put("/user/:username", async function (req, res) {
 // route for log in
 router.get('/login/:username/:password', function (req, res) {
     let { username, password } = req.params
-    console.log('in get route')
-    console.log('username: ' + username)
 
-    User.findOne({ username: username }).populate({ path: 'keywords' }).exec(function (err, response) {
-        console.log("in test: " + response)
-    })
     User.findOne({ username: username }).populate({ path: 'keywords' }).exec(function (err, response) {
         let data
         if (!response) {
@@ -172,9 +148,7 @@ router.get('/login/:username/:password', function (req, res) {
             res.end()
         } else {
             let getKeywords = []
-            console.log("response: " + response)
             response.keywords ? response.keywords.map(keyword => { getKeywords.push(keyword) }) : null
-            console.log("get keywords? " + getKeywords)
             let hash = response.password
             bcrypt.compare(password, hash, function (err, answer) {
                 if (answer === true) {
@@ -203,9 +177,6 @@ router.get('/login/:username/:password', function (req, res) {
 router.get('/user/search', async function (req, res) {
     let keywords = req.query.data
 
-    console.log("keywords:")
-    console.log(keywords)
-
     let foundKeywords = []
     let users = []
     let data = [] // users to be send back, populated obviously
@@ -217,16 +188,12 @@ router.get('/user/search', async function (req, res) {
                 path: 'keywords',
             }
         })
-        // found = await Keyword.findOneAndUpdate({ word: { $regex: reg, "$options": "i" } }, { $inc: { searchedTimes: +1 } }, { new: true }).populate({
-        //     path: 'users', populate: {
-        //         path: 'keywords',
-        //     }
-        // })
+
         multipleFound.map(found => {
             doc = { ...found._doc }
             foundKeywords.push(doc)
             doc.users.map((user) => { users.push(user) })
-            // users.push(doc.users)
+
         })
 
     }
@@ -243,8 +210,6 @@ router.get('/user/search', async function (req, res) {
         return false
     })
 
-    console.log("uniqueUsers: ")
-    console.log(uniqueUsers)
     data = uniqueUsers
 
     res.send(data)

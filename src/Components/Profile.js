@@ -95,13 +95,10 @@ function Profile(props) {
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
 
     useEffect(() => {
-        console.log("=========================================================================================================================================================================")
         let updateUser = user
         setState({ ...state, user, updateUser })
-        console.log(util.inspect(user, false, 7))
         let kw = []
         user.keywords.map(keyword => {
-            console.log(keyword)
             kw.push(keyword.word.toLowerCase())
         })
         kw.length > 0 ? setTags(kw) : console.log('no keywords')

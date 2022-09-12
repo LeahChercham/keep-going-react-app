@@ -18,7 +18,7 @@ const userRemove = (socketId) => {
      users = users.filter(u => u.socketId !== socketId);
 }
 
-const finddContact = (id) => {
+const findContact = (id) => {
      return users.find(u => u.userId === id);
 }
 
@@ -45,16 +45,32 @@ io.on('connection', (socket) => {
      });
      socket.on('sendMessage', (data) => {
           console.log('sendMessage')
-          const user = finddContact(data.receiverId);
+          const user = findContact(data.receiverId);
 
           if (user !== undefined) {
                socket.to(user.socketId).emit('getMessage', data)
           }
      })
 
+     socket.on('acceptOffer', (data)=> {
+          console.log('acceptOffer')
+          const user = findContact(data.receiverId);
+          if (user !== undefined) {
+               socket.to(user.socketId).emit('getOffer', data)
+          }
+     })
+
+     socket.on('sendOffer', (data) => {
+          console.log('sendOffer')
+          const user = findContact(data.receiverId);
+          if (user !== undefined) {
+               socket.to(user.socketId).emit('getOffer', data)
+          }
+     })
+
      socket.on('messageSeen', msg => {
           console.log('messageSeen')
-          const user = finddContact(msg.senderId);
+          const user = findContact(msg.senderId);
           if (user !== undefined) {
                socket.to(user.socketId).emit('msgSeenResponse', msg)
           }
@@ -62,14 +78,26 @@ io.on('connection', (socket) => {
 
      socket.on('deliveredMessage', msg => {
           console.log('deliveredMessage')
-          const user = finddContact(msg.senderId);
+          const user = findContact(msg.senderId);
           if (user !== undefined) {
                socket.to(user.socketId).emit('msgDeliveredResponse', msg)
           }
      })
+
+     socket.on('deliveredOffer', msg => {
+          console.log('deliveredOffer')
+          const user = findContact(msg.senderId);
+          if (user !== undefined) {
+               socket.to(user.socketId).emit('ofrDeliveredResponse', msg)
+          }
+     })
+
+
+
+
      socket.on('seen', data => {
           console.log('seen')
-          const user = finddContact(data.senderId);
+          const user = findContact(data.senderId);
           if (user !== undefined) {
                socket.to(user.socketId).emit('seenSuccess', data)
           }
@@ -78,7 +106,7 @@ io.on('connection', (socket) => {
 
      socket.on('typingMessage', (data) => {
           console.log('typingMessage')
-          const user = finddContact(data.receiverId);
+          const user = findContact(data.receiverId);
           if (user !== undefined) {
                socket.to(user.socketId).emit('typingMessageGet', {
                     senderId: data.senderId,

@@ -96,9 +96,13 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
             }]
         })
 
+        let lastOffer = await getLastOffer(myId, expertId);
+
+
+
         res.status(200).json({
             success: true,
-            offer: getAllOffer
+            offer: lastOffer // instead of all offer
         })
 
     } catch (error) {
@@ -121,7 +125,7 @@ router.post('/offer/send-offer', async function (req, res) {
     const {
         senderName,
         receiverId,
-        offer,
+        price,
         senderId
     } = req.body
 
@@ -131,7 +135,7 @@ router.post('/offer/send-offer', async function (req, res) {
         senderName: senderName,
         receiverId: receiverId,
         offer: {
-            price: offer.price,
+            price: price,
         },
         status: false
     })
@@ -157,9 +161,11 @@ router.post('/offer/send-offer', async function (req, res) {
 
 router.post('/offer/delivered-offer', async function (req, res) {
     const offerId = req.body._id;
+    console.log("route delivered-offer")
+    console.log(req.body)
 
     await Offer.findByIdAndUpdate(offerId, {
-        status: 'delivered'
+        status: req.body.offer.status
     })
         .then(() => {
             res.status(200).json({
@@ -175,4 +181,4 @@ router.post('/offer/delivered-offer', async function (req, res) {
 
 });
 
-module.export = router
+module.exports = router

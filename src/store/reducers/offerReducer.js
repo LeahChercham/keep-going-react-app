@@ -1,9 +1,9 @@
-import { OFFER_GET_SUCCESS, OFFER_GET_SUCCESS_CLEAR, CONTACT_GET_SUCCESS, DELIVERED_OFFER, UPDATE_OFFER, UPDATE_CONTACT_OFFER, SOCKET_OFFER, OFFER_SEND_SUCCESS } from '../types/offerType';
+import { OFFER_GET_SUCCESS, OFFER_SEND_SUCCESS_CLEAR, OFFER_GET_SUCCESS_CLEAR, CONTACT_GET_SUCCESS, DELIVERED_OFFER, UPDATE_OFFER, UPDATE_CONTACT_OFFER, SOCKET_OFFER, OFFER_SEND_SUCCESS } from '../types/offerType';
 
 
 
 const offerState = {
-    contacts: [],
+    offerContacts: [],
     offer: "",
     offerSendSuccess: false,
     offerGetSuccess: false,
@@ -20,7 +20,7 @@ export const offerReducer = (state = offerState, action) => {
     if (type === CONTACT_GET_SUCCESS) {
         return {
             ...state,
-            contacts: payload.contacts
+            offerContacts: payload.contacts
         }
     }
 
@@ -49,10 +49,10 @@ export const offerReducer = (state = offerState, action) => {
         }
     }
 
-    if (type === UPDATE_CONTACT_OFFER) { // ? Needed ?
-        const index = state.contacts.findIndex(c => c.contactInfo._id === payload.offerInfo.receiverId || c.contactInfo._id === payload.offerInfo.senderId);
-        state.contacts[index].offerInfo = payload.offerInfo;
-        state.contacts[index].offerInfo.status = payload.status;
+    if (type === UPDATE_CONTACT_OFFER) { 
+        const index = state.offerContacts.findIndex(c => c.contactInfo._id === payload.offerInfo.receiverId || c.contactInfo._id === payload.offerInfo.senderId);
+        state.offerContacts[index].offerInfo = payload.offerInfo;
+        state.offerContacts[index].offerInfo.status = payload.status;
         return state;
     }
 
@@ -67,23 +67,23 @@ export const offerReducer = (state = offerState, action) => {
 
 
     if (type === DELIVERED_OFFER) {
-        const index = state.contacts.findIndex(c => c.contactInfo._id === payload.offerInfo.receiverId || c.contactInfo._id === payload.offerInfo.senderId);
-        state.contacts[index].offerInfo.status = 'delivered';
+        const index = state.offerContacts.findIndex(c => c.contactInfo._id === payload.offerInfo.receiverId || c.contactInfo._id === payload.offerInfo.senderId);
+        state.offerContacts[index].offerInfo.status = 'delivered';
         return {
             ...state
         };
     }
 
 
-    if (type === UPDATE) {
-        const index = state.contacts.findIndex(c => c.contactInfo._id === payload.id);
-        if (state.contacts[index].offerInfo) {
-            state.contacts[index].offerInfo.status = 'seen';
-        }
-        return {
-            ...state
-        }
-    }
+    //  if (type === UPDATE) {
+    //      const index = state.offerContacts.findIndex(c => c.contactInfo._id === payload.id);
+    //      if (state.offerContacts[index].offerInfo) {
+    //          state.offerContacts[index].offerInfo.status = 'seen';
+    //      }
+    //      return {
+    //          ...state
+    //      }
+    //  }
 
     if (type === OFFER_GET_SUCCESS_CLEAR) {
         return {

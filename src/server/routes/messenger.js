@@ -31,7 +31,6 @@ const getLastMessage = async (myId, expertId) => {
     }).sort({
         updatedAt: -1
     });
-    console.log("message: ", msg)
     return msg;
 }
 
@@ -44,9 +43,7 @@ router.get('/messenger/get-contacts/:myId', async function (req, res) {
                 $ne: myId
             }
         });
-        console.log('length: ' + getContacts.length)
         for (let i = 0; i < getContacts.length; i++) {
-            console.log("in loop " + i + " myID / expert ID: " + myId + " / " + getContacts[i]._id)
             let lastMessage = await getLastMessage(myId, getContacts[i]._id);
             contactMessages = [...contactMessages, {
                 contactInfo: getContacts[i],
@@ -54,7 +51,6 @@ router.get('/messenger/get-contacts/:myId', async function (req, res) {
             }]
 
         }
-        console.log("after loop" + contactMessages)
         res.status(200).json({ success: true, contacts: contactMessages })
 
     } catch (error) {

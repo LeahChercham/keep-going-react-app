@@ -6,6 +6,7 @@ const path = require('path')
 const cors = require('cors');
 const user = require('./routes/user')
 const messenger = require('./routes/messenger')
+const offer = require('./routes/offer')
 // const messengerRoute = require('./routes/Not in Use messengerRoute')
 
 let app = express();
@@ -30,6 +31,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/', user)
 app.use('/', messenger)
+app.use('/', offer)
 
 mongoose.connect(process.env.MONGODB_URI
   || 'mongodb://127.0.0.1:27017/KeepGoingDB',

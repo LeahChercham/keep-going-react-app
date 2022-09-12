@@ -9,11 +9,26 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import toast, { Toaster } from 'react-hot-toast';
 import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, updateMessage, } from '../../store/actions/messengerAction';
+import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
 
 import { io } from 'socket.io-client';
 const util = require("util")
 
 const myStyles = {
+    container: {
+        display: "flex",
+        flexFlow: "column",
+        justifyContent: "space-evenly",
+        alignContent: "center",
+        width: "100%",
+        height: "100%",
+    },
+    offer: {
+        display: "flex",
+        fontSize: "2em",
+        alignItems: "center",
+        justifyContent: "center",
+    },
     main: {
         display: "flex",
         flexFlow: "row",
@@ -41,7 +56,6 @@ const myStyles = {
         fontWeight: 900,
     }, sidebar: {
         display: 'flex'
-
     }
 }
 
@@ -55,7 +69,7 @@ function Messenger(props) {
 
     const { contacts, message, messageSendSuccess, messageGetSuccess, new_user_add } = useSelector(state => state.messenger);
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
-    const { offer } = useSelector(state => state.offer);
+    const { offer, offerContacts, offerSendSuccess, offerGetSuccess } = useSelector(state => state.offer);
     const myInfo = user
 
 
@@ -90,8 +104,7 @@ function Messenger(props) {
         })
 
         socket.current.on('getOffer', (data) => {
-
-            setSocketMessage(data)
+            setSocketOffer(data)
         })
 
 
@@ -100,9 +113,6 @@ function Messenger(props) {
             setTypingMessage(data)
         })
 
-        socket.current.on('getOffer', (data) => {
-            setSocketOffer(data)
-        })
 
         socket.current.on('msgSeenResponse', msg => {
             dispatch({
@@ -163,8 +173,33 @@ function Messenger(props) {
         }
         setSocketMessage('')
     }, [socketMessage]);
-    // end second use effect
 
+
+    useEffect(() => {
+        if (socketOffer && currentContact !== "") {
+            if (socketOffer.senderId === currentContact._id && socketOffer.receiverId === myInfo.id) {
+                dispatch({
+                    type: 'SOCKET_OFFER',
+                    payload: {
+                        offer: socketOffer
+                    }
+                })
+                // dispatch(seenOffer(socketOffer));
+                // socket.current.emit('messageSeen', socketMessage);
+                // dispatch({
+                //     type: 'UPDATE_CONTACT_MESSAGE',
+                //     payload: {
+                //         messageInfo: socketMessage,
+                //         status: 'seen'
+                //     }
+                // })
+            }
+        }
+        setSocketOffer('')
+    }, [socketOffer]);
+
+
+    
 
     useEffect(() => {
         socket.current.emit('addUser', myInfo.id, myInfo)
@@ -233,6 +268,7 @@ function Messenger(props) {
 
     }
     const sendOffer = () => {
+        debugger
         const data = {
             senderName: myInfo.username,
             senderId: myInfo.id,
@@ -247,9 +283,9 @@ function Messenger(props) {
             price: price
         })
 
-        dispatch(sendOffer(data));
-        setNewOfferFromMe(true)
-        setOffer(true)
+        dispatch(offerSend(data));
+        setNewOffer(true)
+        setOfferFromMe(true)
     }
 
     const sendMessage = (msg) => {
@@ -303,10 +339,10 @@ function Messenger(props) {
 
     useEffect(() => {
         dispatch(getMessage(currentContact._id, myInfo.id));
-        if (contacts.length > 0) {
-
-        }
+        dispatch(getOffer(currentContact._id, myInfo.id));
     }, [currentContact?._id]);
+
+
 
     useEffect(() => {
         if (message.length > 0) {
@@ -332,7 +368,6 @@ function Messenger(props) {
     }, [message]);
 
     const updatePrice = (updateDirection) => {
-        debugger
         let newPrice
         let oldPrice = price
         if (updateDirection === "up") {
@@ -347,6 +382,30 @@ function Messenger(props) {
 
     }
 
+    // ACCEPTING OR DECLINING OFFER
+    const acceptOffer = () => {
+        let acceptedOffer = offer
+        acceptedOffer.status = 'accepted'
+        const data = {
+            senderName: myInfo.username,
+            receiverId: currentContact._id,
+            offer: acceptedOffer,
+            senderId: myInfo.id,
+        }
+
+        socket.current.emit('acceptOffer', {
+            senderId: myInfo.id,
+            receiver: currentContact._id,
+            offer: acceptedOffer
+        })
+        dispatch(updateOffer(data));
+        // setNewMessage('');
+
+    }
+    const declineOffer = () => { }
+
+
+
     return (<div>
         <Toaster // notification
             position={'top-right'}
@@ -359,94 +418,122 @@ function Messenger(props) {
             }}
 
         />
-        <div style={myStyles.main}>
+        <div style={myStyles.container}>
+            <div style={myStyles.offer}>
+                {/* das alles in separate componente */}
+                {offer ?
+                    offer.senderName === myInfo.username ?
+                        offer.status !== 'accepted' ?
+                            <span
+                                style={{ height: "2em", alignItems: 'center', display: 'flex' }}>
+                                You send you a new offer:
+                                <span style={{ color: 'darkBlue' }}>
+                                    {offer.offer.price} Tokens
+                                </span>
+                                <span>...waiting for answer</span>
+                            </span> : <span>Offer Accepted! You received {offer.offer.price} Tokens</span>
+                        :
+                        offer.status !== 'accepted' ?
+                            <span
+                                style={{ height: "2em", alignItems: 'center', display: 'flex' }}>
+                                {offer.senderName} send you a new offer:
+                                <span style={{ color: 'darkBlue' }}>
+                                    {offer.offer.price} Tokens
+                                </span>
+                                <Button onClick={(e) => { acceptOffer() }}> Accept </Button>
+                                <Button onClick={(e) => { declineOffer() }}> Decline </Button>
+                            </span> : <span>Offer Accepted! You paid {offer.offer.price} Tokens</span>
+                    : null}
+            </div>
+            <div style={myStyles.main}>
 
-            <MainContainer responsive style={{ width: '100%' }}>
-                <Sidebar position="left" scrollable={true}>
-                    {/* <Search placeholder="Search..." /> */}
-                    <ConversationList>
+                <MainContainer responsive style={{ width: '100%' }}>
+                    <Sidebar position="left" scrollable={true}>
+                        {/* <Search placeholder="Search..." /> */}
+                        <ConversationList>
 
-                        {contacts && contacts.length > 0 ? contacts.map((contact, index) =>
-                            contact.messageInfo ?
-                                <Conversation
-                                    key={index}
-                                    onClick={() => { setCurrentContact(contact.contactInfo) }}
-                                    active={currentContact._id === contact.contactInfo._id ? true : false}
-                                    // activeUser={activeUser} 
-                                    name={contact.contactInfo.username} info={contact.messageInfo ? contact.messageInfo.message.text : "no messages yet"}>
+                            {contacts && contacts.length > 0 ? contacts.map((contact, index) =>
+                                contact.messageInfo ?
+                                    <Conversation
+                                        key={index}
+                                        onClick={() => { setCurrentContact(contact.contactInfo) }}
+                                        active={currentContact._id === contact.contactInfo._id ? true : false}
+                                        // activeUser={activeUser} 
+                                        name={contact.contactInfo.username} info={contact.messageInfo ? contact.messageInfo.message.text : "no messages yet"}>
 
-                                </Conversation> : null
-                        ) : <Conversation name={"No Contacts"} info="No Messages">
+                                    </Conversation> : null
+                            ) : <Conversation name={"No Contacts"} info="No Messages">
 
-                        </Conversation>}
+                            </Conversation>}
 
-                    </ConversationList>
-                </Sidebar>
+                        </ConversationList>
+                    </Sidebar>
 
-                <ChatContainer>
-                    <ConversationHeader>
-                        <ConversationHeader.Back />
-                        {/* <Avatar src={zoeIco} name="Zoe" /> */}
-                        <ConversationHeader.Content userName={currentContact.username}
-                        // info="Active 10 mins ago" 
-                        />
-                        <ConversationHeader.Actions>
-                            <VoiceCallButton />
-                            <VideoCallButton />
-                            <InfoButton />
-                        </ConversationHeader.Actions>
-                    </ConversationHeader>
-                    <MessageList typingIndicator={typingMessage ? <TypingIndicator content={currentContact.username + " is typing"} /> : false} >
-                        {/* 
+                    <ChatContainer>
+                        <ConversationHeader>
+                            <ConversationHeader.Back />
+                            {/* <Avatar src={zoeIco} name="Zoe" /> */}
+                            <ConversationHeader.Content userName={currentContact.username}
+                            // info="Active 10 mins ago" 
+                            />
+                            <ConversationHeader.Actions>
+                                <VoiceCallButton />
+                                <VideoCallButton />
+                                <InfoButton />
+                            </ConversationHeader.Actions>
+                        </ConversationHeader>
+                        <MessageList typingIndicator={typingMessage ? <TypingIndicator content={currentContact.username + " is typing"} /> : false} >
+                            {/* 
                         {typingMessage.senderId === currentContact._id ? <TypingIndicator content=" is typing" /> : null} */}
 
 
-                        {/* <MessageSeparator content="Saturday, 30 November 2019" /> */}
-                        {message && message.length > 0 ?
+                            {/* <MessageSeparator content="Saturday, 30 November 2019" /> */}
+                            {message && message.length > 0 ?
 
-                            message.map((msg, index) =>
-                            (msg.senderId === myInfo.id ?
-                                < Message key={index}
-                                    model={{
-                                        message: msg.message.text,
-                                        sentTime: "15 mins ago",
-                                        sender: msg.senderName,
-                                        direction: "outgoing",
-                                        position: "normal"
-                                    }} avatarSpacer /> :
-                                <Message key={index}
-                                    model={{
-                                        message: msg.message.text,
-                                        sentTime: "15 mins ago",
-                                        sender: msg.senderName,
-                                        direction: "incoming",
-                                        position: "single"
-                                    }} avatarSpacer />
-                            ))
-
-
-
-                            : null}
+                                message.map((msg, index) =>
+                                (msg.senderId === myInfo.id ?
+                                    < Message key={index}
+                                        model={{
+                                            message: msg.message.text,
+                                            sentTime: "15 mins ago",
+                                            sender: msg.senderName,
+                                            direction: "outgoing",
+                                            position: "normal"
+                                        }} avatarSpacer /> :
+                                    <Message key={index}
+                                        model={{
+                                            message: msg.message.text,
+                                            sentTime: "15 mins ago",
+                                            sender: msg.senderName,
+                                            direction: "incoming",
+                                            position: "single"
+                                        }} avatarSpacer />
+                                ))
 
 
 
+                                : null}
 
-                    </MessageList>
-                    <MessageInput placeholder="Type message here"
-                        onSend={(e) => sendMessage(e)}
-                        onChange={(e) => handleInput(e)}
-                    />
-                </ChatContainer>
 
-                <Sidebar position="right" style={styles.sidebar}>
-                    <div style={styles.offerContainer}>
-                        <Button style={styles.button} onClick={() => updatePrice("down")}>-</Button>
-                        <div style={styles.price}>{price}</div>
-                        <Button style={styles.button} onClick={() => updatePrice("up")}>+</Button>
-                        <Button style={styles.button} onClick={(e) => sendOffer(e)}>Send Offer</Button>
-                    </div>
-                </Sidebar>
-            </MainContainer>
+
+
+                        </MessageList>
+                        <MessageInput placeholder="Type message here"
+                            onSend={(e) => sendMessage(e)}
+                            onChange={(e) => handleInput(e)}
+                        />
+                    </ChatContainer>
+
+                    <Sidebar position="right" style={styles.sidebar}>
+                        <div style={styles.offerContainer}>
+                            <Button style={styles.button} onClick={() => updatePrice("down")}>-</Button>
+                            <div style={styles.price}>{price}</div>
+                            <Button style={styles.button} onClick={() => updatePrice("up")}>+</Button>
+                            <Button style={styles.button} onClick={(e) => sendOffer(e)}>Send Offer</Button>
+                        </div>
+                    </Sidebar>
+                </MainContainer>
+            </div>
         </div></div >
     )
 }

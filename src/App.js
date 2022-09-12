@@ -49,7 +49,6 @@ function App(props) {
 
   useEffect(() => {
     let user = localStorage.login ? JSON.parse(localStorage.login).user : null
-    console.log("useEffect" + user)
     if (user) {
       dispatch({
         type: USER_LOGIN_SUCCESS,
@@ -59,7 +58,6 @@ function App(props) {
         }
       })
     }
-    console.log("authenticated" + authenticated)
 
   }, [])
 
