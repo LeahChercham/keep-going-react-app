@@ -54,14 +54,14 @@ function Messenger(props) {
     const socket = useRef();
 
     const { contacts, message, messageSendSuccess, messageGetSuccess, new_user_add } = useSelector(state => state.messenger);
-
-
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
+    const { offer } = useSelector(state => state.offer);
     const myInfo = user
 
 
     const [currentContact, setCurrentContact] = useState(expert);
     const [socketMessage, setSocketMessage] = useState("");
+    const [socketOffer, setSocketOffer] = useState("");
     const [activeUser, setActiveUser] = useState("");
     const [hide, setHide] = useState(true);
 
@@ -71,7 +71,7 @@ function Messenger(props) {
 
     const [price, setPrice] = useState(0);
     const [offerFromMe, setOfferFromMe] = useState(false);
-    const [offer, setOffer] = useState(false) // gibt es ein offer ? // Das alles in Redux
+    const [newOffer, setNewOffer] = useState(false) // gibt es ein offer ? // Das alles in Redux
 
     // DAS HIER TESTEN
     useEffect(() => {
@@ -95,7 +95,7 @@ function Messenger(props) {
         })
 
         socket.current.on('getOffer', (data) => {
-            setPrice(data.price)
+            setSocketOffer(data)
         })
 
         socket.current.on('msgSeenResponse', msg => {
@@ -112,6 +112,15 @@ function Messenger(props) {
                 type: 'DELIVERED_MESSAGE',
                 payload: {
                     messageInfo: msg
+                }
+            })
+        })
+
+        socket.current.on('ofrDeliveredResponse', ofr => {
+            dispatch({
+                type: 'DELIVERED_OFFER',
+                payload: {
+                    messageInfo: ofr
                 }
             })
         })
@@ -189,7 +198,24 @@ function Messenger(props) {
 
         }
     }, [socketMessage]);
-    // end fith use effect
+    
+    useEffect(() => {
+        if (socketOffer && socketOffer.senderId !== currentContact._id && socketOffer.receiverId === myInfo.id) {
+            //  notificationSPlay();
+            toast.success(`${socketOffer.senderName} Send a New Offer`)
+            dispatch(updateOffer(socketOffer));
+            socket.current.emit('deliveredOffer', socketOffer);
+            dispatch({
+                type: 'UPDATE_CONTACT_OFFER',
+                payload: {
+                    offerInfo: socketOffer,
+                    status: 'delivered'
+                }
+            })
+
+        }
+    }, [socketOffer]);
+
 
     const handleInput = (newMessage) => { // TODO need main in here then
         setNewMessage(newMessage)
@@ -203,6 +229,7 @@ function Messenger(props) {
     const sendOffer = () => {
         const data = {
             senderName: myInfo.username,
+            senderId: myInfo.id,
             receiverId: currentContact._id,
             price: price,
             senderId: myInfo.id,
@@ -210,12 +237,12 @@ function Messenger(props) {
 
         socket.current.emit('sendOffer', {
             senderId: myInfo.id,
-            receiver: currentContact._id,
+            receiverId: currentContact._id,
             price: price
         })
 
         dispatch(sendOffer(data));
-        setOfferFromMe(true)
+        setNewOfferFromMe(true)
         setOffer(true)
     }
 

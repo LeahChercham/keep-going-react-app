@@ -1,4 +1,4 @@
-import { OFFER_GET_SUCCESS, OFFER_GET_SUCCESS_CLEAR, DELIVERED_OFFER, UPDATE_OFFER, UPDATE_CONTACT_OFFER, SOCKET_OFFER, OFFER_SEND_SUCCESS } from '../types/offerType';
+import { OFFER_GET_SUCCESS, OFFER_GET_SUCCESS_CLEAR, CONTACT_GET_SUCCESS, DELIVERED_OFFER, UPDATE_OFFER, UPDATE_CONTACT_OFFER, SOCKET_OFFER, OFFER_SEND_SUCCESS } from '../types/offerType';
 
 
 
@@ -7,18 +7,22 @@ const offerState = {
     offer: "",
     offerSendSuccess: false,
     offerGetSuccess: false,
-    price: 0,
-    senderId: "",
-    receiverId: "",
-    acceptedFromReceiver: false,
-    declinedFromReceiver: false,
-
+    // price: 0,
+    // senderName: "",
+    // senderId: "",
+    // receiverId: "",
+    // status: "",
 }
 
 export const offerReducer = (state = offerState, action) => {
     const { type, payload } = action;
 
-
+    if (type === CONTACT_GET_SUCCESS) {
+        return {
+            ...state,
+            contacts: payload.contacts
+        }
+    }
 
 
 
