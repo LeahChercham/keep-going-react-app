@@ -165,25 +165,28 @@ router.post('/offer/send-offer', async function (req, res) {
 });
 
 
-router.post('/offer/delivered-offer', async function (req, res) {
-    const offerId = req.body._id;
+router.post('/offer/delivered-offer', function (req, res) {
+    const offerId = req.body.offer._id;
+    console.log(offerId)
     console.log("route delivered-offer")
-    console.log(req.body)
+    console.log(req.body.offer)
 
-    await Offer.findByIdAndUpdate(offerId, {
-        status: req.body.offer.status
-    })
-        .then(() => {
+    Offer.findByIdAndUpdate(offerId, { status: req.body.offer.status }, { new: true }, (err, result) => {
+        if (err) {
+            console.log(err)
+            res.status(500).json({
+                error: {
+                    errorMessage: 'Internal Server Error' + err
+                }
+            })
+
+        } else {
+            console.log(result)
             res.status(200).json({
                 success: true
             })
-        }).catch(() => {
-            res.status(500).json({
-                error: {
-                    errorMessage: 'Internal Server Error'
-                }
-            })
-        })
+        }
+    })
 
 });
 

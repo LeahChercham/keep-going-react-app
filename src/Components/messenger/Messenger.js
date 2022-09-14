@@ -12,6 +12,7 @@ import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, up
 import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
 
 import { io } from 'socket.io-client';
+import { isArray } from 'util';
 const util = require("util")
 
 const myStyles = {
@@ -67,7 +68,7 @@ function Messenger(props) {
     const socket = useRef();
 
     const { contacts, message, messageSendSuccess, messageGetSuccess, new_user_add } = useSelector(state => state.messenger);
-    let expert = location.state ? location.state.expert : contacts[0].contactInfo ? contacts[0].contactInfo : "";
+    let expert = location.state ? location.state.expert : contacts && contacts.length > 0 ? contacts[0].contactInfo : "";
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
     const { offer, offerContacts, offerSendSuccess, offerGetSuccess } = useSelector(state => state.offer);
     const myInfo = user
@@ -245,7 +246,6 @@ function Messenger(props) {
             //  notificationSPlay();
             toast.success(`${socketOffer.senderName} Send a New Offer`)
             dispatch(updateOffer(socketOffer));
-            socket.current.emit('deliveredOffer', socketOffer);
             dispatch({
                 type: 'UPDATE_CONTACT_OFFER',
                 payload: {
@@ -253,6 +253,7 @@ function Messenger(props) {
                     status: 'delivered'
                 }
             })
+            socket.current.emit('deliveredOffer', socketOffer);
 
         }
     }, [socketOffer]);
@@ -276,6 +277,7 @@ function Messenger(props) {
             price: price,
             senderId: myInfo.id,
         }
+        dispatch(offerSend(data));
 
         socket.current.emit('sendOffer', {
             senderId: myInfo.id,
@@ -283,7 +285,6 @@ function Messenger(props) {
             price: price
         })
 
-        dispatch(offerSend(data));
         setNewOffer(true)
         setOfferFromMe(true)
     }
@@ -393,12 +394,13 @@ function Messenger(props) {
             senderId: myInfo.id,
         }
 
+        dispatch(updateOffer(data));
+
         socket.current.emit('acceptOffer', {
             senderId: myInfo.id,
             receiver: currentContact._id,
             offer: acceptedOffer
         })
-        dispatch(updateOffer(data));
         // setNewMessage('');
 
     }
@@ -421,9 +423,8 @@ function Messenger(props) {
         <div style={myStyles.container}>
             <div style={myStyles.offer}>
                 {/* das alles in separate componente */}
-                {console.log(offer)}
-                {console.log(offer.offer.price)}
-                {offer ?
+
+                {offer?.offer ?
 
                     offer.senderName === myInfo.username ?
                         offer.status !== 'accepted' ?
