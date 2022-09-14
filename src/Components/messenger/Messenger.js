@@ -268,22 +268,39 @@ function Messenger(props) {
         })
 
     }
-    const sendOffer = () => {
-        debugger
+    const sendOffer = (type) => {
+        let askerId
+        let answererId
+
+        if (type === 'asker') {
+            askerId = myInfo.id
+            answererId = currentContact._id
+        } else {
+            askerId = currentContact._id
+            answererId = myInfo.id
+        }
+
         const data = {
             senderName: myInfo.username,
             senderId: myInfo.id,
             receiverId: currentContact._id,
             price: price,
             senderId: myInfo.id,
+            askerId: askerId,
+            answererId: answererId
         }
+        
         dispatch(offerSend(data));
+
 
         socket.current.emit('sendOffer', {
             senderId: myInfo.id,
             receiverId: currentContact._id,
-            price: price
+            price: price,
+            askerId: askerId,
+            answererId: answererId
         })
+
 
         setNewOffer(true)
         setOfferFromMe(true)
@@ -533,7 +550,8 @@ function Messenger(props) {
                             <Button style={styles.button} onClick={() => updatePrice("down")}>-</Button>
                             <div style={styles.price}>{price}</div>
                             <Button style={styles.button} onClick={() => updatePrice("up")}>+</Button>
-                            <Button style={styles.button} onClick={(e) => sendOffer(e)}>Send Offer</Button>
+                            <Button style={styles.button} onClick={(e) => sendOffer("asker")}>Send Offer (I need help!) </Button>
+                            <Button style={styles.button} onClick={(e) => sendOffer("answerer")}>Send Offer (I'll help!)</Button>
                         </div>
                     </Sidebar>
                 </MainContainer>

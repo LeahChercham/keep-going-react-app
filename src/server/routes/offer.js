@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 const Offer = require('../models/offerModel')
+const User = require('../models/userModel')
 
 const getLastOffer = async (myId, expertId) => {
     const ofr = await Offer.findOne({
@@ -123,14 +124,16 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
 
 // hier post routes
 router.post('/offer/send-offer', async function (req, res) {
-    console.log('req.body')
-    console.log(req.body)
+    console.log('req.body') 
+    console.log(req.body) 
 
     const {
         senderName,
         receiverId,
         price,
-        senderId
+        senderId,
+        askerId,
+        answererId
     } = req.body
 
 
@@ -141,7 +144,9 @@ router.post('/offer/send-offer', async function (req, res) {
         offer: {
             price: price,
         },
-        status: false
+        status: false,
+        askerId: askerId,
+        answererId: answererId,
     })
 
     try {
@@ -170,21 +175,37 @@ router.post('/offer/delivered-offer', function (req, res) {
     console.log(offerId)
     console.log("route delivered-offer")
     console.log(req.body.offer)
+    const { receiverId, senderId, price } = req.body.offer
 
     Offer.findByIdAndUpdate(offerId, { status: req.body.offer.status }, { new: true }, (err, result) => {
         if (err) {
             console.log(err)
             res.status(500).json({
                 error: {
-                    errorMessage: 'Internal Server Error' + err
+                    errorMessage: 'Internal Server Error'
                 }
             })
 
         } else {
-            console.log(result)
-            res.status(200).json({
-                success: true
+            await(() => {
+                let success1
+                let success2
+                User.findByIdAndUpdate(receiverId, { tokens: { $inc: price } }, { new: true }, (err, res) => { err ? success1 = false : success1 = true })
+                User.findByIdAndUpdate(senderId, { tokens: { $inc: -price } }, { new: true }, (err, res) => err ? success2 = false : success2 = true)
             })
+
+            if (success1 && success2) {
+                res.status(200).json({
+                    success: true
+                })
+            } else {
+                res.status(500).json({
+                    error: {
+                        errorMessage: 'Internal Server Error' + err
+                    }
+                })
+            }
+
         }
     })
 

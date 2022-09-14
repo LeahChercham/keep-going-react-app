@@ -5,27 +5,31 @@ const CREATE_ROUTE = consts.CREATE_ROUTE
 const util = require("util")
 
 export const getOfferContacts = (myId) => async (dispatch) => {
-     try {
-         const response = await axios.get(CREATE_ROUTE(`offer/get-contacts/${myId}`));
-         dispatch({
-             type: CONTACT_GET_SUCCESS,
-             payload: {
-                 contacts: response.data.contacts
-             }
-         })
+    try {
+        const response = await axios.get(CREATE_ROUTE(`offer/get-contacts/${myId}`));
+        dispatch({
+            type: CONTACT_GET_SUCCESS,
+            payload: {
+                contacts: response.data.contacts
+            }
+        })
 
-     } catch (error) {
-         console.log(error.response.data);
-     }
+    } catch (error) {
+        console.log(error.response.data);
+    }
 }
 
 export const offerSend = (data) => async (dispatch) => {
     try {
         const response = await axios.post(CREATE_ROUTE('offer/send-offer'), data);
+        console.log("response offer send")
+        console.log("===============================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================")
+        console.log(response.data.offer)
+
         dispatch({
             type: OFFER_SEND_SUCCESS,
             payload: {
-                offer: response.offer
+                offer: response.data.offer
             }
         })
     } catch (error) {
@@ -36,21 +40,21 @@ export const offerSend = (data) => async (dispatch) => {
 
 export const getOffer = (expertId, myId) => {
 
-     return async (dispatch) => {
-         try {
-             const response = await axios.get(CREATE_ROUTE(`offer/get-offer/${expertId}/${myId}`));
-             dispatch({
+    return async (dispatch) => {
+        try {
+            const response = await axios.get(CREATE_ROUTE(`offer/get-offer/${expertId}/${myId}`));
+            dispatch({
 
-                 type: OFFER_GET_SUCCESS,
-                 payload: {
-                     offer: response.data.offer
-                 }
-             })
+                type: OFFER_GET_SUCCESS,
+                payload: {
+                    offer: response.data.offer
+                }
+            })
 
-         } catch (error) {
-             console.log("error:" + error)
-         }
-     }
+        } catch (error) {
+            console.log("error:" + error)
+        }
+    }
 }
 
 
