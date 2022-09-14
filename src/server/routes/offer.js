@@ -68,7 +68,10 @@ router.get('/offer/get-contacts/:myId', async function (req, res) {
 
 router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
     const expertId = req.params.expertId;
+
     const myId = req.params.myId;
+    console.log(expertId + "  expert ID")
+    console.log(myId + "  my ID")
 
     try {
         let getAllOffer = await Offer.find({
@@ -98,7 +101,8 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
 
         let lastOffer = await getLastOffer(myId, expertId);
 
-
+        console.log("last Offer")
+        console.log(lastOffer)
 
         res.status(200).json({
             success: true,
@@ -117,7 +121,7 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
 
 });
 
-// hier post get routes
+// hier post routes
 router.post('/offer/send-offer', async function (req, res) {
     console.log('req.body')
     console.log(req.body)

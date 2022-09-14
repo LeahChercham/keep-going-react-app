@@ -61,13 +61,13 @@ const myStyles = {
 
 function Messenger(props) {
     const location = useLocation();
-    let expert = location.state ? location.state.expert : "";
 
     const dispatch = useDispatch();
     const scrollRef = useRef();
     const socket = useRef();
 
     const { contacts, message, messageSendSuccess, messageGetSuccess, new_user_add } = useSelector(state => state.messenger);
+    let expert = location.state ? location.state.expert : contacts[0].contactInfo ? contacts[0].contactInfo : "";
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
     const { offer, offerContacts, offerSendSuccess, offerGetSuccess } = useSelector(state => state.offer);
     const myInfo = user
@@ -422,7 +422,9 @@ function Messenger(props) {
             <div style={myStyles.offer}>
                 {/* das alles in separate componente */}
                 {console.log(offer)}
+                {console.log(offer.offer.price)}
                 {offer ?
+
                     offer.senderName === myInfo.username ?
                         offer.status !== 'accepted' ?
                             <span
