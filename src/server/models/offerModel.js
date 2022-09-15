@@ -22,7 +22,15 @@ const offerSchema = new Schema({
     status: {
         type: String,
         default: ''
-    }
+    },
+    askerId: {
+        type: String,
+        required: true
+    },
+    answererId: {
+        type: String,
+        required: true
+    },
 }, { timestamps: true });
 
 module.exports = model('offer', offerSchema);

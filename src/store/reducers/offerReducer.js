@@ -38,14 +38,14 @@ export const offerReducer = (state = offerState, action) => {
         return {
             ...state,
             offerSendSuccess: true,
-            offer: [...state.offer, payload.offer]
+            offer: payload.offer
         }
     }
 
     if (type === SOCKET_OFFER) {
         return {
             ...state,
-            offer: [...state.offer, payload.offer]
+            offer: payload.offer
         }
     }
 

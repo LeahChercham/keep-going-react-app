@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 const Offer = require('../models/offerModel')
+const User = require('../models/userModel')
 
 const getLastOffer = async (myId, expertId) => {
     const ofr = await Offer.findOne({
@@ -30,8 +31,31 @@ const getLastOffer = async (myId, expertId) => {
     }).sort({
         updatedAt: -1
     });
-    console.log("offer: ", ofr)
     return ofr;
+}
+
+const updateUserTokens = async (userId, price, type) => {
+    console.log('hello hello ')
+    console.log(userId + type + price)
+
+    let response
+
+    if (type === "add") {
+        await User.findByIdAndUpdate(userId, { $inc: { tokens: price } }).then((res) => {
+            response = res
+        })
+    }
+
+    if (type === "remove") {
+        await User.findByIdAndUpdate(userId, { $inc: { tokens: -price } }).then((res) => {
+            response = res
+        })
+    }
+
+    if (type != "add" || type != "remove") { return null }
+
+    console.log(response)
+    return response
 }
 
 router.get('/offer/get-contacts/:myId', async function (req, res) {
@@ -43,9 +67,9 @@ router.get('/offer/get-contacts/:myId', async function (req, res) {
                 $ne: myId
             }
         });
-        console.log('length: ' + getContacts.length)
+
         for (let i = 0; i < getContacts.length; i++) {
-            console.log("in loop " + i + " myID / expert ID: " + myId + " / " + getContacts[i]._id)
+
             let lastOffer = await getLastOffer(myId, getContacts[i]._id);
             contactOffers = [...contactOffers, {
                 contactInfo: getContacts[i],
@@ -53,7 +77,7 @@ router.get('/offer/get-contacts/:myId', async function (req, res) {
             }]
 
         }
-        console.log("after loop" + contactOffers)
+
         res.status(200).json({ success: true, contacts: contactOffers })
 
     } catch (error) {
@@ -70,8 +94,6 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
     const expertId = req.params.expertId;
 
     const myId = req.params.myId;
-    console.log(expertId + "  expert ID")
-    console.log(myId + "  my ID")
 
     try {
         let getAllOffer = await Offer.find({
@@ -101,9 +123,6 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
 
         let lastOffer = await getLastOffer(myId, expertId);
 
-        console.log("last Offer")
-        console.log(lastOffer)
-
         res.status(200).json({
             success: true,
             offer: lastOffer // instead of all offer
@@ -121,16 +140,16 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
 
 });
 
-// hier post routes
+// hier post routes 
 router.post('/offer/send-offer', async function (req, res) {
-    console.log('req.body')
-    console.log(req.body)
 
     const {
         senderName,
         receiverId,
         price,
-        senderId
+        senderId,
+        askerId,
+        answererId
     } = req.body
 
 
@@ -141,13 +160,13 @@ router.post('/offer/send-offer', async function (req, res) {
         offer: {
             price: price,
         },
-        status: false
+        status: false,
+        askerId: askerId,
+        answererId: answererId,
     })
 
     try {
         newOffer.save().then(result => {
-            console.log("saved ok")
-            console.log(result)
             res.status(201).json({
                 successMessage: "Offer created",
                 offer: result
@@ -165,28 +184,27 @@ router.post('/offer/send-offer', async function (req, res) {
 });
 
 
-router.post('/offer/delivered-offer', function (req, res) {
-    const offerId = req.body.offer._id;
-    console.log(offerId)
-    console.log("route delivered-offer")
-    console.log(req.body.offer)
+router.post('/offer/delivered-offer', async function (req, res) {
+    const { offer, answererId, askerId } = req.body.offer
+    const price = offer.price
+    const offerId = offer._id
 
-    Offer.findByIdAndUpdate(offerId, { status: req.body.offer.status }, { new: true }, (err, result) => {
-        if (err) {
-            console.log(err)
-            res.status(500).json({
-                error: {
-                    errorMessage: 'Internal Server Error' + err
-                }
-            })
+    try {
+        await Offer.findByIdAndUpdate(offerId, { status: req.body.offer.status }, { new: true })
+        await User.findByIdAndUpdate(answererId, { $inc: { tokens: price } })
+        await User.findByIdAndUpdate(askerId, { $inc: { tokens: -price } })
 
-        } else {
-            console.log(result)
-            res.status(200).json({
-                success: true
-            })
-        }
-    })
+        res.status(200).json({
+            success: true
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            error: {
+                errorMessage: 'Internal Server Error'
+            }
+        })
+    }
 
 });
 
