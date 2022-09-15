@@ -183,7 +183,6 @@ router.post('/offer/send-offer', async function (req, res) {
 
 });
 
-
 router.post('/offer/delivered-offer', async function (req, res) {
     const { offer, answererId, askerId } = req.body.offer
     const price = offer.price
