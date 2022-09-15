@@ -354,7 +354,6 @@ function Messenger(props) {
 
 
 
-
     useEffect(() => {
         dispatch(getMessage(currentContact._id, myInfo.id));
         dispatch(getOffer(currentContact._id, myInfo.id));
