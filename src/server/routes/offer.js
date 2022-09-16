@@ -34,30 +34,6 @@ const getLastOffer = async (myId, expertId) => {
     return ofr;
 }
 
-const updateUserTokens = async (userId, price, type) => {
-    console.log('hello hello ')
-    console.log(userId + type + price)
-
-    let response
-
-    if (type === "add") {
-        await User.findByIdAndUpdate(userId, { $inc: { tokens: price } }).then((res) => {
-            response = res
-        })
-    }
-
-    if (type === "remove") {
-        await User.findByIdAndUpdate(userId, { $inc: { tokens: -price } }).then((res) => {
-            response = res
-        })
-    }
-
-    if (type != "add" || type != "remove") { return null }
-
-    console.log(response)
-    return response
-}
-
 router.get('/offer/get-contacts/:myId', async function (req, res) {
     const myId = req.params.myId;
     let contactOffers = [];

@@ -100,14 +100,17 @@ export const userUpdate = (data) => {
 
 export const userGet = (user) => {
     let { username } = user
+    console.log("username:" + username)
     return async dispatch => {
         try {
             let response = await Axios.get(CREATE_ROUTE(`user/username/${username}`))
+            console.log("response user get:")
+            console.log(response)
             dispatch({
                 type: USER_GET_SUCCESS,
                 payload: {
                     successMessage: "success",
-                    user: response
+                    user: response.data
                 }
             })
         } catch (error) {

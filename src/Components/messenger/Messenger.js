@@ -410,7 +410,10 @@ function Messenger(props) {
             senderId: myInfo.id,
         }
 
-        dispatch(updateOffer(data));
+        dispatch(updateOffer(data)).then((res) => {
+            console.log("getting user hopefully updated tokens")
+            dispatch(userGet(myInfo))
+        })
 
         socket.current.emit('acceptOffer', {
             senderId: myInfo.id,
@@ -418,8 +421,6 @@ function Messenger(props) {
             offer: acceptedOffer
         })
         // setNewMessage('');
-        console.log("getting user hopefully updated tokens")
-        dispatch(userGet(myInfo))
 
     }
     const declineOffer = () => { }
