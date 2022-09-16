@@ -139,7 +139,7 @@ router.post('/offer/send-offer', async function (req, res) {
         },
         status: false,
         askerId: askerId,
-        answererId: answererId,
+        answererId: answererId, 
     })
 
     try {

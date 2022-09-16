@@ -239,34 +239,37 @@ function Messenger(props) {
                 answererId: answererId
             })
 
-            await dispatch({
+            dispatch({
                 type: 'UPDATE_CONTACT_OFFER',
                 payload: {
                     messageInfo: message[message.length - 1]
                 }
             })
-            await dispatch({
+            dispatch({
                 type: 'OFFER_SEND_SUCCESS_CLEAR'
             })
         }
     }, [offerSendSuccess])
 
     const sendOffer = async (type) => {
+        debugger
 
+        let askId
+        let answId
         console.log('user id: ' + user.id)
         console.log('type: ' + type)
 
         if (type === 'asker') {
-            await setAskerId(user.id)
-            await setAnswererId(currentContact._id)
+            askId = user.id
+            answId = currentContact._id
 
         } else {
-            await setAskerId(currentContact._id)
-            await setAnswererId(user.id)
+            askId = currentContact._id
+            answId = user.id
         }
         // HIER UNDEFINED SCHON
-        console.log('askerId: ' + askerId)
-        console.log('answererId: ' + answererId)
+        console.log('askerId: ' + askId)
+        console.log('answererId: ' + answId)
 
         const data = {
             senderName: user.username,
@@ -274,12 +277,12 @@ function Messenger(props) {
             receiverId: currentContact._id,
             price: price,
             senderId: user.id,
-            askerId: askerId,
-            answererId: answererId
+            askerId: askId,
+            answererId: answId
         }
 
         console.log(data)
-        await dispatch(offerSend(data));
+        dispatch(offerSend(data));
 
 
         socket.emit('sendOffer', {
