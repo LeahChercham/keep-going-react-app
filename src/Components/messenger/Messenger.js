@@ -13,52 +13,9 @@ import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/
 import { userGet } from '../../store/actions/authActions';
 
 import { io } from 'socket.io-client';
+import { styles as myStyles } from './styles'
 const util = require("util")
 
-const myStyles = {
-    container: {
-        display: "flex",
-        flexFlow: "column",
-        justifyContent: "space-evenly",
-        alignContent: "center",
-        width: "100%",
-        height: "100%",
-    },
-    offer: {
-        display: "flex",
-        fontSize: "2em",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    main: {
-        display: "flex",
-        flexFlow: "row",
-        justifyContent: "space-evenly",
-        alignContent: "center",
-        width: "100%",
-        height: "100%",
-    },
-    offerContainer: {
-        display: "flex",
-        flexFlow: "row",
-        justifyContent: "space-evenly",
-        alignContent: "center",
-        width: "100%",
-        height: "100%",
-    },
-    button: {
-        fontWeight: 500,
-        fontSize: "1em",
-    },
-    price: {
-        display: 'flex',
-        alignSelf: 'center',
-        fontSize: "1em",
-        fontWeight: 900,
-    }, sidebar: {
-        display: 'flex'
-    }
-}
 
 function Messenger(props) {
     const location = useLocation();
@@ -192,8 +149,6 @@ function Messenger(props) {
     }, [socketOffer]);
 
 
-
-
     useEffect(() => {
         socket.current.emit('addUser', myInfo.id, myInfo)
     }, []);
@@ -260,6 +215,7 @@ function Messenger(props) {
         })
 
     }
+
     const sendOffer = (type) => {
         let askerId
         let answererId
@@ -336,6 +292,7 @@ function Messenger(props) {
         }
     }, [messageSendSuccess]);
 
+
     useEffect(() => {
         // let data = myInfo.id
         // console.log(myInfo.id)
@@ -343,14 +300,10 @@ function Messenger(props) {
         dispatch({ type: 'NEW_USER_ADD_CLEAR' })
     }, [new_user_add]);
 
-
-
-
     useEffect(() => {
         dispatch(getMessage(currentContact._id, myInfo.id));
         dispatch(getOffer(currentContact._id, myInfo.id));
     }, [currentContact?._id]);
-
 
 
     useEffect(() => {
@@ -541,9 +494,12 @@ function Messenger(props) {
 
                     <Sidebar position="right" style={styles.sidebar}>
                         <div style={styles.offerContainer}>
-                            <Button style={styles.button} onClick={() => updatePrice("down")}>-</Button>
-                            <div style={styles.price}>{price}</div>
-                            <Button style={styles.button} onClick={() => updatePrice("up")}>+</Button>
+                            <div style={styles.offerButtons}>
+                                <Button style={styles.button} onClick={() => updatePrice("down")}>-</Button>
+                                <div style={styles.price}>{price}</div>
+                                <Button style={styles.button} onClick={() => updatePrice("up")}>+</Button>
+
+                            </div>
                             <Button style={styles.button} onClick={(e) => sendOffer("asker")}>Send Offer (I need help!) </Button>
                             <Button style={styles.button} onClick={(e) => sendOffer("answerer")}>Send Offer (I'll help!)</Button>
                         </div>
