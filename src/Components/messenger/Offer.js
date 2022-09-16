@@ -1,38 +1,36 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import { st as myStyles } from './styles'
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
 import { userGet } from '../../store/actions/authActions';
-import { io } from 'socket.io-client';
+import { SocketContext } from '../../socket/socketContext'
 
 function Offer(props) {
 
-
     const dispatch = useDispatch();
-    const socket = useRef();
-    
+    const socket = useContext(SocketContext);
+
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
     const { offer, offerContacts, offerSendSuccess, offerGetSuccess } = useSelector(state => state.offer);
     const myInfo = user
-    
-    let currentContact = props.currentContact;
-    
-    useEffect(() => {
-        socket.current = io('ws://localhost:8000');
 
-        socket.current.on('getOffer', (data) => {
-            // dispatch({
-            //     type: 'OFFER_GET_SUCCESS',
-            //     payload: {
-            //         offer: data
-            //     }
-            // })
+    let currentContact = props.currentContact;
+
+    useEffect(() => {
+
+        socket.on('getOffer', (data) => {
+            dispatch({
+                type: 'OFFER_GET_SUCCESS',
+                payload: {
+                    offer: data
+                }
+            })
             console.log(data)
         })
 
-        socket.current.on('ofrDeliveredResponse', ofr => {
+        socket.on('ofrDeliveredResponse', ofr => {
             dispatch({
                 type: 'DELIVERED_OFFER',
                 payload: {
@@ -59,7 +57,7 @@ function Offer(props) {
             dispatch(userGet(myInfo))
         })
 
-        socket.current.emit('respondToOffer', {
+        socket.emit('respondToOffer', {
             senderId: myInfo.id,
             receiver: currentContact._id,
             offer: responseOffer

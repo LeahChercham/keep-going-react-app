@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Button } from '@mui/material';
 
@@ -12,18 +12,20 @@ import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, up
 import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
 import { userGet } from '../../store/actions/authActions';
 
-import { io } from 'socket.io-client';
+import { SocketContext } from '../../socket/socketContext';
+
 import { st as myStyles } from './styles'
 import Offer from './Offer';
 const util = require("util")
 
 
 function Messenger(props) {
+    const socket = useContext(SocketContext)
     const location = useLocation();
 
     const dispatch = useDispatch();
     const scrollRef = useRef();
-    const socket = useRef();
+    // const socket = useRef();
 
     const { contacts, message, messageSendSuccess, messageGetSuccess, new_user_add } = useSelector(state => state.messenger);
     let expert = location.state ? location.state.expert : contacts && contacts.length > 0 ? contacts[0].contactInfo : "";
@@ -51,27 +53,27 @@ function Messenger(props) {
 
     useEffect(() => {
 
-        socket.current = io('ws://localhost:8000');
+        // socket.current = io('ws://localhost:8000');
 
 
 
-        socket.current.on('getMessage', (data) => {
+        socket.on('getMessage', (data) => {
 
             setSocketMessage(data)
         })
 
-        socket.current.on('getOffer', (data) => {
+        socket.on('getOffer', (data) => {
             setSocketOffer(data)
         })
 
 
-        socket.current.on('typingMessageGet', (data) => {
+        socket.on('typingMessageGet', (data) => {
             // console.log("typingMessage: " + util.inspect(data, false, 7))
             setTypingMessage(data)
         })
 
 
-        socket.current.on('msgSeenResponse', msg => {
+        socket.on('msgSeenResponse', msg => {
             dispatch({
                 type: 'SEEN_MESSAGE',
                 payload: {
@@ -80,7 +82,7 @@ function Messenger(props) {
             })
         })
 
-        socket.current.on('msgDeliveredResponse', msg => {
+        socket.on('msgDeliveredResponse', msg => {
             dispatch({
                 type: 'DELIVERED_MESSAGE',
                 payload: {
@@ -89,7 +91,7 @@ function Messenger(props) {
             })
         })
 
-        // socket.current.on('ofrDeliveredResponse', ofr => {
+        // socket.on('ofrDeliveredResponse', ofr => {
         //     dispatch({
         //         type: 'DELIVERED_OFFER',
         //         payload: {
@@ -98,7 +100,7 @@ function Messenger(props) {
         //     })
         // })
 
-        socket.current.on('seenSuccess', data => {
+        socket.on('seenSuccess', data => {
             dispatch({
                 type: 'SEEN_ALL',
                 payload: data
@@ -119,7 +121,7 @@ function Messenger(props) {
                     }
                 })
                 dispatch(seenMessage(socketMessage));
-                socket.current.emit('messageSeen', socketMessage);
+                socket.emit('messageSeen', socketMessage);
                 dispatch({
                     type: 'UPDATE_CONTACT_MESSAGE',
                     payload: {
@@ -143,7 +145,7 @@ function Messenger(props) {
                     }
                 })
                 // dispatch(seenOffer(socketOffer));
-                // socket.current.emit('messageSeen', socketMessage);
+                // socket.emit('messageSeen', socketMessage);
                 // dispatch({
                 //     type: 'UPDATE_CONTACT_MESSAGE',
                 //     payload: {
@@ -158,17 +160,17 @@ function Messenger(props) {
 
 
     useEffect(() => {
-        socket.current.emit('addUser', myInfo.id, myInfo)
+        socket.emit('addUser', myInfo.id, myInfo)
     }, []);
     // end third use effect
 
     useEffect(() => {
-        socket.current.on('getUser', (users) => {
+        socket.on('getUser', (users) => {
             const activeUser = users.filter(u => u.userId !== myInfo.id)
             setActiveUser(activeUser)
         })
 
-        socket.current.on('new_user_add', data => {
+        socket.on('new_user_add', data => {
             dispatch({
                 type: 'NEW_USER_ADD',
                 payload: {
@@ -184,7 +186,7 @@ function Messenger(props) {
             //  notificationSPlay();
             toast.success(`${socketMessage.senderName} Send a New Message`)
             dispatch(updateMessage(socketMessage));
-            socket.current.emit('deliveredMessage', socketMessage);
+            socket.emit('deliveredMessage', socketMessage);
             dispatch({
                 type: 'UPDATE_CONTACT_MESSAGE',
                 payload: {
@@ -208,7 +210,7 @@ function Messenger(props) {
                     status: 'delivered'
                 }
             })
-            socket.current.emit('deliveredOffer', socketOffer);
+            socket.emit('deliveredOffer', socketOffer);
 
         }
     }, [socketOffer]);
@@ -216,7 +218,7 @@ function Messenger(props) {
 
     const handleInput = (newMessage) => { // TODO need main in here then
         setNewMessage(newMessage)
-        socket.current.emit('typingMessage', {
+        socket.emit('typingMessage', {
             senderId: myInfo.id,
             receiverId: currentContact._id,
             msg: newMessage
@@ -226,8 +228,10 @@ function Messenger(props) {
 
     useEffect(() => {
         if (offerSendSuccess) {
+            console.log("askerId: " + askerId)
+            console.log("answererId: " + answererId)
 
-            socket.current.emit('sendOffer', {
+            socket.emit('sendOffer', {
                 senderId: user.id,
                 receiverId: currentContact._id,
                 price: price,
@@ -235,30 +239,34 @@ function Messenger(props) {
                 answererId: answererId
             })
 
-            dispatch({
+            await dispatch({
                 type: 'UPDATE_CONTACT_OFFER',
                 payload: {
                     messageInfo: message[message.length - 1]
                 }
             })
-            dispatch({
+            await dispatch({
                 type: 'OFFER_SEND_SUCCESS_CLEAR'
             })
         }
     }, [offerSendSuccess])
 
-    const sendOffer = (type) => {
+    const sendOffer = async (type) => {
 
-        console.log('user: ' + user)
+        console.log('user id: ' + user.id)
+        console.log('type: ' + type)
 
         if (type === 'asker') {
-            setAskerId(user.id)
-            setAnswererId(currentContact._id)
+            await setAskerId(user.id)
+            await setAnswererId(currentContact._id)
 
         } else {
-            setAskerId(currentContact._id)
-            setAnswererId(user.id)
+            await setAskerId(currentContact._id)
+            await setAnswererId(user.id)
         }
+        // HIER UNDEFINED SCHON
+        console.log('askerId: ' + askerId)
+        console.log('answererId: ' + answererId)
 
         const data = {
             senderName: user.username,
@@ -271,10 +279,10 @@ function Messenger(props) {
         }
 
         console.log(data)
-        dispatch(offerSend(data));
+        await dispatch(offerSend(data));
 
 
-        socket.current.emit('sendOffer', {
+        socket.emit('sendOffer', {
             senderId: user.id,
             receiverId: currentContact._id,
             price: price,
@@ -299,7 +307,7 @@ function Messenger(props) {
 
         setTypingMessage('')
 
-        socket.current.emit('typingMessage', {
+        socket.emit('typingMessage', {
             senderId: myInfo.id,
             receiver: currentContact._id,
             receiverId: currentContact._id,
@@ -316,7 +324,7 @@ function Messenger(props) {
         // console.log("messageSendSuccess: " + messageSendSuccess)
         // console.log("message: " + message)
         if (messageSendSuccess) { // from redux state
-            socket.current.emit('sendMessage', message[message.length - 1]);
+            socket.emit('sendMessage', message[message.length - 1]);
             dispatch({
                 type: 'UPDATE_CONTACT_MESSAGE',
                 payload: {
@@ -352,7 +360,7 @@ function Messenger(props) {
                         id: currentContact._id
                     }
                 })
-                socket.current.emit('seen', { senderId: currentContact._id, receiverId: myInfo.id })
+                socket.emit('seen', { senderId: currentContact._id, receiverId: myInfo.id })
                 dispatch(seenMessage({ _id: message[message.length - 1]._id }))
             }
         }

@@ -118,8 +118,8 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
 
 // hier post routes 
 router.post('/offer/send-offer', async function (req, res) {
-    console.log(req.body)
-    
+    console.log(req.body) // HIER ERROR ASKERID ANSWERERID EMPTY
+
     const {
         senderName,
         receiverId,

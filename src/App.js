@@ -17,6 +17,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import ExpertProfile from './Components/ExpertProfile';
 import Messenger from './Components/messenger/Messenger';
 import { userLogin } from './store/actions/authActions';
+
+import { SocketContext, socket } from './socket/socketContext';
+
 const CREATE_ROUTE = consts.CREATE_ROUTE
 
 
@@ -63,67 +66,68 @@ function App(props) {
 
 
   return (
+    <SocketContext.Provider value={socket}>
+      < BrowserRouter >
+        <div style={styles.main}>
 
-    < BrowserRouter >
-      <div style={styles.main}>
-
-        <NavBar />
-
-
-        <div className="page">
-          <Routes>
-            <Route path="/" element={
-              (authenticated ?
-                (<Navigate to="/search" />) :
-                (<LandingPage />))}>
-            </Route>
+          <NavBar />
 
 
-            <Route path="/search" element={
-              (authenticated ?
-                (<SearchPage />) :
-                (<LandingPage />))
-            }>
-            </Route>
+          <div className="page">
+            <Routes>
+              <Route path="/" element={
+                (authenticated ?
+                  (<Navigate to="/search" />) :
+                  (<LandingPage />))}>
+              </Route>
 
-            <Route path="/login" element={
-              <Login />}>
-            </Route>
-            <Route path="/results" element={
-              (authenticated ?
-                (<Results />) :
-                (<Navigate to="/" />))
-            }>
-            </Route>
-            <Route path="/register" element={
-              <Signup />}>
-            </Route>
-            <Route path="/profile" element={
-              (authenticated ?
-                (<Profile />) :
-                (<Navigate to="/" />))
-            }>
-            </Route>
 
-            <Route path="/expert" element={
-              (authenticated ?
-                (<ExpertProfile />) :
-                (<Navigate to="/" />))
-            }>
-            </Route>
+              <Route path="/search" element={
+                (authenticated ?
+                  (<SearchPage />) :
+                  (<LandingPage />))
+              }>
+              </Route>
 
-            <Route path="/chat" element={
-              (authenticated ?
-                (<Messenger />) :
-                (<Navigate to="/" />))
-            }>
-            </Route>
+              <Route path="/login" element={
+                <Login />}>
+              </Route>
+              <Route path="/results" element={
+                (authenticated ?
+                  (<Results />) :
+                  (<Navigate to="/" />))
+              }>
+              </Route>
+              <Route path="/register" element={
+                <Signup />}>
+              </Route>
+              <Route path="/profile" element={
+                (authenticated ?
+                  (<Profile />) :
+                  (<Navigate to="/" />))
+              }>
+              </Route>
 
-          </Routes>
+              <Route path="/expert" element={
+                (authenticated ?
+                  (<ExpertProfile />) :
+                  (<Navigate to="/" />))
+              }>
+              </Route>
 
+              <Route path="/chat" element={
+                (authenticated ?
+                  (<Messenger />) :
+                  (<Navigate to="/" />))
+              }>
+              </Route>
+
+            </Routes>
+
+          </div>
         </div>
-      </div>
-    </BrowserRouter >
+      </BrowserRouter >
+    </SocketContext.Provider>
   )
 }
 
