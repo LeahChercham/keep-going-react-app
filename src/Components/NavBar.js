@@ -32,9 +32,10 @@ const styles = {
 }
 
 function NavBar(props) {
-    const [state, setState] = useState({
-        user: {},
-    })
+    // const [state, setState] = useState({
+    //     user: {},
+    // })
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -44,6 +45,12 @@ function NavBar(props) {
         dispatch(userLogout())
         navigate("/")
     }
+
+    // useEffect(() => {
+    //     setState(user)
+    // }, [user])
+
+
 
     return (
         <AppBar style={styles.appbar}>

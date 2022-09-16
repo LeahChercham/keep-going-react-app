@@ -183,18 +183,23 @@ router.post('/offer/send-offer', async function (req, res) {
 
 });
 
-router.post('/offer/delivered-offer', async function (req, res) {
-    const { offer, answererId, askerId } = req.body.offer
-    const price = offer.price
-    const offerId = offer._id
+router.post('/offer/delivered-offer', async function (req, res) { // OK
+    const { _id, answererId, askerId, senderId, receiverId } = req.body.offer
+    const price = req.body.offer.offer.price
+    const offerId = _id
 
     try {
-        await Offer.findByIdAndUpdate(offerId, { status: req.body.offer.status }, { new: true })
-        await User.findByIdAndUpdate(answererId, { $inc: { tokens: price } })
-        await User.findByIdAndUpdate(askerId, { $inc: { tokens: -price } })
 
-        res.status(200).json({
-            success: true
+        await Offer.findByIdAndUpdate(offerId, { status: req.body.offer.status }, { new: true }) //OK
+        await User.findByIdAndUpdate(answererId, { $inc: { tokens: price } }) // OK
+        await User.findByIdAndUpdate(askerId, { $inc: { tokens: -price } }) // OK
+
+        let offer = await Offer.findById(offerId); //OK
+
+
+        res.status(200).json({ // OK
+            success: true,
+            offer: offer
         })
 
     } catch (error) {

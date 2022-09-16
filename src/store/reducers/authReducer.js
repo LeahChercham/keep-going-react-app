@@ -1,4 +1,4 @@
-import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_SUCCESS, CLEAR_ERROR, USER_LOGOUT, USER_UPDATE_FAIL, USER_UPDATE_SUCCESS } from "../types/authType";
+import { USER_GET_FAIL, USER_GET_SUCCESS, AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_SUCCESS, CLEAR_ERROR, USER_LOGOUT, USER_UPDATE_FAIL, USER_UPDATE_SUCCESS } from "../types/authType";
 
 const authState = {
     loading: true,
@@ -75,6 +75,19 @@ export const authReducer = (state = authState, action) => {
                 error: payload.error,
                 authenticated: true,
                 loading: true
+            }
+        case USER_GET_FAIL:
+            return {
+                ...state,
+                error: payload.error,
+            }
+        
+        case USER_GET_SUCCESS:
+            return{
+                ...state,
+                error: "",
+                successMessage: payload.successMessage,
+                user: payload.user,
             }
         default:
             return state;

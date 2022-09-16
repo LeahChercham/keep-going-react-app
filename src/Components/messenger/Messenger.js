@@ -10,9 +10,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast, { Toaster } from 'react-hot-toast';
 import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, updateMessage, } from '../../store/actions/messengerAction';
 import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
+import { userGet } from '../../store/actions/authActions';
 
 import { io } from 'socket.io-client';
-import { isArray } from 'util';
 const util = require("util")
 
 const myStyles = {
@@ -289,7 +289,7 @@ function Messenger(props) {
             askerId: askerId,
             answererId: answererId
         }
-        
+
         dispatch(offerSend(data));
 
 
@@ -418,6 +418,8 @@ function Messenger(props) {
             offer: acceptedOffer
         })
         // setNewMessage('');
+        console.log("getting user hopefully updated tokens")
+        dispatch(userGet(myInfo))
 
     }
     const declineOffer = () => { }
@@ -446,7 +448,7 @@ function Messenger(props) {
                         offer.status !== 'accepted' ?
                             <span
                                 style={{ height: "2em", alignItems: 'center', display: 'flex' }}>
-                                You send you a new offer:
+                                You send a new offer:
                                 <span style={{ color: 'darkBlue' }}>
                                     {offer.offer.price} Tokens
                                 </span>

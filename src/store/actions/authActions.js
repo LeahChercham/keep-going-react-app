@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import consts from '../../consts'
-import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, CLEAR_ERROR, USER_LOGOUT, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL } from '../types/authType';
+import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, CLEAR_ERROR, USER_LOGOUT, USER_UPDATE_SUCCESS, USER_GET_FAIL, USER_GET_SUCCESS, USER_UPDATE_FAIL } from '../types/authType';
 const CREATE_ROUTE = consts.CREATE_ROUTE
 const util = require("util")
 
@@ -72,7 +72,7 @@ export const userUpdate = (data) => {
     let oldKeywords = data.oldKeywords
 
     let transferData = {
-        updateUser, 
+        updateUser,
         oldKeywords
     }
 
@@ -96,4 +96,29 @@ export const userUpdate = (data) => {
             })
         }
     }
+}
+
+export const userGet = (user) => {
+    let { username } = user
+    return async dispatch => {
+        try {
+            let response = await Axios.get(CREATE_ROUTE(`user/username/${username}`))
+            dispatch({
+                type: USER_GET_SUCCESS,
+                payload: {
+                    successMessage: "success",
+                    user: response
+                }
+            })
+        } catch (error) {
+            dispatch({
+                type: USER_GET_FAIL,
+                payload: {
+                    error: error.response.data.error.errorMessage
+                }
+            })
+        }
+
+    }
+
 }
