@@ -88,14 +88,6 @@ function Messenger(props) {
     const [offerFromMe, setOfferFromMe] = useState(false);
     const [newOffer, setNewOffer] = useState(false) // gibt es ein offer ? // Das alles in Redux
 
-    // DAS HIER TESTEN
-    useEffect(() => {
-        if (contacts && contacts.length > 0) {
-            let currentContact = contacts[0].contactInfo
-            setCurrentContact(currentContact)
-        }
-    }, [contacts]);
-
 
     useEffect(() => {
         socket.current = io('ws://localhost:8000');

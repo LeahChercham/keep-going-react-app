@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormControl } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
@@ -9,6 +9,7 @@ import consts from '../consts'
 import { userLogin } from '../store/actions/authActions';
 import { useDispatch } from 'react-redux' // dispatch actions to the store
 import { userRegister } from '../store/actions/authActions';
+import { useSelector } from 'react-redux';
 const CREATE_ROUTE = consts.CREATE_ROUTE
 const styles = {
     main: {
@@ -45,9 +46,8 @@ function Signup(props) {
             tokens: 50,
         },
         confirmPassword: "",
-        error: "",
-        redirect: false
     })
+    const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
 
     const dispatch = useDispatch();
 
@@ -149,103 +149,97 @@ function Signup(props) {
 
     // To do: use function from authActions (reducer)
     // Should I use FormData ?
-    const signUp = () => {
+    const signUp = async () => {
         let userData = { ...state.newUser }
 
-        dispatch(userRegister(userData)).then(() => {
-            // login()
-            userLogin(state.newUser.username, state.newUser.password)
-        })
+        await dispatch(userRegister(userData))
 
     }
 
-    // const login = async () => {
-    //     let loginSuccessfull = await props.login(state.newUser.username, state.newUser.password);
+    useEffect(() => {
+        if (authenticated) {
+            navigate("/search")
+        }
+        if (error) {
+            alert.error(error)
+            dispatch({ type: 'CLEAR_ERROR' })
+        }
+    })
 
+    return (
+        < div >
+            <div style={{ marginLeft: "4em", marginRight: "4em" }}>
+                <div style={styles.text.header}>Sign Up</div>
+                <FormControl style={styles.main} >
+                    <div>
+                        <TextField
+                            error={state.newUser.usernameTaken}
+                            id="username"
+                            label="Username"
+                            value={state.newUser.username}
+                            onChange={handleChange}
+                            margin="normal"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                        />
+                        <FormHelperText id="my-helper-text">{state.newUser.usernameTaken ? "Username already taken" : ""}</FormHelperText>
+                    </div>
+                    <div>
+                        <TextField
+                            error={state.newUser.emailTaken}
+                            id="email"
+                            label="Email"
+                            value={state.newUser.email}
+                            onChange={handleChange}
+                            margin="normal"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                        />
+                        <FormHelperText id="my-helper-text">{state.newUser.emailTaken ? "An account with this e-mail address already exists" : ""}</FormHelperText>
+                    </div>
+                    <div>
+                        <TextField
+                            id="password"
+                            label="Password"
+                            type="password"
+                            value={state.newUser.password}
+                            onChange={handleChange}
+                            margin="normal"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                        />
+                        <FormHelperText id="my-helper-text">Chose a strong password.</FormHelperText>
+                    </div>
+                    <div>
+                        <TextField
+                            id="confirmPassword"
+                            label="Confirm Password"
+                            type="password"
+                            value={state.confirmPassword}
+                            onChange={handleChange}
+                            margin="normal"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                        />
+                    </div>
 
-    //     loginSuccessfull ? setState({ ...state, redirect: true }) : setState({ ...state, error: "Login failed" });
-    // }
-
-
-    const { redirect, error } = { ...state };
-
-    if (redirect) {
-        return <Navigate to="/search" />
-    } else {
-        return (
-            < div >
-                <div style={{ marginLeft: "4em", marginRight: "4em" }}>
-                    <div style={styles.text.header}>Sign Up</div>
-                    <FormControl style={styles.main} >
-                        <div>
-                            <TextField
-                                error={state.newUser.usernameTaken}
-                                id="username"
-                                label="Username"
-                                value={state.newUser.username}
-                                onChange={handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            />
-                            <FormHelperText id="my-helper-text">{state.newUser.usernameTaken ? "Username already taken" : ""}</FormHelperText>
-                        </div>
-                        <div>
-                            <TextField
-                                error={state.newUser.emailTaken}
-                                id="email"
-                                label="Email"
-                                value={state.newUser.email}
-                                onChange={handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            />
-                            <FormHelperText id="my-helper-text">{state.newUser.emailTaken ? "An account with this e-mail address already exists" : ""}</FormHelperText>
-                        </div>
-                        <div>
-                            <TextField
-                                id="password"
-                                label="Password"
-                                type="password"
-                                value={state.newUser.password}
-                                onChange={handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            />
-                            <FormHelperText id="my-helper-text">Chose a strong password.</FormHelperText>
-                        </div>
-                        <div>
-                            <TextField
-                                id="confirmPassword"
-                                label="Confirm Password"
-                                type="password"
-                                value={state.confirmPassword}
-                                onChange={handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            />
-                        </div>
-
-                        <div>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleSubmit}>
-                                Sign Up
-                            </Button>
-                        </div>
-                        <div>
-                            {state.error}
-                        </div>
-                    </FormControl>
-                </div >
-            </div>
-        )
-    }
+                    <div>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSubmit}>
+                            Sign Up
+                        </Button>
+                    </div>
+                    <div>
+                        {state.error}
+                    </div>
+                </FormControl>
+            </div >
+        </div>
+    )
 }
+
 
 
 export default Signup;

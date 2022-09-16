@@ -81,7 +81,7 @@ function NavBar(props) {
                         </RouterLink>
                     </span>
                     :
-                    <div>{
+                    <div style={styles.linksBox}>{
 
                         (pages.map((page) => (
                             <RouterLink to={page.href} key={page.label} style={{ textDecoration: "none" }}>

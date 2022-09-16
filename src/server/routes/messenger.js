@@ -45,10 +45,12 @@ router.get('/messenger/get-contacts/:myId', async function (req, res) {
         });
         for (let i = 0; i < getContacts.length; i++) {
             let lastMessage = await getLastMessage(myId, getContacts[i]._id);
-            contactMessages = [...contactMessages, {
-                contactInfo: getContacts[i],
-                messageInfo: lastMessage
-            }]
+            if (lastMessage) {
+                contactMessages = [...contactMessages, {
+                    contactInfo: getContacts[i],
+                    messageInfo: lastMessage
+                }]
+            }
 
         }
         res.status(200).json({ success: true, contacts: contactMessages })
