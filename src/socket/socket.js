@@ -52,19 +52,29 @@ io.on('connection', (socket) => {
           }
      })
 
-     socket.on('acceptOffer', (data)=> {
-          console.log('acceptOffer')
+     socket.on('respondToOffer', (data) => {
+          console.log('respondToOffer')
           const user = findContact(data.receiverId);
+          const sender = findContact(data.senderId);
           if (user !== undefined) {
+               console.log('socket emitting respond to offer')
                socket.to(user.socketId).emit('getOffer', data)
+          }
+          if (sender !== undefined) {
+               socket.to(sender.socketId).emit('getOffer', data)
           }
      })
 
      socket.on('sendOffer', (data) => {
           console.log('sendOffer')
           const user = findContact(data.receiverId);
+          const sender = findContact(data.senderId);
           if (user !== undefined) {
+               console.log('socket emitting send offer')
                socket.to(user.socketId).emit('getOffer', data)
+          }
+          if (sender !== undefined) {
+               socket.to(sender.socketId).emit('getOffer', data)
           }
      })
 

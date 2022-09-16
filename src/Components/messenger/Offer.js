@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
 import { userGet } from '../../store/actions/authActions';
+import { io } from 'socket.io-client';
 
 function Offer(props) {
 
-    // const location = useLocation();
+
     const dispatch = useDispatch();
     const socket = useRef();
 
@@ -18,14 +19,38 @@ function Offer(props) {
 
     let currentContact = props.currentContact;
 
-    // ACCEPTING OR DECLINING OFFER
-    const acceptOffer = () => {
-        let acceptedOffer = offer
-        acceptedOffer.status = 'accepted'
+    useEffect(() => {
+        socket.current = io('ws://localhost:8000');
+
+        socket.current.on('getOffer', (data) => {
+            // dispatch({
+            //     type: 'OFFER_GET_SUCCESS',
+            //     payload: {
+            //         offer: data
+            //     }
+            // })
+            console.log(data)
+        })
+
+        socket.current.on('ofrDeliveredResponse', ofr => {
+            dispatch({
+                type: 'DELIVERED_OFFER',
+                payload: {
+                    messageInfo: ofr
+                }
+            })
+        })
+
+    }, []);
+
+    const respondToOffer = (response) => {
+        let responseOffer = offer
+        response === 'accept' ? offer.status = 'accepted' : offer.status = 'declined'
+
         const data = {
             senderName: myInfo.username,
             receiverId: currentContact._id,
-            offer: acceptedOffer,
+            offer: responseOffer,
             senderId: myInfo.id,
         }
 
@@ -34,21 +59,15 @@ function Offer(props) {
             dispatch(userGet(myInfo))
         })
 
-        socket.current.emit('acceptOffer', {
+        socket.current.emit('respondToOffer', {
             senderId: myInfo.id,
             receiver: currentContact._id,
-            offer: acceptedOffer
+            offer: responseOffer
         })
-        // setNewMessage('');
-
     }
-
-    // TO DO
-    const declineOffer = () => { }
 
 
     return (<div style={myStyles.offer}>
-        {/* das alles in separate componente */}
 
         {offer?.offer ?
 
@@ -70,8 +89,8 @@ function Offer(props) {
                         <span style={{ color: 'darkBlue' }}>
                             {offer.offer.price} Tokens
                         </span>
-                        <Button onClick={(e) => { acceptOffer() }}> Accept </Button>
-                        <Button onClick={(e) => { declineOffer() }}> Decline </Button>
+                        <Button onClick={(e) => { respondToOffer('accept') }}> Accept </Button>
+                        <Button onClick={(e) => { respondToOffer('decline') }}> Decline </Button>
                     </span> : <span>Offer Accepted! You paid {offer.offer.price} Tokens</span>
             : null}
     </div>

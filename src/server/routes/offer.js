@@ -121,7 +121,7 @@ router.post('/offer/send-offer', async function (req, res) {
 
     const {
         senderName,
-        receiverId,
+        receiverId, 
         price,
         senderId,
         askerId,

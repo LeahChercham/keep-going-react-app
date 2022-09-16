@@ -54,9 +54,9 @@ function Messenger(props) {
             setSocketMessage(data)
         })
 
-        socket.current.on('getOffer', (data) => {
-            setSocketOffer(data)
-        })
+        // socket.current.on('getOffer', (data) => {
+        //     setSocketOffer(data)
+        // })
 
 
         socket.current.on('typingMessageGet', (data) => {
@@ -83,14 +83,14 @@ function Messenger(props) {
             })
         })
 
-        socket.current.on('ofrDeliveredResponse', ofr => {
-            dispatch({
-                type: 'DELIVERED_OFFER',
-                payload: {
-                    messageInfo: ofr
-                }
-            })
-        })
+        // socket.current.on('ofrDeliveredResponse', ofr => {
+        //     dispatch({
+        //         type: 'DELIVERED_OFFER',
+        //         payload: {
+        //             messageInfo: ofr
+        //         }
+        //     })
+        // })
 
         socket.current.on('seenSuccess', data => {
             dispatch({
@@ -221,20 +221,22 @@ function Messenger(props) {
         let askerId
         let answererId
 
+        console.log('user: ' + user)
+
         if (type === 'asker') {
-            askerId = myInfo.id
+            askerId = user.id
             answererId = currentContact._id
         } else {
             askerId = currentContact._id
-            answererId = myInfo.id
+            answererId = user.id
         }
 
-        const data = {
-            senderName: myInfo.username,
-            senderId: myInfo.id,
+        const data = { 
+            senderName: user.username,
+            senderId: user.id,
             receiverId: currentContact._id,
             price: price,
-            senderId: myInfo.id,
+            senderId: user.id,
             askerId: askerId,
             answererId: answererId
         }
@@ -243,7 +245,7 @@ function Messenger(props) {
 
 
         socket.current.emit('sendOffer', {
-            senderId: myInfo.id,
+            senderId: user.id,
             receiverId: currentContact._id,
             price: price,
             askerId: askerId,
@@ -345,32 +347,6 @@ function Messenger(props) {
 
     }
 
-    // // ACCEPTING OR DECLINING OFFER
-    // const acceptOffer = () => {
-    //     let acceptedOffer = offer
-    //     acceptedOffer.status = 'accepted'
-    //     const data = {
-    //         senderName: myInfo.username,
-    //         receiverId: currentContact._id,
-    //         offer: acceptedOffer,
-    //         senderId: myInfo.id,
-    //     }
-
-    //     dispatch(updateOffer(data)).then((res) => {
-    //         console.log("getting user hopefully updated tokens")
-    //         dispatch(userGet(myInfo))
-    //     })
-
-    //     socket.current.emit('acceptOffer', {
-    //         senderId: myInfo.id,
-    //         receiver: currentContact._id,
-    //         offer: acceptedOffer
-    //     })
-    //     // setNewMessage('');
-
-    // }
-    // const declineOffer = () => { }
-
 
 
     return (<div>
@@ -387,33 +363,6 @@ function Messenger(props) {
         />
         <div style={myStyles.container}>
             <Offer currentContact={currentContact} />
-            {/* <div style={myStyles.offer}>
-
-                {offer?.offer ?
-
-                    offer.senderName === myInfo.username ?
-                        offer.status !== 'accepted' ?
-                            <span
-                                style={{ height: "2em", alignItems: 'center', display: 'flex' }}>
-                                You send a new offer:
-                                <span style={{ color: 'darkBlue' }}>
-                                    {offer.offer.price} Tokens
-                                </span>
-                                <span>...waiting for answer</span>
-                            </span> : <span>Offer Accepted! You received {offer.offer.price} Tokens</span>
-                        :
-                        offer.status !== 'accepted' ?
-                            <span
-                                style={{ height: "2em", alignItems: 'center', display: 'flex' }}>
-                                {offer.senderName} send you a new offer:
-                                <span style={{ color: 'darkBlue' }}>
-                                    {offer.offer.price} Tokens
-                                </span>
-                                <Button onClick={(e) => { acceptOffer() }}> Accept </Button>
-                                <Button onClick={(e) => { declineOffer() }}> Decline </Button>
-                            </span> : <span>Offer Accepted! You paid {offer.offer.price} Tokens</span>
-                    : null}
-            </div> */}
             <div style={myStyles.main}>
 
                 <MainContainer responsive style={{ width: '100%' }}>
@@ -479,12 +428,7 @@ function Messenger(props) {
                                         }} avatarSpacer />
                                 ))
 
-
-
                                 : null}
-
-
-
 
                         </MessageList>
                         <MessageInput placeholder="Type message here"
