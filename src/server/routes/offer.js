@@ -118,10 +118,11 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
 
 // hier post routes 
 router.post('/offer/send-offer', async function (req, res) {
-
+    console.log(req.body)
+    
     const {
         senderName,
-        receiverId, 
+        receiverId,
         price,
         senderId,
         askerId,

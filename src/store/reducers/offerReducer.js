@@ -49,7 +49,7 @@ export const offerReducer = (state = offerState, action) => {
         }
     }
 
-    if (type === UPDATE_CONTACT_OFFER) {
+    if (type === UPDATE_CONTACT_OFFER) { // hier bug receiverId undefined
         const index = state.offerContacts.findIndex(c => c.contactInfo._id === payload.offerInfo.receiverId || c.contactInfo._id === payload.offerInfo.senderId);
         state.offerContacts[index].offerInfo = payload.offerInfo;
         state.offerContacts[index].offerInfo.status = payload.status;

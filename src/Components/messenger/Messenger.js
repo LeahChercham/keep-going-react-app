@@ -36,6 +36,8 @@ function Messenger(props) {
     const [socketMessage, setSocketMessage] = useState("");
     const [socketOffer, setSocketOffer] = useState("");
     const [activeUser, setActiveUser] = useState("");
+    const [askerId, setAskerId] = useState("")
+    const [answererId, setAnswererId] = useState("")
     const [hide, setHide] = useState(true);
 
     const [typingMessage, setTypingMessage] = useState('');
@@ -58,9 +60,9 @@ function Messenger(props) {
             setSocketMessage(data)
         })
 
-        // socket.current.on('getOffer', (data) => {
-        //     setSocketOffer(data)
-        // })
+        socket.current.on('getOffer', (data) => {
+            setSocketOffer(data)
+        })
 
 
         socket.current.on('typingMessageGet', (data) => {
@@ -222,18 +224,40 @@ function Messenger(props) {
 
     }
 
+    useEffect(() => {
+        if (offerSendSuccess) {
+
+            socket.current.emit('sendOffer', {
+                senderId: user.id,
+                receiverId: currentContact._id,
+                price: price,
+                askerId: askerId,
+                answererId: answererId
+            })
+
+            dispatch({
+                type: 'UPDATE_CONTACT_OFFER',
+                payload: {
+                    messageInfo: message[message.length - 1]
+                }
+            })
+            dispatch({
+                type: 'OFFER_SEND_SUCCESS_CLEAR'
+            })
+        }
+    }, [offerSendSuccess])
+
     const sendOffer = (type) => {
-        let askerId
-        let answererId
 
         console.log('user: ' + user)
 
         if (type === 'asker') {
-            askerId = user.id
-            answererId = currentContact._id
+            setAskerId(user.id)
+            setAnswererId(currentContact._id)
+
         } else {
-            askerId = currentContact._id
-            answererId = user.id
+            setAskerId(currentContact._id)
+            setAnswererId(user.id)
         }
 
         const data = {
@@ -246,6 +270,7 @@ function Messenger(props) {
             answererId: answererId
         }
 
+        console.log(data)
         dispatch(offerSend(data));
 
 
