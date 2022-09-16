@@ -48,7 +48,11 @@ function Messenger(props) {
 
 
     useEffect(() => {
+
         socket.current = io('ws://localhost:8000');
+
+
+
         socket.current.on('getMessage', (data) => {
 
             setSocketMessage(data)
@@ -99,6 +103,7 @@ function Messenger(props) {
             })
         })
 
+        return () => { socket.current?.disconnect() }
     }, []);
     // end first use effect
 
@@ -231,7 +236,7 @@ function Messenger(props) {
             answererId = user.id
         }
 
-        const data = { 
+        const data = {
             senderName: user.username,
             senderId: user.id,
             receiverId: currentContact._id,
@@ -267,13 +272,17 @@ function Messenger(props) {
             senderId: myInfo.id,
         }
 
+        setTypingMessage('')
 
         socket.current.emit('typingMessage', {
             senderId: myInfo.id,
             receiver: currentContact._id,
+            receiverId: currentContact._id,
             msg: ''
         })
 
+        console.log('messenger 283')
+        console.log(data);
         dispatch(messageSend(data));
         setNewMessage('');
     }
@@ -400,7 +409,7 @@ function Messenger(props) {
                                 <InfoButton />
                             </ConversationHeader.Actions>
                         </ConversationHeader>
-                        <MessageList typingIndicator={typingMessage ? <TypingIndicator content={currentContact.username + " is typing"} /> : false} >
+                        <MessageList typingIndicator={typingMessage.msg ? <TypingIndicator content={currentContact.username + " is typing"} /> : false} >
                             {/* 
                         {typingMessage.senderId === currentContact._id ? <TypingIndicator content=" is typing" /> : null} */}
 

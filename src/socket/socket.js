@@ -28,8 +28,9 @@ const userLogout = (userId) => {
 
 
 io.on('connection', (socket) => {
-     console.log('Socket is connecting...')
+     console.log('connection');
      socket.on('addUser', (userId, userInfo) => {
+          console.log('Socket is connecting...' + userInfo)
           addUser(userId, socket.id, userInfo);
           io.emit('getUser', users);
 
@@ -134,7 +135,7 @@ io.on('connection', (socket) => {
 
 
      socket.on('disconnect', () => {
-          console.log('user is disconnected... ');
+          console.log('user is disconnected... ' + socket.id);
           userRemove(socket.id);
           io.emit('getUser', users);
      })

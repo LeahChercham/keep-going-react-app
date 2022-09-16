@@ -12,13 +12,13 @@ function Offer(props) {
 
     const dispatch = useDispatch();
     const socket = useRef();
-
+    
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
     const { offer, offerContacts, offerSendSuccess, offerGetSuccess } = useSelector(state => state.offer);
     const myInfo = user
-
+    
     let currentContact = props.currentContact;
-
+    
     useEffect(() => {
         socket.current = io('ws://localhost:8000');
 
