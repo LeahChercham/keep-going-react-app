@@ -1,4 +1,4 @@
-export const styles = {
+export const st = {
     container: {
         display: "flex",
         flexFlow: "column",

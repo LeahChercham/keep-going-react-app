@@ -13,7 +13,8 @@ import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/
 import { userGet } from '../../store/actions/authActions';
 
 import { io } from 'socket.io-client';
-import { styles as myStyles } from './styles'
+import { st as myStyles } from './styles'
+import Offer from './Offer';
 const util = require("util")
 
 
@@ -344,31 +345,31 @@ function Messenger(props) {
 
     }
 
-    // ACCEPTING OR DECLINING OFFER
-    const acceptOffer = () => {
-        let acceptedOffer = offer
-        acceptedOffer.status = 'accepted'
-        const data = {
-            senderName: myInfo.username,
-            receiverId: currentContact._id,
-            offer: acceptedOffer,
-            senderId: myInfo.id,
-        }
+    // // ACCEPTING OR DECLINING OFFER
+    // const acceptOffer = () => {
+    //     let acceptedOffer = offer
+    //     acceptedOffer.status = 'accepted'
+    //     const data = {
+    //         senderName: myInfo.username,
+    //         receiverId: currentContact._id,
+    //         offer: acceptedOffer,
+    //         senderId: myInfo.id,
+    //     }
 
-        dispatch(updateOffer(data)).then((res) => {
-            console.log("getting user hopefully updated tokens")
-            dispatch(userGet(myInfo))
-        })
+    //     dispatch(updateOffer(data)).then((res) => {
+    //         console.log("getting user hopefully updated tokens")
+    //         dispatch(userGet(myInfo))
+    //     })
 
-        socket.current.emit('acceptOffer', {
-            senderId: myInfo.id,
-            receiver: currentContact._id,
-            offer: acceptedOffer
-        })
-        // setNewMessage('');
+    //     socket.current.emit('acceptOffer', {
+    //         senderId: myInfo.id,
+    //         receiver: currentContact._id,
+    //         offer: acceptedOffer
+    //     })
+    //     // setNewMessage('');
 
-    }
-    const declineOffer = () => { }
+    // }
+    // const declineOffer = () => { }
 
 
 
@@ -385,8 +386,8 @@ function Messenger(props) {
 
         />
         <div style={myStyles.container}>
-            <div style={myStyles.offer}>
-                {/* das alles in separate componente */}
+            <Offer currentContact={currentContact} />
+            {/* <div style={myStyles.offer}>
 
                 {offer?.offer ?
 
@@ -412,7 +413,7 @@ function Messenger(props) {
                                 <Button onClick={(e) => { declineOffer() }}> Decline </Button>
                             </span> : <span>Offer Accepted! You paid {offer.offer.price} Tokens</span>
                     : null}
-            </div>
+            </div> */}
             <div style={myStyles.main}>
 
                 <MainContainer responsive style={{ width: '100%' }}>
