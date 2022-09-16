@@ -25,9 +25,15 @@ const styles = {
     },
     links: {
         display: "flex",
-        flex: "0 1 80%",
+        // width: "100%",
+        // alignItems: "center",
+        // justifyContent: "space-evenly",
+    },
+    linksBox: {
+        display: 'flex',
+        width: "100%",
         alignItems: "center",
-        justifyContent: "space-evenly",
+        justifyContent: "space-evenly"
     }
 }
 
@@ -58,34 +64,31 @@ function NavBar(props) {
                 <div>
                     <RouterLink to="/"> <img src={logo} alt="logo" /></RouterLink>
                 </div>
-                <div style={styles.links}>
-                    {authenticated ?
-
-                        <div style={styles.links}><Button style={styles.menuButton}
+                {authenticated ?
+                    <span style={styles.linksBox}>
+                        <Button style={styles.menuButton}
                             onClick={() => logout()}
                         >Log Out</Button>
-                            <div style={styles.links}>
-                                {user ? user.tokens : null} TOKENS
-                            </div >
-                            <RouterLink to={"/chat"}>
-                                <MessageIcon style={styles.menuButton} />
-                            </RouterLink>
+                        <span >
+                            {user ? user.tokens : null} TOKENS
+                        </span >
+                        <RouterLink to={"/chat"}>
+                            <MessageIcon style={styles.menuButton} />
+                        </RouterLink>
 
-                            <RouterLink to={"/profile"} style={{ textDecoration: "none" }}>
-                                <Button style={styles.menuButton}>{user ? user.username : null}</Button>
-                            </RouterLink>
-
-
-                        </div>
-                        :
+                        <RouterLink to={"/profile"} style={{ textDecoration: "none" }}>
+                            <Button style={styles.menuButton}>{user ? user.username : null}</Button>
+                        </RouterLink>
+                    </span>
+                    :
+                    <div>{
 
                         (pages.map((page) => (
                             <RouterLink to={page.href} key={page.label} style={{ textDecoration: "none" }}>
                                 <Button style={styles.menuButton}>{page.label}</Button>
-                            </RouterLink>)))}
-
-                </div>
-
+                            </RouterLink>)))
+                    }
+                    </div>}
             </Toolbar>
 
         </AppBar>
