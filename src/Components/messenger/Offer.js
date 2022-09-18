@@ -60,17 +60,23 @@ function Offer(props) {
         setSocketOffer('')
     }, [socketOffer]);
 
-    const respondToOffer = (response) => {
+    const respondToOffer = (response) => {// bearbeitet, testen FABRICE GEHT NICHT 
         let responseOffer = offer
-        response === 'accept' ? offer.status = 'accepted' : offer.status = 'declined'
+        let status
+        response === 'accept' ? status = 'accepted' : status = 'declined'
+
+        responseOffer.status = status
 
         let myId = myInfo.id ? myInfo.id : myInfo._id
-        const data = {
-            senderName: myInfo.username,
-            receiverId: currentContact._id,
-            offer: responseOffer,
-            senderId: myId,
-        }
+        const data = { ...offer, status: status } // Hier hatte ich erst noch sender und receiver gewechselt, das brauche ich aber nur für die Sockets
+        // const data = { ...offer, senderId: myId, senderName: myInfo.username, receiverId: currentContact._id, status: status }
+
+        // const data = {
+        //     senderName: myInfo.username,
+        //     receiverId: currentContact._id,
+        //     offer: responseOffer,
+        //     senderId: myId,
+        // }
 
         dispatch(updateOffer(data)).then((res) => {
             console.log("getting user hopefully updated tokens")
