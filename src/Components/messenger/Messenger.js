@@ -201,13 +201,13 @@ function Messenger(props) {
             //  notificationSPlay();
             toast.success(`${socketOffer.senderName} Send a New Offer`)
             dispatch(updateOffer(socketOffer));
-            dispatch({
-                type: 'UPDATE_CONTACT_OFFER',
-                payload: {
-                    offerInfo: socketOffer,
-                    status: 'delivered'
-                }
-            })
+            // dispatch({
+            //     type: 'UPDATE_CONTACT_OFFER',
+            //     payload: {
+            //         offerInfo: socketOffer,
+            //         status: 'delivered'
+            //     }
+            // })
             socket.emit('deliveredOffer', socketOffer);
 
         }
@@ -283,7 +283,8 @@ function Messenger(props) {
             price: price,
             senderId: user.id,
             askerId: askId,
-            answererId: answId
+            answererId: answId,
+            status: false
         }
 
         console.log(data)
@@ -291,11 +292,13 @@ function Messenger(props) {
 
 
         socket.emit('sendOffer', {
+            senderName: user.username,
             senderId: user.id,
             receiverId: currentContact._id,
-            price: price,
+            offer: { price: price },
             askerId: askId,
-            answererId: answId
+            answererId: answId,
+            status: false
         })
 
 
@@ -304,8 +307,6 @@ function Messenger(props) {
     }
 
     const sendMessage = (msg) => {
-        // sendingSPlay();
-
         console.log(myInfo)
         const data = {
             senderName: myInfo.username,
@@ -330,8 +331,6 @@ function Messenger(props) {
     }
 
     useEffect(() => {
-        // console.log("messageSendSuccess: " + messageSendSuccess)
-        // console.log("message: " + message)
         if (messageSendSuccess) { // from redux state
             socket.emit('sendMessage', message[message.length - 1]);
             dispatch({

@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
           const sender = findContact(data.senderId);
           if (user !== undefined) {
                console.log('socket emitting send offer')
-               socket.to(user.socketId).emit('getOffer', data)
+               socket.to(user.socketId).emit('getOffer', data) // data nicht vollständig
           }
           if (sender !== undefined) {
                socket.to(sender.socketId).emit('getOffer', data)

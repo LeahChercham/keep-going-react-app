@@ -14,32 +14,50 @@ function Offer(props) {
 
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
     const { offer, offerContacts, offerSendSuccess, offerGetSuccess } = useSelector(state => state.offer);
-    const myInfo = user
+    let myInfo = user
 
+    const [socketOffer, setSocketOffer] = useState('');
     let currentContact = props.currentContact;
 
     useEffect(() => {
+        myInfo = user
+    }, [user])
 
-        socket.on('getOffer', (data) => {
+    useEffect(() => {
+        socket.on('getOffer', (data) => { // OK
             dispatch({
                 type: 'OFFER_GET_SUCCESS',
                 payload: {
                     offer: data
                 }
             })
-            console.log(data)
+            console.log(data) // OK
         })
 
         socket.on('ofrDeliveredResponse', ofr => {
             dispatch({
                 type: 'DELIVERED_OFFER',
                 payload: {
-                    messageInfo: ofr
+                    offerInfo: ofr
                 }
             })
         })
 
     }, []);
+
+    useEffect(() => {
+        if (socketOffer && currentContact !== "") {
+            if (socketOffer.senderId === currentContact._id && socketOffer.receiverId === myInfo.id) {
+                dispatch({
+                    type: 'SOCKET_OFFER',
+                    payload: {
+                        message: socketOffer
+                    }
+                })
+            }
+        }
+        setSocketOffer('')
+    }, [socketOffer]);
 
     const respondToOffer = (response) => {
         let responseOffer = offer
@@ -59,7 +77,8 @@ function Offer(props) {
 
         socket.emit('respondToOffer', {
             senderId: myInfo.id,
-            receiver: currentContact._id,
+            senderName: myInfo.username,
+            receiverId: currentContact._id,
             offer: responseOffer
         })
     }
