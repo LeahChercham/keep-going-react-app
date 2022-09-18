@@ -31,13 +31,15 @@ function Offer(props) {
                     offer: data
                 }
             })
+            dispatch(userGet(myInfo))
+
         })
 
         socket.on('ofrDeliveredResponse', ofr => {
             dispatch({
                 type: 'DELIVERED_OFFER',
                 payload: {
-                    offer: ofr
+                    offerInfo: ofr
                 }
             })
         })

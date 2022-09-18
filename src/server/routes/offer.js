@@ -31,8 +31,6 @@ const getLastOffer = async (myId, expertId) => {
     }).sort({
         updatedAt: -1
     });
-    console.log('ofr:')
-    console.log(ofr) // ok
     return ofr;
 }
 

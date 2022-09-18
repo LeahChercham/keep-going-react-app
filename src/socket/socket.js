@@ -60,6 +60,7 @@ io.on('connection', (socket) => {
           if (user !== undefined) {
 
                socket.to(user.socketId).emit('getOffer', data)
+
           }
           if (sender !== undefined) {
                socket.to(sender.socketId).emit('getOffer', data)
