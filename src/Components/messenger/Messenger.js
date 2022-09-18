@@ -59,7 +59,6 @@ function Messenger(props) {
     useEffect(() => {
 
         socket.on('getMessage', (data) => {
-
             setSocketMessage(data)
         })
 
@@ -89,15 +88,6 @@ function Messenger(props) {
             })
         })
 
-        // socket.on('ofrDeliveredResponse', ofr => {
-        //     dispatch({
-        //         type: 'DELIVERED_OFFER',
-        //         payload: {
-        //             messageInfo: ofr
-        //         }
-        //     })
-        // })
-
         socket.on('seenSuccess', data => {
             dispatch({
                 type: 'SEEN_ALL',
@@ -107,11 +97,11 @@ function Messenger(props) {
 
         return () => { socket.current?.disconnect() }
     }, []);
-    // end first use effect
 
     useEffect(() => {
         if (socketMessage && currentContact !== "") {
-            if (socketMessage.senderId === currentContact._id && socketMessage.receiverId === myInfo.id) {
+            let myId = myInfo.id ? myInfo.id : myInfo._id
+            if (socketMessage.senderId === currentContact._id && socketMessage.receiverId === myId) {
                 dispatch({
                     type: 'SOCKET_MESSAGE',
                     payload: {
@@ -135,22 +125,14 @@ function Messenger(props) {
 
     useEffect(() => {
         if (socketOffer && currentContact !== "") {
-            if (socketOffer.senderId === currentContact._id && socketOffer.receiverId === myInfo.id) {
+            let myId = myInfo.id ? myInfo.id : myInfo._id
+            if (socketOffer.senderId === currentContact._id && socketOffer.receiverId === myId) {
                 dispatch({
                     type: 'SOCKET_OFFER',
                     payload: {
                         offer: socketOffer
                     }
                 })
-                // dispatch(seenOffer(socketOffer));
-                // socket.emit('messageSeen', socketMessage);
-                // dispatch({
-                //     type: 'UPDATE_CONTACT_MESSAGE',
-                //     payload: {
-                //         messageInfo: socketMessage,
-                //         status: 'seen'
-                //     }
-                // })
             }
         }
         setSocketOffer('')
@@ -158,13 +140,14 @@ function Messenger(props) {
 
 
     useEffect(() => {
-        socket.emit('addUser', myInfo.id, myInfo)
+        let myId = myInfo.id ? myInfo.id : myInfo._id
+        socket.emit('addUser', myId, myInfo)
     }, []);
-    // end third use effect
 
     useEffect(() => {
         socket.on('getUser', (users) => {
-            const activeUser = users.filter(u => u.userId !== myInfo.id)
+            let myId = myInfo.id ? myInfo.id : myInfo._id
+            const activeUser = users.filter(u => u.userId !== myId)
             setActiveUser(activeUser)
         })
 
@@ -177,10 +160,11 @@ function Messenger(props) {
             })
         })
     }, []);
-    // end fourth use effect
+
 
     useEffect(() => {
-        if (socketMessage && socketMessage.senderId !== currentContact._id && socketMessage.receiverId === myInfo.id) {
+        let myId = myInfo.id ? myInfo.id : myInfo._id
+        if (socketMessage && socketMessage.senderId !== currentContact._id && socketMessage.receiverId === myId) {
             //  notificationSPlay();
             toast.success(`${socketMessage.senderName} Send a New Message`)
             dispatch(updateMessage(socketMessage));
@@ -197,17 +181,10 @@ function Messenger(props) {
     }, [socketMessage]);
 
     useEffect(() => {
-        if (socketOffer && socketOffer.senderId !== currentContact._id && socketOffer.receiverId === myInfo.id) {
-            //  notificationSPlay();
+        let myId = myInfo.id ? myInfo.id : myInfo._id
+        if (socketOffer && socketOffer.senderId !== currentContact._id && socketOffer.receiverId === myId) {
             toast.success(`${socketOffer.senderName} Send a New Offer`)
             dispatch(updateOffer(socketOffer));
-            // dispatch({
-            //     type: 'UPDATE_CONTACT_OFFER',
-            //     payload: {
-            //         offerInfo: socketOffer,
-            //         status: 'delivered'
-            //     }
-            // })
             socket.emit('deliveredOffer', socketOffer);
 
         }
@@ -215,9 +192,10 @@ function Messenger(props) {
 
 
     const handleInput = (newMessage) => { // TODO need main in here then
+        let myId = myInfo.id ? myInfo.id : myInfo._id
         setNewMessage(newMessage)
         socket.emit('typingMessage', {
-            senderId: myInfo.id,
+            senderId: myId,
             receiverId: currentContact._id,
             msg: newMessage
         })
@@ -231,18 +209,12 @@ function Messenger(props) {
 
             socket.emit('sendOffer', {
                 senderId: user.id,
+                senderName: user.username,
                 receiverId: currentContact._id,
-                price: price,
+                offer: { price: price },
                 askerId: askerId,
                 answererId: answererId
             })
-
-            // dispatch({
-            //     type: 'UPDATE_CONTACT_OFFER',
-            //     payload: {
-            //         offerInfo: socketOffer
-            //     }
-            // })
             dispatch({
                 type: 'OFFER_SEND_SUCCESS_CLEAR'
             })
@@ -280,7 +252,7 @@ function Messenger(props) {
             senderName: user.username,
             senderId: user.id,
             receiverId: currentContact._id,
-            price: price,
+            offer: { price: price },
             senderId: user.id,
             askerId: askId,
             answererId: answId,
@@ -308,17 +280,19 @@ function Messenger(props) {
 
     const sendMessage = (msg) => {
         console.log(myInfo)
+        let myId = myInfo.id ? myInfo.id : myInfo._id
+
         const data = {
             senderName: myInfo.username,
             receiverId: currentContact._id,
             message: newMessage ? newMessage : '❤',
-            senderId: myInfo.id,
+            senderId: myId,
         }
 
         setTypingMessage('')
 
         socket.emit('typingMessage', {
-            senderId: myInfo.id,
+            senderId: myId,
             receiver: currentContact._id,
             receiverId: currentContact._id,
             msg: ''
@@ -349,26 +323,29 @@ function Messenger(props) {
     useEffect(() => {
         // let data = myInfo.id
         console.log(myInfo)
-        dispatch(getContacts(myInfo.id))
+        let myId = myInfo.id ? myInfo.id : myInfo._id
+        dispatch(getContacts(myId))
         dispatch({ type: 'NEW_USER_ADD_CLEAR' })
     }, [new_user_add]);
 
     useEffect(() => {
-        dispatch(getMessage(currentContact._id, myInfo.id));
-        dispatch(getOffer(currentContact._id, myInfo.id));
+        let myId = myInfo.id ? myInfo.id : myInfo._id
+        dispatch(getMessage(currentContact._id, myId));
+        dispatch(getOffer(currentContact._id, myId));
     }, [currentContact?._id]);
 
 
     useEffect(() => {
         if (message.length > 0) {
-            if (message[message.length - 1].senderId !== myInfo.id && message[message.length - 1].status !== 'seen') {
+            let myId = myInfo.id ? myInfo.id : myInfo._id
+            if (message[message.length - 1].senderId !== myId && message[message.length - 1].status !== 'seen') {
                 dispatch({
                     type: 'UPDATE',
                     payload: {
                         id: currentContact._id
                     }
                 })
-                socket.emit('seen', { senderId: currentContact._id, receiverId: myInfo.id })
+                socket.emit('seen', { senderId: currentContact._id, receiverId: myId })
                 dispatch(seenMessage({ _id: message[message.length - 1]._id }))
             }
         }
@@ -459,7 +436,7 @@ function Messenger(props) {
                             {message && message.length > 0 ?
 
                                 message.map((msg, index) =>
-                                (msg.senderId === myInfo.id ?
+                                (msg.senderId === myInfo.id || msg.senderId === myInfo._id ?
                                     < Message key={index}
                                         model={{
                                             message: msg.message.text,

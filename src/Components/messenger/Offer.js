@@ -38,7 +38,7 @@ function Offer(props) {
             dispatch({
                 type: 'DELIVERED_OFFER',
                 payload: {
-                    offerInfo: ofr
+                    offer: ofr
                 }
             })
         })
@@ -47,7 +47,8 @@ function Offer(props) {
 
     useEffect(() => {
         if (socketOffer && currentContact !== "") {
-            if (socketOffer.senderId === currentContact._id && socketOffer.receiverId === myInfo.id) {
+            let myId = myInfo.id ? myInfo.id : myInfo._id
+            if (socketOffer.senderId === currentContact._id && socketOffer.receiverId === myId) {
                 dispatch({
                     type: 'SOCKET_OFFER',
                     payload: {
@@ -63,11 +64,12 @@ function Offer(props) {
         let responseOffer = offer
         response === 'accept' ? offer.status = 'accepted' : offer.status = 'declined'
 
+        let myId = myInfo.id ? myInfo.id : myInfo._id
         const data = {
             senderName: myInfo.username,
             receiverId: currentContact._id,
             offer: responseOffer,
-            senderId: myInfo.id,
+            senderId: myId,
         }
 
         dispatch(updateOffer(data)).then((res) => {
@@ -76,7 +78,7 @@ function Offer(props) {
         })
 
         socket.emit('respondToOffer', {
-            senderId: myInfo.id,
+            senderId: myId,
             senderName: myInfo.username,
             receiverId: currentContact._id,
             offer: responseOffer

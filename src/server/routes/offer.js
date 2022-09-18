@@ -123,12 +123,13 @@ router.post('/offer/send-offer', async function (req, res) {
     const {
         senderName,
         receiverId,
-        price,
+        offer,
         senderId,
         askerId,
         answererId
     } = req.body
 
+    let price = offer.price
 
     let newOffer = new Offer({
         senderId: senderId,
