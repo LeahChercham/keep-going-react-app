@@ -31,6 +31,8 @@ const getLastOffer = async (myId, expertId) => {
     }).sort({
         updatedAt: -1
     });
+    console.log('ofr:')
+    console.log(ofr) // ok
     return ofr;
 }
 
@@ -143,7 +145,7 @@ router.post('/offer/send-offer', async function (req, res) {
     })
 
     try {
-        newOffer.save().then(result => {
+        await newOffer.save().then(result => {
             res.status(201).json({
                 successMessage: "Offer created",
                 offer: result
@@ -176,17 +178,27 @@ router.post('/offer/delivered-offer', async function (req, res) { // OK
     try {
 
         if (!offerId) {
+            console.log("in offer id is empty")
+            console.log(senderId)
+            console.log(receiverId)
             let ofr = await getLastOffer(senderId, receiverId)
-            offerId = ofr._id
-
+            console.log('ofr in id is empty: ')
+            console.log(ofr)
+            let newID = ofr._id ? ofr._id : ofr.id
+            console.log('newUID: ' + newID)
         }
-        console.log("second offerid")
-        console.log(offerId)
-        await Offer.findByIdAndUpdate(offerId, { status: req.body.status }, { new: true }) //OK
-        await User.findByIdAndUpdate(answererId, { $inc: { tokens: price } }) // OK
-        await User.findByIdAndUpdate(askerId, { $inc: { tokens: -price } }) // OK
 
-        let offer = await Offer.findById(offerId); //OK
+        let idToUse = offerId ? offerId : newID
+
+        console.log("second offerid")
+        console.log(idToUse)
+        await Offer.findByIdAndUpdate(idToUse, { status: req.body.status }, { new: true }) //OK
+        if (req.body.status === "accepted") {
+            await User.findByIdAndUpdate(answererId, { $inc: { tokens: price } }) // OK
+            await User.findByIdAndUpdate(askerId, { $inc: { tokens: -price } }) // OK
+        }
+
+        let offer = await Offer.findById(idToUse); //OK
 
         console.log('found offer: ')
         console.log(offer)

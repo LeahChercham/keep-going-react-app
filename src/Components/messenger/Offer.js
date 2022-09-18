@@ -73,11 +73,12 @@ function Offer(props) {
             dispatch(userGet(myInfo))
         })
 
-    
+
 
         socket.emit('respondToOffer', {
             senderId: myId,
             askerId: offer.askerId,
+            answererId: offer.answererId,
             senderName: myInfo.username,
             receiverId: currentContact._id,
             offer: { price: offer.offer.price },
@@ -108,9 +109,13 @@ function Offer(props) {
                     {offer.status === "false" ?
                         (offer.askerId === myInfo.id || offer.askerId === myInfo._id) ? <span>You will pay {offer.offer.price} tokens in order for {currentContact.username} to help you. </span>
                             : <span>You will receive {offer.offer.price} tokens in order to help {currentContact.username}.</span>
-                        :
-                        (offer.askerId === myInfo.id || offer.askerId === myInfo._id) ? <span>You paid {currentContact.username} {offer.offer.price} tokens. </span>
-                            : <span>You received {offer.offer.price} tokens to help {currentContact.username}.</span>}
+                        : <span>{offer.status === 'declined' ? <span></span> :
+
+                            (offer.askerId === myInfo.id || offer.askerId === myInfo._id) ? <span>You paid {currentContact.username} {offer.offer.price} tokens. </span>
+                                : <span>You received {offer.offer.price} tokens to help {currentContact.username}.</span>
+                        }
+                        </span>
+                    }
 
                 </div>
                 <div>
