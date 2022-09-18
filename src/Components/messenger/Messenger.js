@@ -203,7 +203,7 @@ function Messenger(props) {
     }
 
     useEffect(() => {
-        if (offerSendSuccess && askerId && answererId) {
+        if (offerSendSuccess) {
             console.log("effect askerId: " + askerId) // this not working 
             console.log("effect answererId: " + answererId)
 
@@ -223,10 +223,7 @@ function Messenger(props) {
             dispatch({
                 type: 'OFFER_SEND_SUCCESS_CLEAR'
             })
-        } else {
-            console.log("empty")
-        }
-    }, [offerSendSucces])
+        }}, [offerSendSuccess])
 
     const sendOffer = (type) => {
 

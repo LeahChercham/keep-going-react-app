@@ -65,15 +65,7 @@ function Offer(props) {
         response === 'accept' ? status = 'accepted' : status = 'declined'
 
         let myId = myInfo.id ? myInfo.id : myInfo._id
-        const data = { ...offer, status: status } // Hier hatte ich erst noch sender und receiver gewechselt, das brauche ich aber nur für die Sockets
-        // const data = { ...offer, senderId: myId, senderName: myInfo.username, receiverId: currentContact._id, status: status }
-
-        // const data = {
-        //     senderName: myInfo.username,
-        //     receiverId: currentContact._id,
-        //     offer: responseOffer,
-        //     senderId: myId,
-        // }
+        const data = { ...offer, status: status }
 
         console.log("data")
         console.log(data)
@@ -83,12 +75,15 @@ function Offer(props) {
             dispatch(userGet(myInfo))
         })
 
+        console.log("respond to offer price missing")
+        console.log(offer)
+
         socket.emit('respondToOffer', {
             senderId: myId,
             askerId: offer.askerId,
             senderName: myInfo.username,
             receiverId: currentContact._id,
-            offer: { price: offer.price },
+            offer: { price: offer.offer.price },
             status: status,
 
         })

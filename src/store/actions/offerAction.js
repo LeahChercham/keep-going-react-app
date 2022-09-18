@@ -58,18 +58,6 @@ export const getOffer = (expertId, myId) => {
     }
 }
 
-
-// export const sendOffer = (offer) => async (dispatch) => {
-//     // try {
-//     //     const response = await axios.post(CREATE_ROUTE('messenger/seen-message'), msg);
-//     //     console.log(response.data);
-//     // } catch (error) {
-//     //     console.log(error.response.message)
-
-//     // }
-// }
-
-
 export const updateOffer = (ofr) => async (dispatch) => {
     console.log("updateOffer")
     console.log(ofr)

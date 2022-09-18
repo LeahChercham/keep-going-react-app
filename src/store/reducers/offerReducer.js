@@ -75,15 +75,6 @@ export const offerReducer = (state = offerState, action) => {
     }
 
 
-    //  if (type === UPDATE) {
-    //      const index = state.offerContacts.findIndex(c => c.contactInfo._id === payload.id);
-    //      if (state.offerContacts[index].offerInfo) {
-    //          state.offerContacts[index].offerInfo.status = 'seen';
-    //      }
-    //      return {
-    //          ...state
-    //      }
-    //  }
 
     if (type === OFFER_GET_SUCCESS_CLEAR) {
         return {

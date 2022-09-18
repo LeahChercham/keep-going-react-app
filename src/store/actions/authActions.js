@@ -35,9 +35,7 @@ export const userLogin = (data) => {
     return async dispatch => {
         try {
             let response = await Axios.get(CREATE_ROUTE(`login/${username}/${password}`)) // asynchronous function
-            console.log("user login: " + response.data.user) // undefined
             let login = { isLoggedIn: true, user: response.data.user }
-            console.log("login for local storage:" + login)
             localStorage.login = JSON.stringify(login)
 
             dispatch({
@@ -100,12 +98,9 @@ export const userUpdate = (data) => {
 
 export const userGet = (user) => {
     let { username } = user
-    console.log("username:" + username)
     return async dispatch => {
         try {
             let response = await Axios.get(CREATE_ROUTE(`user/username/${username}`))
-            console.log("response user get:")
-            console.log(response)
             dispatch({
                 type: USER_GET_SUCCESS,
                 payload: {
