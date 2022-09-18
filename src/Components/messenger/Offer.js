@@ -60,7 +60,7 @@ function Offer(props) {
         setSocketOffer('')
     }, [socketOffer]);
 
-    const respondToOffer = (response) => {// bearbeitet, testen FABRICE GEHT NICHT 
+    const respondToOffer = (response) => {
         let status
         response === 'accept' ? status = 'accepted' : status = 'declined'
 
