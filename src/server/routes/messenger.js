@@ -73,6 +73,7 @@ router.post('/messenger/send-message', async function (req, res) {
         message,
         senderId
     } = req.body
+    
 
     let newMessage = new Message({
         senderId: senderId,

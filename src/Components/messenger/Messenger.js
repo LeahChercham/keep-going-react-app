@@ -31,7 +31,7 @@ function Messenger(props) {
     let expert = location.state ? location.state.expert : contacts && contacts.length > 0 ? contacts[0].contactInfo : "";
     const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
     const { offer, offerContacts, offerSendSuccess, offerGetSuccess } = useSelector(state => state.offer);
-    const myInfo = user
+    let myInfo = user
 
 
     const [currentContact, setCurrentContact] = useState(expert);
@@ -51,6 +51,9 @@ function Messenger(props) {
     const [newOffer, setNewOffer] = useState(false) // gibt es ein offer ? // Das alles in Redux
 
 
+    useEffect(() => {
+        myInfo = user
+    }, [user])
     useEffect(() => {
 
         // socket.current = io('ws://localhost:8000');
@@ -301,6 +304,7 @@ function Messenger(props) {
     const sendMessage = (msg) => {
         // sendingSPlay();
 
+        console.log(myInfo)
         const data = {
             senderName: myInfo.username,
             receiverId: currentContact._id,
@@ -343,7 +347,7 @@ function Messenger(props) {
 
     useEffect(() => {
         // let data = myInfo.id
-        // console.log(myInfo.id)
+        console.log(myInfo)
         dispatch(getContacts(myInfo.id))
         dispatch({ type: 'NEW_USER_ADD_CLEAR' })
     }, [new_user_add]);
