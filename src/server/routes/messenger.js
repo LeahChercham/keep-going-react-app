@@ -66,7 +66,7 @@ router.get('/messenger/get-contacts/:myId', async function (req, res) {
 });
 
 router.post('/messenger/send-message', async function (req, res) {
-    console.log(req.body)
+    console.log(req.body) 
     const {
         senderName,
         receiverId,

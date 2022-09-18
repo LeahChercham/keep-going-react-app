@@ -38,8 +38,6 @@ function Messenger(props) {
     const [socketMessage, setSocketMessage] = useState("");
     const [socketOffer, setSocketOffer] = useState("");
     const [activeUser, setActiveUser] = useState("");
-    const [askerId, setAskerId] = useState("")
-    const [answererId, setAnswererId] = useState("")
     const [hide, setHide] = useState(true);
 
     const [typingMessage, setTypingMessage] = useState('');
@@ -50,15 +48,15 @@ function Messenger(props) {
     const [offerFromMe, setOfferFromMe] = useState(false);
     const [newOffer, setNewOffer] = useState(false) // gibt es ein offer ? // Das alles in Redux
 
+    const [askerId, setAskerId] = useState("")
+    const [answererId, setAnswererId] = useState("")
 
     useEffect(() => {
         myInfo = user
     }, [user])
+
+
     useEffect(() => {
-
-        // socket.current = io('ws://localhost:8000');
-
-
 
         socket.on('getMessage', (data) => {
 
@@ -69,12 +67,9 @@ function Messenger(props) {
             setSocketOffer(data)
         })
 
-
         socket.on('typingMessageGet', (data) => {
-            // console.log("typingMessage: " + util.inspect(data, false, 7))
             setTypingMessage(data)
         })
-
 
         socket.on('msgSeenResponse', msg => {
             dispatch({
@@ -231,8 +226,8 @@ function Messenger(props) {
 
     useEffect(() => {
         if (offerSendSuccess) {
-            console.log("askerId: " + askerId)
-            console.log("answererId: " + answererId)
+            console.log("effect askerId: " + askerId)
+            console.log("effect answererId: " + answererId)
 
             socket.emit('sendOffer', {
                 senderId: user.id,
@@ -242,12 +237,12 @@ function Messenger(props) {
                 answererId: answererId
             })
 
-            dispatch({
-                type: 'UPDATE_CONTACT_OFFER',
-                payload: {
-                    messageInfo: message[message.length - 1]
-                }
-            })
+            // dispatch({
+            //     type: 'UPDATE_CONTACT_OFFER',
+            //     payload: {
+            //         offerInfo: socketOffer
+            //     }
+            // })
             dispatch({
                 type: 'OFFER_SEND_SUCCESS_CLEAR'
             })
@@ -257,22 +252,29 @@ function Messenger(props) {
     const sendOffer = async (type) => {
         debugger
 
-        let askId
-        let answId
         console.log('user id: ' + user.id)
         console.log('type: ' + type)
+        let askId
+        let answId
+
 
         if (type === 'asker') {
+            setAskerId(user.id)
             askId = user.id
             answId = currentContact._id
+            setAnswererId(currentContact._id)
 
         } else {
             askId = currentContact._id
+            setAskerId(currentContact._id)
             answId = user.id
+            setAnswererId(user.id)
         }
+
+        debugger
         // HIER UNDEFINED SCHON
-        console.log('askerId: ' + askId)
-        console.log('answererId: ' + answId)
+        console.log('askerId: ' + askerId)
+        console.log('answererId: ' + answererId)
 
         const data = {
             senderName: user.username,
@@ -292,8 +294,8 @@ function Messenger(props) {
             senderId: user.id,
             receiverId: currentContact._id,
             price: price,
-            askerId: askerId,
-            answererId: answererId
+            askerId: askId,
+            answererId: answId
         })
 
 
