@@ -23,10 +23,6 @@ export const getOfferContacts = (myId) => async (dispatch) => {
 export const offerSend = (data) => async (dispatch) => {
     try {
         const response = await axios.post(CREATE_ROUTE('offer/send-offer'), data);
-        // console.log("response offer send")
-        // console.log("===============================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================")
-        // console.log(response.data.offer)
-
         dispatch({
             type: OFFER_SEND_SUCCESS,
             payload: {
@@ -59,10 +55,14 @@ export const getOffer = (expertId, myId) => {
 }
 
 export const updateOffer = (ofr) => async (dispatch) => {
-    console.log("updateOffer")
+    console.log('hier hängts')
+    console.log("ofr:")
     console.log(ofr)
     try {
         const response = await axios.post(CREATE_ROUTE('offer/delivered-offer'), ofr);
+        console.log('response:')
+        console.log(response)
+        console.log('response.data:')
         console.log(response.data);
         dispatch({
 

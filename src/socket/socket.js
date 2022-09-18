@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
           const user = findContact(data.receiverId);
           const sender = findContact(data.senderId);
           if (user !== undefined) {
-               console.log('socket emitting respond to offer')
+
                socket.to(user.socketId).emit('getOffer', data)
           }
           if (sender !== undefined) {

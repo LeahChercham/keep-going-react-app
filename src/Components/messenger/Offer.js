@@ -67,16 +67,13 @@ function Offer(props) {
         let myId = myInfo.id ? myInfo.id : myInfo._id
         const data = { ...offer, status: status }
 
-        console.log("data")
-        console.log(data)
 
         dispatch(updateOffer(data)).then((res) => {
-            console.log("getting user hopefully updated tokens")
+
             dispatch(userGet(myInfo))
         })
 
-        console.log("respond to offer price missing")
-        console.log(offer)
+    
 
         socket.emit('respondToOffer', {
             senderId: myId,

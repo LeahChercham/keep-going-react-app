@@ -204,10 +204,6 @@ function Messenger(props) {
 
     useEffect(() => {
         if (offerSendSuccess) {
-            console.log("effect askerId: " + askerId) // this not working 
-            console.log("effect answererId: " + answererId)
-
-            console.log('offer' + offer)
 
             let sendId
             user.id ? sendId = user.id : sendId = user._id
@@ -245,8 +241,6 @@ function Messenger(props) {
             setAnswererId(myId)
         }
 
-        console.log('askerId: ' + askId)
-        console.log('answererId: ' + answId)
 
 
         const data = {
@@ -259,7 +253,6 @@ function Messenger(props) {
             status: "false"
         }
 
-        console.log(data)
         dispatch(offerSend(data));
 
 
@@ -279,7 +272,6 @@ function Messenger(props) {
     }
 
     const sendMessage = (msg) => {
-        console.log(myInfo)
         let myId = myInfo.id ? myInfo.id : myInfo._id
 
         const data = {
@@ -298,8 +290,6 @@ function Messenger(props) {
             msg: ''
         })
 
-        console.log('messenger 283')
-        console.log(data);
         dispatch(messageSend(data));
         setNewMessage('');
     }

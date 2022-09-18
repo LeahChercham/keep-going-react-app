@@ -118,7 +118,6 @@ router.get('/offer/get-offer/:expertId/:myId', async function (req, res) {
 
 // hier post routes 
 router.post('/offer/send-offer', async function (req, res) {
-    console.log(req.body) // HIER ERROR ASKERID ANSWERERID EMPTY
 
     const {
         senderName,
@@ -161,22 +160,36 @@ router.post('/offer/send-offer', async function (req, res) {
 
 });
 
+
 router.post('/offer/delivered-offer', async function (req, res) { // OK
     const { _id, answererId, askerId, senderId, receiverId } = req.body
-    console.log("post offer/delivered-offer")
+    console.log("delivered offer:")
     console.log(req.body)
     const price = req.body.offer.price
     const offerId = _id
 
+    console.log("offerId: " + offerId)
+    console.log("price: " + price)
+    console.log("answererId: " + answererId)
+    console.log("askerId: " + askerId)
+
     try {
 
+        if (!offerId) {
+            let ofr = await getLastOffer(senderId, receiverId)
+            offerId = ofr._id
+
+        }
+        console.log("second offerid")
+        console.log(offerId)
         await Offer.findByIdAndUpdate(offerId, { status: req.body.status }, { new: true }) //OK
         await User.findByIdAndUpdate(answererId, { $inc: { tokens: price } }) // OK
         await User.findByIdAndUpdate(askerId, { $inc: { tokens: -price } }) // OK
 
         let offer = await Offer.findById(offerId); //OK
 
-
+        console.log('found offer: ')
+        console.log(offer)
         res.status(200).json({ // OK
             success: true,
             offer: offer
