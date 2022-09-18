@@ -219,7 +219,8 @@ function Messenger(props) {
             dispatch({
                 type: 'OFFER_SEND_SUCCESS_CLEAR'
             })
-        }}, [offerSendSuccess])
+        }
+    }, [offerSendSuccess])
 
     const sendOffer = (type) => {
 
@@ -455,20 +456,45 @@ function Messenger(props) {
                     </ChatContainer>
 
                     <Sidebar position="right" style={styles.sidebar}>
-                        <div style={styles.offerContainer}>
-                            <div style={styles.offerButtons}>
-                                <Button style={styles.button} onClick={() => updatePrice("down")}>-</Button>
-                                <div style={styles.price}>{price}</div>
-                                <Button style={styles.button} onClick={() => updatePrice("up")}>+</Button>
+                        <ExpansionPanel open title="Create new offer">
+                            <div style={styles.offerContainer}>
+                                <div style={styles.offerButtons}>
+                                    <Button style={styles.button} onClick={() => updatePrice("down")}>-</Button>
+                                    <div style={styles.price}>{price}</div>
+                                    <Button style={styles.button} onClick={() => updatePrice("up")}>+</Button>
 
+                                </div>
+                                <Button style={styles.button} onClick={(e) => sendOffer("asker")}>Send Offer (I need help!) </Button>
+                                <Button style={styles.button} onClick={(e) => sendOffer("answerer")}>Send Offer (I'll help!)</Button>
                             </div>
-                            <Button style={styles.button} onClick={(e) => sendOffer("asker")}>Send Offer (I need help!) </Button>
-                            <Button style={styles.button} onClick={(e) => sendOffer("answerer")}>Send Offer (I'll help!)</Button>
-                        </div>
-                    </Sidebar>
-                </MainContainer>
+                        </ExpansionPanel>
+                        {/* <ExpansionPanel open title="Older Offers">
+                        
+
+                            {offerContacts && offerContacts.length > 0 ? offerContacts.map((contact, index) => {
+                                <div>
+                                    <div>
+
+                                         asker : {contact.offerInfo.askerId} 
+                    </div>
+                    <div>
+                        price : {contact.offerInfo.offer.price}
+
+                    </div>
+                    <div>
+
+                    </div>
+                    <div>
+                        status : {contact.offerInfo.status}
+                    </div>
             </div>
-        </div></div >
+                            }) : null}
+
+        </ExpansionPanel> */}
+                    </Sidebar>
+                </MainContainer >
+            </div >
+        </div ></div >
     )
 }
 export default Messenger;
