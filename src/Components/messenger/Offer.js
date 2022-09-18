@@ -87,31 +87,45 @@ function Offer(props) {
 
 
     return (<div style={myStyles.offer}>
-
         {offer?.offer ?
+            <div>
+                <div>
+                    {offer.status === "false" ? <span>
+                        {offer.senderName === myInfo.username ? <span>Offer send</span>
+                            : <span>Offer received</span>}
+                    </span>
+                        :
+                        <span>
+                            {offer.status === 'accepted' ? <span>Offer accepted</span> :
+                                <span>
+                                    {offer.status === "false" ? <span>Offer delivered</span> : <span>Offer declined</span>}
+                                </span>
+                            }
+                        </span>}
+                </div>
+                <div>
+                    {offer.status === "false" ?
+                        (offer.askerId === myInfo.id || offer.askerId === myInfo._id) ? <span>You will pay {offer.offer.price} tokens in order for {currentContact.username} to help you. </span>
+                            : <span>You will receive {offer.offer.price} tokens in order to help {currentContact.username}.</span>
+                        :
+                        (offer.askerId === myInfo.id || offer.askerId === myInfo._id) ? <span>You paid {currentContact.username} {offer.offer.price} tokens. </span>
+                            : <span>You received {offer.offer.price} tokens to help {currentContact.username}.</span>}
 
-            offer.senderName === myInfo.username ?
-                offer.status !== 'accepted' ?
-                    <span
-                        style={{ height: "2em", alignItems: 'center', display: 'flex' }}>
-                        You send a new offer:
-                        <span style={{ color: 'darkBlue' }}>
-                            {offer.offer.price} Tokens
-                        </span>
-                        <span>...waiting for answer</span>
-                    </span> : <span>Offer Accepted! You received {offer.offer.price} Tokens</span>
-                :
-                offer.status !== 'accepted' ?
-                    <span
-                        style={{ height: "2em", alignItems: 'center', display: 'flex' }}>
-                        {offer.senderName} send you a new offer:
-                        <span style={{ color: 'darkBlue' }}>
-                            {offer.offer.price} Tokens
-                        </span>
-                        <Button onClick={(e) => { respondToOffer('accept') }}> Accept </Button>
-                        <Button onClick={(e) => { respondToOffer('decline') }}> Decline </Button>
-                    </span> : <span>Offer Accepted! You paid {offer.offer.price} Tokens</span>
-            : null}
+                </div>
+                <div>
+                    {offer.status === "false" ? <span>
+                        {offer.senderName === myInfo.username ? <span>... Waiting for an answer</span>
+                            : <span>
+                                <Button onClick={(e) => { respondToOffer('accept') }}> Accept </Button>
+                                <Button onClick={(e) => { respondToOffer('decline') }}> Decline </Button>
+                            </span>
+                        }</span>
+                        : null}
+                </div>
+
+            </div>
+            : null
+        }
     </div>
     )
 }

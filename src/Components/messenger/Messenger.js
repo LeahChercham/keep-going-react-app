@@ -208,11 +208,11 @@ function Messenger(props) {
             console.log("effect answererId: " + answererId)
 
             socket.emit('sendOffer', {
-                senderId: user.id,
                 senderName: user.username,
                 receiverId: currentContact._id,
                 offer: { price: price },
                 askerId: askerId,
+                senderId: user.id,
                 answererId: answererId
             })
             dispatch({
@@ -222,8 +222,7 @@ function Messenger(props) {
     }, [offerSendSuccess])
 
     const sendOffer = async (type) => {
-        debugger
-
+        
         console.log('user id: ' + user.id)
         console.log('type: ' + type)
         let askId
@@ -243,8 +242,6 @@ function Messenger(props) {
             setAnswererId(user.id)
         }
 
-        debugger
-        // HIER UNDEFINED SCHON
         console.log('askerId: ' + askerId)
         console.log('answererId: ' + answererId)
 
