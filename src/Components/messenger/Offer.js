@@ -61,11 +61,8 @@ function Offer(props) {
     }, [socketOffer]);
 
     const respondToOffer = (response) => {// bearbeitet, testen FABRICE GEHT NICHT 
-        let responseOffer = offer
         let status
         response === 'accept' ? status = 'accepted' : status = 'declined'
-
-        responseOffer.status = status
 
         let myId = myInfo.id ? myInfo.id : myInfo._id
         const data = { ...offer, status: status } // Hier hatte ich erst noch sender und receiver gewechselt, das brauche ich aber nur für die Sockets
@@ -78,6 +75,9 @@ function Offer(props) {
         //     senderId: myId,
         // }
 
+        console.log("data")
+        console.log(data)
+
         dispatch(updateOffer(data)).then((res) => {
             console.log("getting user hopefully updated tokens")
             dispatch(userGet(myInfo))
@@ -85,9 +85,12 @@ function Offer(props) {
 
         socket.emit('respondToOffer', {
             senderId: myId,
+            askerId: offer.askerId,
             senderName: myInfo.username,
             receiverId: currentContact._id,
-            offer: responseOffer
+            offer: { price: offer.price },
+            status: status,
+
         })
     }
 

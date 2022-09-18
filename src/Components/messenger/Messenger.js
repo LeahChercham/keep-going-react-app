@@ -203,57 +203,63 @@ function Messenger(props) {
     }
 
     useEffect(() => {
-        if (offerSendSuccess) {
-            console.log("effect askerId: " + askerId)
+        if (offerSendSuccess && askerId && answererId) {
+            console.log("effect askerId: " + askerId) // this not working 
             console.log("effect answererId: " + answererId)
 
+            console.log('offer' + offer)
+
+            let sendId
+            user.id ? sendId = user.id : sendId = user._id
             socket.emit('sendOffer', {
                 senderName: user.username,
                 receiverId: currentContact._id,
                 offer: { price: price },
                 askerId: askerId,
-                senderId: user.id,
-                answererId: answererId
+                senderId: sendId,
+                answererId: answererId,
+                status: "false"
             })
             dispatch({
                 type: 'OFFER_SEND_SUCCESS_CLEAR'
             })
+        } else {
+            console.log("empty")
         }
-    }, [offerSendSuccess])
+    }, [offerSendSucces])
 
-    const sendOffer = async (type) => {
-        
-        console.log('user id: ' + user.id)
-        console.log('type: ' + type)
+    const sendOffer = (type) => {
+
         let askId
         let answId
-
+        let myId
+        user.id ? myId = user.id : myId = user._id
 
         if (type === 'asker') {
-            setAskerId(user.id)
-            askId = user.id
+            setAskerId(myId)
+            askId = myId
             answId = currentContact._id
             setAnswererId(currentContact._id)
 
         } else {
             askId = currentContact._id
             setAskerId(currentContact._id)
-            answId = user.id
-            setAnswererId(user.id)
+            answId = myId
+            setAnswererId(myId)
         }
 
-        console.log('askerId: ' + askerId)
-        console.log('answererId: ' + answererId)
+        console.log('askerId: ' + askId)
+        console.log('answererId: ' + answId)
+
 
         const data = {
             senderName: user.username,
-            senderId: user.id,
+            senderId: myId,
             receiverId: currentContact._id,
             offer: { price: price },
-            senderId: user.id,
             askerId: askId,
             answererId: answId,
-            status: false
+            status: "false"
         }
 
         console.log(data)
@@ -262,12 +268,12 @@ function Messenger(props) {
 
         socket.emit('sendOffer', {
             senderName: user.username,
-            senderId: user.id,
+            senderId: myId,
             receiverId: currentContact._id,
             offer: { price: price },
             askerId: askId,
             answererId: answId,
-            status: false
+            status: "false"
         })
 
 
@@ -283,7 +289,7 @@ function Messenger(props) {
             senderName: myInfo.username,
             receiverId: currentContact._id,
             message: newMessage ? newMessage : '❤',
-            senderId: myId,
+            senderId: myId
         }
 
         setTypingMessage('')

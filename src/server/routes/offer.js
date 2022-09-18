@@ -138,9 +138,9 @@ router.post('/offer/send-offer', async function (req, res) {
         offer: {
             price: price,
         },
-        status: false,
+        status: "false",
         askerId: askerId,
-        answererId: answererId, 
+        answererId: answererId,
     })
 
     try {
@@ -162,13 +162,15 @@ router.post('/offer/send-offer', async function (req, res) {
 });
 
 router.post('/offer/delivered-offer', async function (req, res) { // OK
-    const { _id, answererId, askerId, senderId, receiverId } = req.body.offer
-    const price = req.body.offer.offer.price
+    const { _id, answererId, askerId, senderId, receiverId } = req.body
+    console.log("post offer/delivered-offer")
+    console.log(req.body)
+    const price = req.body.offer.price
     const offerId = _id
 
     try {
 
-        await Offer.findByIdAndUpdate(offerId, { status: req.body.offer.status }, { new: true }) //OK
+        await Offer.findByIdAndUpdate(offerId, { status: req.body.status }, { new: true }) //OK
         await User.findByIdAndUpdate(answererId, { $inc: { tokens: price } }) // OK
         await User.findByIdAndUpdate(askerId, { $inc: { tokens: -price } }) // OK
 
