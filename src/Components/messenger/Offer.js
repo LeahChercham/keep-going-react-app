@@ -31,7 +31,6 @@ function Offer(props) {
                     offer: data
                 }
             })
-            console.log(data) // OK
         })
 
         socket.on('ofrDeliveredResponse', ofr => {

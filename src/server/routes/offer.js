@@ -164,18 +164,20 @@ router.post('/offer/send-offer', async function (req, res) {
 
 
 router.post('/offer/delivered-offer', async function (req, res) { // OK
-    const { _id, answererId, askerId, senderId, receiverId } = req.body
-    console.log("delivered offer:")
-    console.log(req.body)
-    const price = req.body.offer.price
-    const offerId = _id
-
-    console.log("offerId: " + offerId)
-    console.log("price: " + price)
-    console.log("answererId: " + answererId)
-    console.log("askerId: " + askerId)
 
     try {
+        const { _id, answererId, askerId, senderId, receiverId } = req.body
+        console.log("delivered offer:")
+        console.log(req.body)
+        const price = req.body.offer.price
+        const offerId = _id
+
+        console.log("offerId: " + offerId)
+        console.log("price: " + price)
+        console.log("answererId: " + answererId)
+        console.log("askerId: " + askerId)
+
+        let idToUse = offerId
 
         if (!offerId) {
             console.log("in offer id is empty")
@@ -184,11 +186,14 @@ router.post('/offer/delivered-offer', async function (req, res) { // OK
             let ofr = await getLastOffer(senderId, receiverId)
             console.log('ofr in id is empty: ')
             console.log(ofr)
-            let newID = ofr._id ? ofr._id : ofr.id
-            console.log('newUID: ' + newID)
-        }
+            if (ofr._id) {
+                idToUse = ofr._id
+            } else {
+                idToUse = ofr.id
+            }
 
-        let idToUse = offerId ? offerId : newID
+            console.log('newUID: ' + idToUse)
+        }
 
         console.log("second offerid")
         console.log(idToUse)
