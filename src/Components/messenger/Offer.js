@@ -52,7 +52,7 @@ function Offer(props) {
                 dispatch({
                     type: 'SOCKET_OFFER',
                     payload: {
-                        message: socketOffer
+                        offer: socketOffer
                     }
                 })
             }
