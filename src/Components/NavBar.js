@@ -9,6 +9,7 @@ import MessageIcon from '@mui/icons-material/Message';
 import { flexbox } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux' // dispatch actions to the store
 import { userLogout } from '../store/actions/authActions';
+import { messengerActionLogOut } from '../store/actions/messengerAction';
 const pages = [{ label: "Sign In", href: "/register" }, { label: "Log In", href: "/login" }];
 
 const styles = {
@@ -38,9 +39,6 @@ const styles = {
 }
 
 function NavBar(props) {
-    // const [state, setState] = useState({
-    //     user: {},
-    // })
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -49,12 +47,9 @@ function NavBar(props) {
 
     const logout = () => {
         dispatch(userLogout())
+        dispatch(messengerActionLogOut())
         navigate("/")
     }
-
-    // useEffect(() => {
-    //     setState(user)
-    // }, [user])
 
 
 

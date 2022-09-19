@@ -1,4 +1,4 @@
-import { CONTACT_GET_SUCCESS, MESSAGE_GET_SUCCESS, MESSAGE_SEND_SUCCESS, SOCKET_MESSAGE, UPDATE_CONTACT_MESSAGE, MESSAGE_SEND_SUCCESS_CLEAR, SEEN_MESSAGE, DELIVERED_MESSAGE, UPDATE, MESSAGE_GET_SUCCESS_CLEAR, SEEN_ALL } from "../types/messengerType";
+import { LOGOUT_SUCCESS, NEW_USER_ADD, NEW_USER_ADD_CLEAR, USER_LOGOUT, CONTACT_GET_SUCCESS, MESSAGE_GET_SUCCESS, MESSAGE_SEND_SUCCESS, SOCKET_MESSAGE, UPDATE_CONTACT_MESSAGE, MESSAGE_SEND_SUCCESS_CLEAR, SEEN_MESSAGE, DELIVERED_MESSAGE, UPDATE, MESSAGE_GET_SUCCESS_CLEAR, SEEN_ALL } from "../types/messengerType";
 
 const messengerState = {
      contacts: [],
@@ -94,7 +94,7 @@ export const messengerReducer = (state = messengerState, action) => {
           }
      }
 
-     if (type === 'SEEN_ALL') {
+     if (type === SEEN_ALL) {
           const index = state.contacts.contactIndex(c => c.contactInfo._id === payload.receiverId);
           state.contacts[index].messageInfo.status = 'seen';
           return {
@@ -102,7 +102,7 @@ export const messengerReducer = (state = messengerState, action) => {
           }
      }
 
-     if (type === 'LOGOUT_SUCCESS') {
+     if (type === LOGOUT_SUCCESS) {
           return {
                ...state,
                contacts: [],
@@ -113,18 +113,30 @@ export const messengerReducer = (state = messengerState, action) => {
           }
      }
 
-     if (type === 'NEW_USER_ADD') {
+     if (type === NEW_USER_ADD) {
           return {
                ...state,
                new_user_add: payload.new_user_add
           }
      }
 
-     if (type === 'NEW_USER_ADD_CLEAR') {
+     if (type === NEW_USER_ADD_CLEAR) {
           return {
                ...state,
                new_user_add: ''
           }
+     }
+     if (type === USER_LOGOUT) {
+          return {
+               ...state,
+               contacts: [],
+               message: [],
+               messageSendSuccess: false,
+               messageGetSuccess: false,
+               new_user_add: '',
+
+          }
+
      }
 
 

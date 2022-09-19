@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CONTACT_GET_SUCCESS, MESSAGE_GET_SUCCESS, MESSAGE_SEND_SUCCESS } from "../types/messengerType";
+import { USER_LOGOUT, CONTACT_GET_SUCCESS, MESSAGE_GET_SUCCESS, MESSAGE_SEND_SUCCESS } from "../types/messengerType";
 import consts from '../../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
 const util = require("util")
@@ -35,6 +35,10 @@ export const messageSend = (data) => async (dispatch) => {
     } catch (error) {
         console.log(error.response.data);
     }
+}
+
+export const messengerActionLogOut = () =>  () => {
+    return dispatch => dispatch({ type: USER_LOGOUT })
 }
 
 

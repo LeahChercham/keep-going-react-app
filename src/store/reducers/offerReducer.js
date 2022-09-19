@@ -1,4 +1,4 @@
-import { OFFER_GET_SUCCESS, OFFER_SEND_SUCCESS_CLEAR, OFFER_GET_SUCCESS_CLEAR, CONTACT_GET_SUCCESS, DELIVERED_OFFER, UPDATE_OFFER, UPDATE_CONTACT_OFFER, SOCKET_OFFER, OFFER_SEND_SUCCESS } from '../types/offerType';
+import { USER_LOGOUT, OFFER_GET_SUCCESS, OFFER_SEND_SUCCESS_CLEAR, OFFER_GET_SUCCESS_CLEAR, CONTACT_GET_SUCCESS, DELIVERED_OFFER, UPDATE_OFFER, UPDATE_CONTACT_OFFER, SOCKET_OFFER, OFFER_SEND_SUCCESS } from '../types/offerType';
 
 
 
@@ -74,6 +74,15 @@ export const offerReducer = (state = offerState, action) => {
         };
     }
 
+    if (type === USER_LOGOUT) {
+        return {
+            ...state,
+            offerContacts: [],
+            offer: [],
+            offerSendSuccess: false,
+            offerGetSuccess: false,
+        }
+    }
 
 
     if (type === OFFER_GET_SUCCESS_CLEAR) {
