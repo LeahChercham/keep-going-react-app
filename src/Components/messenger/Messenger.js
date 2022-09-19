@@ -99,6 +99,11 @@ function Messenger(props) {
     }, []);
 
     useEffect(() => {
+        let myId = myInfo.id ? myInfo.id : myInfo._id
+        dispatch(getContacts(myId))
+    }, [])
+
+    useEffect(() => {
         if (socketMessage && currentContact !== "") {
             let myId = myInfo.id ? myInfo.id : myInfo._id
             if (socketMessage.senderId === currentContact._id && socketMessage.receiverId === myId) {
@@ -309,6 +314,7 @@ function Messenger(props) {
             })
         }
     }, [messageSendSuccess]);
+
 
 
     useEffect(() => {
