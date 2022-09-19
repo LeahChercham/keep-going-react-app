@@ -10,6 +10,7 @@ import { flexbox } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux' // dispatch actions to the store
 import { userLogout } from '../store/actions/authActions';
 import { messengerActionLogOut } from '../store/actions/messengerAction';
+import { offerActionLogOut } from '../store/actions/offerAction';
 const pages = [{ label: "Sign In", href: "/register" }, { label: "Log In", href: "/login" }];
 
 const styles = {
@@ -48,6 +49,7 @@ function NavBar(props) {
     const logout = () => {
         dispatch(userLogout())
         dispatch(messengerActionLogOut())
+        dispatch(offerActionLogOut)
         navigate("/")
     }
 
