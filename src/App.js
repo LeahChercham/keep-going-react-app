@@ -18,7 +18,7 @@ import ExpertProfile from './Frontend/Components/ExpertProfile';
 import Messenger from './Frontend/Components/messenger/Messenger';
 import { userLogin } from './Frontend/store/actions/authActions';
 
-import { SocketContext, socket } from './Backend/socket/socketContext';
+import { SocketContext, socket } from '../socketContext';
 
 const CREATE_ROUTE = consts.CREATE_ROUTE
 
