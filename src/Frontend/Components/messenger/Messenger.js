@@ -12,7 +12,7 @@ import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, up
 import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
 import { userGet } from '../../store/actions/authActions';
 
-import { SocketContext } from '../../socket/socketContext';
+import { SocketContext } from '../../../Backend/socket/socketContext';
 
 import { st as myStyles } from './styles'
 import Offer from './Offer';

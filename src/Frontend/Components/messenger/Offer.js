@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
 import { userGet } from '../../store/actions/authActions';
-import { SocketContext } from '../../socket/socketContext'
+import { SocketContext } from '../../../Backend/socket/socketContext'
 
 function Offer(props) {
 
