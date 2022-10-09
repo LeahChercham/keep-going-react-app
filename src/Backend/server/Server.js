@@ -22,7 +22,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-//app.use(express.static(path.join(__dirname, "build")))
+app.use(express.static(path.join(__dirname, "build")))
 app.use(express.static('node_modules'));
 
 // Necessary to parse the JSON from requests
@@ -41,8 +41,8 @@ mongoose.connect(process.env.MONGODB_URI
 
 
 //This is a "catch-all" route handler, essentially saying that if the server did not register any of the other routes, it will send the index.html file from the build. 
-// app.get('*', function (req, res) {
-//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-// });
+ app.get('*', function (req, res) {
+   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+ });
 
 app.listen(process.env.PORT || PORT, () => console.log(`Running on port ${PORT}`))
