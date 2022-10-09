@@ -35,16 +35,28 @@ export const userLogin = (data) => {
     return async dispatch => {
         try {
             let response = await Axios.get(CREATE_ROUTE(`login/${username}/${password}`)) // asynchronous function
-            let login = { isLoggedIn: true, user: response.data.user }
-            localStorage.login = JSON.stringify(login)
+            console.log("in user Update");
+            console.log(response.data)
+            if(response.data.error){
+                dispatch({
+                    type: USER_LOGIN_FAIL,
+                    payload: {
+                        error: response.data.error.errorMessage
+                    }
+                })
+            } else {
+                let login = { isLoggedIn: true, user: response.data.user }
+                localStorage.login = JSON.stringify(login)
+    
+                dispatch({
+                    type: USER_LOGIN_SUCCESS,
+                    payload: {
+                        successMessage: response.data.successMessage,
+                        user: response.data.user
+                    }
+                })
+            }
 
-            dispatch({
-                type: USER_LOGIN_SUCCESS,
-                payload: {
-                    successMessage: response.data.successMessage,
-                    user: response.data.user
-                }
-            })
         }
         catch (error) {
             dispatch({
@@ -77,6 +89,7 @@ export const userUpdate = (data) => {
     return async dispatch => {
         try {
             let response = await Axios.put(CREATE_ROUTE(`user/${username}`), transferData)
+
             dispatch({
                 type: USER_UPDATE_SUCCESS,
                 payload: {

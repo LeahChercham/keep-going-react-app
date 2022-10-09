@@ -68,8 +68,8 @@ function Login(props) {
             navigate("/search")
         }
         if (error) {
-            alert.error(error)
-            dispatch({ type: 'CLEAR_ERROR' })
+            alert("Error: No user with this combination of username and password found")
+            dispatch({ type: 'CLEAR_ERROR' })   
         }
     }
     )
