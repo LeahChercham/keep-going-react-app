@@ -48,5 +48,3 @@ mongoose.connect(process.env.MONGODB_URI
 
 app.listen(process.env.PORT || PORT, () => console.log(`Running on port ${PORT}`))
 
-
-export const server = app

@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 // import { USER_LOGIN_SUCCESS } from '../store/types/authType';
-import { USER_LOGIN_SUCCESS } from './Frontend/store/types/authType';
+import { USER_LOGIN_SUCCESS } from './store/types/authType';
 
-import NavBar from './Frontend/Components/NavBar';
-import LandingPage from './Frontend/Components/LandingPage';
-import SearchPage from './Frontend/Components/SearchPage';
-import Signup from './Frontend/Components/Signup';
-import Login from './Frontend/Components/Login';
-import Profile from './Frontend/Components/Profile';
-import Results from './Frontend/Components/Results';
+import NavBar from './Components/NavBar';
+import LandingPage from './Components/LandingPage';
+import SearchPage from './Components/SearchPage';
+import Signup from './Components/Signup';
+import Login from './Components/Login';
+import Profile from './Components/Profile';
+import Results from './Components/Results';
 import './App.css';
-import consts from './Frontend/consts'
-import './Frontend/main.scss';
+import consts from './consts'
+import './main.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import ExpertProfile from './Frontend/Components/ExpertProfile';
-import Messenger from './Frontend/Components/messenger/Messenger';
-import { userLogin } from './Frontend/store/actions/authActions';
+import ExpertProfile from './Components/ExpertProfile';
+import Messenger from './Components/messenger/Messenger';
+import { userLogin } from './store/actions/authActions';
 
-import { SocketContext, socket } from '../socketContext';
+import { SocketContext, socket } from './socketContext';
 
 const CREATE_ROUTE = consts.CREATE_ROUTE
 
