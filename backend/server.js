@@ -1,13 +1,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const PORT = 7777
+const PORT = 5000
 const path = require('path')
 const cors = require('cors');
-const user = require('./Backend/server/routes/user')
-const messenger = require('./Backend/server/routes/messenger')
-const offer = require('./Backend/server/routes/offer')
+const user = require('./routes/user')
+const messenger = require('./routes/messenger')
+const offer = require('./routes/offer')
 // const messengerRoute = require('./routes/Not in Use messengerRoute')
+
 
 let app = express();
 
