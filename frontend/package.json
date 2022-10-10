@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "consts.js",
+  "engines": {
+    "node": "18.x",
+    "npm": "8.x"
+  },
   "scripts": {
     "install": "react-scripts install",
     "start": "react-scripts start",
