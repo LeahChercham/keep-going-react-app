@@ -4,19 +4,18 @@ import { useLocation } from 'react-router-dom';
 import { Button } from '@mui/material';
 
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Sidebar, Search, ConversationList, Conversation, ExpansionPanel, ConversationHeader, VoiceCallButton, VideoCallButton, InfoButton, TypingIndicator, MessageSeparator } from '@chatscope/chat-ui-kit-react';
+import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Sidebar, ConversationList, Conversation, ExpansionPanel, ConversationHeader, VoiceCallButton, VideoCallButton, InfoButton, TypingIndicator } from '@chatscope/chat-ui-kit-react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import toast, { Toaster } from 'react-hot-toast';
-import { getContacts, messageSend, getMessage, ImageMessageSend, seenMessage, updateMessage, } from '../../store/actions/messengerAction';
-import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
-import { userGet } from '../../store/actions/authActions';
+import { getContacts, messageSend, getMessage, seenMessage, updateMessage, } from '../../store/actions/messengerAction';
+import {  getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
+// import { userGet } from '../../store/actions/authActions';
 
 import { SocketContext } from '../../socketContext';
 
 import { st as myStyles } from './styles'
 import Offer from './Offer';
-const util = require("util")
 
 
 function Messenger(props) {

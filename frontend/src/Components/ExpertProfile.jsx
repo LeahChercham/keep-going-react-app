@@ -8,8 +8,7 @@ import Axios from 'axios';
 import consts from '../consts'
 const TAG_COLORS = consts.TAG_COLORS
 const RANDOM_COLOR = consts.RANDOM_COLOR
-const CREATE_ROUTE = consts.CREATE_ROUTE
-const util = require('util')
+
 
 const styles = {
     main: {

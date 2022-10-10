@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef, useContext } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { st as myStyles } from './styles'
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { getOfferContacts, getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
+import { updateOffer } from '../../store/actions/offerAction';
 import { userGet } from '../../store/actions/authActions';
 import { SocketContext } from '../../socketContext'
 
@@ -12,8 +11,8 @@ function Offer(props) {
     const dispatch = useDispatch();
     const socket = useContext(SocketContext);
 
-    const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
-    const { offer, offerContacts, offerSendSuccess, offerGetSuccess } = useSelector(state => state.offer);
+    const { user } = useSelector(state => state.auth);
+    const { offer } = useSelector(state => state.offer);
     let myInfo = user
 
     const [socketOffer, setSocketOffer] = useState('');

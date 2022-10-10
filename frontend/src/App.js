@@ -16,11 +16,9 @@ import './main.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import ExpertProfile from './Components/ExpertProfile';
 import Messenger from './Components/messenger/Messenger';
-import { userLogin } from './store/actions/authActions';
 
 import { SocketContext, socket } from './socketContext';
 
-const CREATE_ROUTE = consts.CREATE_ROUTE
 
 
 const styles = {

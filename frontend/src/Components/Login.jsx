@@ -41,7 +41,7 @@ function Login(props) {
 
     const navigate = useNavigate();
 
-    const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
+    const { authenticated, error} = useSelector(state => state.auth);
 
     const handleChange = (event) => {
         setState({

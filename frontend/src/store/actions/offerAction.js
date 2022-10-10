@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { USER_LOGOUT, CONTACT_GET_SUCCESS, OFFER_GET_SUCCESS, OFFER_GET_SUCCESS_CLEAR, UPDATE_OFFER, UPDATE_CONTACT_OFFER, SOCKET_OFFER, OFFER_SEND_SUCCESS } from '../types/offerType';
-import { USER_UPDATE_SUCCESS } from '../types/authType'
+import { USER_LOGOUT, CONTACT_GET_SUCCESS, OFFER_GET_SUCCESS, OFFER_SEND_SUCCESS } from '../types/offerType';
+
 import consts from '../../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
-const util = require("util")
+
 
 export const getOfferContacts = (myId) => async (dispatch) => {
     try {

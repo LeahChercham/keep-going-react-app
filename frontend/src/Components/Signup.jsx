@@ -47,7 +47,7 @@ function Signup(props) {
         },
         confirmPassword: "",
     })
-    const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
+    const {  authenticated, error} = useSelector(state => state.auth);
 
     const dispatch = useDispatch();
 

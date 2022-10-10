@@ -2,7 +2,7 @@ import axios from 'axios';
 import { USER_LOGOUT, CONTACT_GET_SUCCESS, MESSAGE_GET_SUCCESS, MESSAGE_SEND_SUCCESS } from "../types/messengerType";
 import consts from '../../consts'
 const CREATE_ROUTE = consts.CREATE_ROUTE
-const util = require("util")
+
 
 export const getContacts = (myId) => async (dispatch) => {
     try {

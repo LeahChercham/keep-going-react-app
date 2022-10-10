@@ -24,6 +24,7 @@ app.use(function (req, res, next) {
 })
 
 app.use(express.static(path.join(__dirname, "frontend", "build")))
+console.log(path.join(__dirname, "frontend", "build"));
 app.use(express.static('node_modules'));
 
 // Necessary to parse the JSON from requests

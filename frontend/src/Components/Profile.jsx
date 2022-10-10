@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux'
 // import consts from '../consts'
 import { userUpdate } from '../store/actions/authActions'
 import { TagsInput } from "react-tag-input-component";
-const util = require('util')
 
 const tagColors = ["#8CDFD6", "#1481BA", "#EEC584", "#2A7F62", "#BEA7E5", "#695958", "#B74F6F"]
 
@@ -88,11 +87,10 @@ function Profile(props) {
         }
     })
     const [tags, setTags] = useState([])
-    const [expertiseTag, setExpertiseTag] = useState([])
 
     const dispatch = useDispatch();
 
-    const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
+    const {  user } = useSelector(state => state.auth);
 
     useEffect(() => {
         let updateUser = user

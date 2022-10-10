@@ -1,8 +1,7 @@
 import Axios from 'axios';
 import consts from '../../consts'
-import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, CLEAR_ERROR, USER_LOGOUT, USER_UPDATE_SUCCESS, USER_GET_FAIL, USER_GET_SUCCESS, USER_UPDATE_FAIL } from '../types/authType';
+import { AUTH_FAIL, AUTH_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_UPDATE_SUCCESS, USER_GET_FAIL, USER_GET_SUCCESS, USER_UPDATE_FAIL } from '../types/authType';
 const CREATE_ROUTE = consts.CREATE_ROUTE
-const util = require("util")
 
 export const userRegister = (user) => {
 

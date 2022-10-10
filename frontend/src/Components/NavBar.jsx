@@ -6,7 +6,6 @@ import '../styles/navbar.css';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import MessageIcon from '@mui/icons-material/Message';
-import { flexbox } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux' // dispatch actions to the store
 import { userLogout } from '../store/actions/authActions';
 import { messengerActionLogOut } from '../store/actions/messengerAction';
@@ -27,9 +26,6 @@ const styles = {
     },
     links: {
         display: "flex",
-        // width: "100%",
-        // alignItems: "center",
-        // justifyContent: "space-evenly",
     },
     linksBox: {
         display: 'flex',
@@ -44,7 +40,7 @@ function NavBar(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { loading, authenticated, error, successMessage, user } = useSelector(state => state.auth);
+    const {  authenticated, user } = useSelector(state => state.auth);
 
     const logout = () => {
         dispatch(userLogout())
