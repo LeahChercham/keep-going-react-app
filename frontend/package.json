@@ -4,6 +4,7 @@
   "description": "",
   "main": "consts.js",
   "scripts": {
+    "install": "react-scripts install",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
