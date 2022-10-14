@@ -25,6 +25,7 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "formidable": "^2.0.1",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "localtunnel": "^2.0.2",
     "mongoose": "^6.5.2",

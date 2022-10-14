@@ -5,7 +5,7 @@ import React from 'react';
 
 
 export const socket = window.location.host.includes('localhost') ?
-io(`ws://localhost:8000`)
+io(`ws://localhost:5000`)
 : io(`ws://keepgoingapp.herokuapp.com:${process.env.PORT}`)
 
 
