@@ -13,4 +13,4 @@ export const socket = window.location.host.includes('localhost') ?
 // : io(`ws://keepgoingapp.herokuapp.com:${process.env.PORT}`)
 
 
-export const SocketContext = React.createContext();
+// export const SocketContext = React.createContext();
