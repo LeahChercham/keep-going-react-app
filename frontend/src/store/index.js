@@ -17,6 +17,6 @@ const rootReducer = combineReducers({
 
 const middleware = [thunkMiddleware]
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)));
 
 export default store;
