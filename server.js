@@ -7,6 +7,7 @@ const cors = require('cors');
 const user = require('./backend/routes/user')
 const messenger = require('./backend/routes/messenger')
 const offer = require('./backend/routes/offer')
+
 // const messengerRoute = require('./routes/Not in Use messengerRoute')
 
 
@@ -43,9 +44,8 @@ mongoose.connect(process.env.MONGODB_URI
 
 
 //This is a "catch-all" route handler, essentially saying that if the server did not register any of the other routes, it will send the index.html file from the build. 
- app.get('*', function (req, res) {
-   res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
- });
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+});
 
 app.listen(process.env.PORT || PORT, () => console.log(`Running on port ${PORT}`))
-
