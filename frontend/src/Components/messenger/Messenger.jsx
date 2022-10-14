@@ -238,6 +238,10 @@ function Messenger(props) {
             askId = myId
             answId = currentContact._id
             setAnswererId(currentContact._id)
+            if(user.tokens < price){
+                toast.error('Not enough tokens')
+                return
+            }
 
         } else {
             askId = currentContact._id

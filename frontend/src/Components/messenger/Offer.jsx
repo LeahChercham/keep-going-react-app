@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateOffer } from '../../store/actions/offerAction';
 import { userGet } from '../../store/actions/authActions';
 import { SocketContext } from '../../socketContext'
+import toast, { Toaster } from 'react-hot-toast';
 
 function Offer(props) {
 
@@ -65,6 +66,14 @@ function Offer(props) {
         response === 'accept' ? status = 'accepted' : status = 'declined'
 
         let myId = myInfo.id ? myInfo.id : myInfo._id
+
+        if (status === "accepted") {
+            if (offer.askerId === myId && user.tokens < offer.offer.price) {
+                toast.error('Not enough tokens')
+                return
+            }
+        }
+
         const data = { ...offer, status: status }
 
 
