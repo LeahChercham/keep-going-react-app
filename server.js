@@ -38,11 +38,11 @@ app.use('/', messenger)
 app.use('/', offer)
 
 console.log(process.env.MONGODB_URI)
-mongoose.connect(process.env.MONGODB_URI
+await mongoose.connect(process.env.MONGODB_URI
   || 'mongodb://127.0.0.1:27017/KeepGoingDB',
-  { useNewUrlParser: true })
-  .then(() => console.log("Connected to DB"))
-  .catch(err => console.log(err));
+  { useNewUrlParser: true }, { useUnifiedTopology: true })
+// .then(() => console.log("Connected to DB"))
+// .catch(err => console.log(err));
 
 
 //This is a "catch-all" route handler, essentially saying that if the server did not register any of the other routes, it will send the index.html file from the build. 
