@@ -5,8 +5,12 @@ import React from 'react';
 
 
 export const socket = window.location.host.includes('localhost') ?
-io(`ws://localhost:5000`)
-: io(`ws://keepgoingapp.herokuapp.com:${process.env.PORT}`)
+    io(`ws://localhost:5000`)
+    : io(`ws://keepgoingapp.herokuapp.com`)
+
+// export const socket = window.location.host.includes('localhost') ?
+// io(`ws://localhost:5000`)
+// : io(`ws://keepgoingapp.herokuapp.com:${process.env.PORT}`)
 
 
 export const SocketContext = React.createContext();
