@@ -11,14 +11,11 @@ import Login from './Components/Login';
 import Profile from './Components/Profile';
 import Results from './Components/Results';
 import './App.css';
-import consts from './consts'
-import './main.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import ExpertProfile from './Components/ExpertProfile';
 import Messenger from './Components/messenger/Messenger';
 
 import { SocketContext, socket } from './socketContext';
-
 
 
 const styles = {

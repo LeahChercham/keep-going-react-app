@@ -406,7 +406,6 @@ function Messenger(props) {
 
     }
 
-    console.log(currentContact)
     return (<div>
         <Toaster // notification
             position={'top-right'}

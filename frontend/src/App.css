@@ -4,7 +4,6 @@
   --main-bg-color: #0F202A;
 }
 
-
 body {
   font-family: 'Roboto', sans-serif;
 }
@@ -14,15 +13,16 @@ body {
   flex-direction: row;
 }
 
-/*  is in reset.scss
-body,html {
+* {
+  box-sizing: border-box;
+}
+
+body,
+html {
   margin: 0;
   padding: 0;
   height: 100%
 }
-* {
-  box-sizing: border-box;
-} */
 
 .page {
   height: calc(100vh - 100px);
