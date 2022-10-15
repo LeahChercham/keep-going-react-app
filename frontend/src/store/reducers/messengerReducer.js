@@ -43,11 +43,9 @@ export const messengerReducer = (state = messengerState, action) => {
           }
      }
 
-     if (type === UPDATE_CONTACT_MESSAGE) { // Ca bug ici
+     if (type === UPDATE_CONTACT_MESSAGE) {
           const index = state.contacts.findIndex(c => c.contactInfo._id === payload.messageInfo.receiverId || c.contactInfo._id === payload.messageInfo.senderId);
 
-          console.log("index:")
-          console.log(index)
           if(index != -1){
                state.contacts[index].messageInfo = payload.messageInfo
                state.contacts[index].messageInfo.status = payload.status;

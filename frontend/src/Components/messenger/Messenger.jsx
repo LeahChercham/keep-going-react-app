@@ -9,15 +9,45 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import toast, { Toaster } from 'react-hot-toast';
 import { getContacts, messageSend, getMessage, seenMessage, updateMessage, } from '../../store/actions/messengerAction';
-import {  getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
+import { getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
 // import { userGet } from '../../store/actions/authActions';
 
 import { SocketContext } from '../../socketContext';
 
 import { st as myStyles } from './styles'
 import Offer from './Offer';
+import consts from '../../consts'
+const TAG_COLORS = consts.TAG_COLORS
+const RANDOM_COLOR = consts.RANDOM_COLOR
 
-
+const currentStyles = {
+    keywords: {
+        display: 'flex',
+        fontSize: '2em'
+    },
+    li: {
+        listStyle: "none",
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingBottom: "10px",
+    },
+    ul: {
+        display: "inline",
+        paddingLeft: "0.5rem",
+        paddingRight: "0.5rem",
+        listStyle: "none",
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "center",
+        lineHeight: "2rem",
+        backgroundColor: "green",
+        margin: "0.5rem",
+        borderRadius: "0.5rem",
+    },
+}
 function Messenger(props) {
     const socket = useContext(SocketContext)
     const location = useLocation();
@@ -227,6 +257,10 @@ function Messenger(props) {
     }, [offerSendSuccess])
 
     const sendOffer = (type) => {
+        if(price === 0){
+            toast.error('Chose amount of tokens')
+            return
+        }
 
         let askId
         let answId
@@ -238,7 +272,7 @@ function Messenger(props) {
             askId = myId
             answId = currentContact._id
             setAnswererId(currentContact._id)
-            if(user.tokens < price){
+            if (user.tokens < price) {
                 toast.error('Not enough tokens')
                 return
             }
@@ -321,8 +355,6 @@ function Messenger(props) {
 
 
     useEffect(() => {
-        // let data = myInfo.id
-        console.log(myInfo)
         let myId = myInfo.id ? myInfo.id : myInfo._id
         dispatch(getContacts(myId))
         dispatch({ type: 'NEW_USER_ADD_CLEAR' })
@@ -374,8 +406,7 @@ function Messenger(props) {
 
     }
 
-
-
+    console.log(currentContact)
     return (<div>
         <Toaster // notification
             position={'top-right'}
@@ -422,8 +453,8 @@ function Messenger(props) {
                             // info="Active 10 mins ago" 
                             />
                             <ConversationHeader.Actions>
-                                <VoiceCallButton />
-                                <VideoCallButton />
+                                {/* <VoiceCallButton />
+                                <VideoCallButton /> */}
                                 <InfoButton />
                             </ConversationHeader.Actions>
                         </ConversationHeader>
@@ -461,6 +492,7 @@ function Messenger(props) {
                         <MessageInput placeholder="Type message here"
                             onSend={(e) => sendMessage(e)}
                             onChange={(e) => handleInput(e)}
+                            attachButton={false}
                         />
                     </ChatContainer>
 
@@ -477,29 +509,26 @@ function Messenger(props) {
                                 <Button style={styles.button} onClick={(e) => sendOffer("answerer")}>Send Offer (I'll help!)</Button>
                             </div>
                         </ExpansionPanel>
-                        {/* <ExpansionPanel open title="Older Offers">
-                        
-
-                            {offerContacts && offerContacts.length > 0 ? offerContacts.map((contact, index) => {
+                        <ExpansionPanel open title="Expert profile overview">
+                            {currentContact ?
                                 <div>
                                     <div>
+                                        {currentContact.username}
+                                    </div>
+                                    <div>{currentContact.mainExpertise}</div>
+                                    <div style={currentStyles.keywords}>
+                                        {currentContact.keywords ?
+                                            <li style={currentStyles.li}>
+                                                {currentContact.keywords.map(kw => { return <ul style={{ ...currentStyles.ul, backgroundColor: RANDOM_COLOR(TAG_COLORS) }} key={kw.word}>{kw.word.toLowerCase()}</ul> })}
 
-                                         asker : {contact.offerInfo.askerId} 
-                    </div>
-                    <div>
-                        price : {contact.offerInfo.offer.price}
-
-                    </div>
-                    <div>
-
-                    </div>
-                    <div>
-                        status : {contact.offerInfo.status}
-                    </div>
-            </div>
-                            }) : null}
-
-        </ExpansionPanel> */}
+                                            </li> : null
+                                        }
+                                    </div>
+                                </div>
+                                :
+                                <div>Select Contact</div>
+                            }
+                        </ExpansionPanel>
                     </Sidebar>
                 </MainContainer >
             </div >

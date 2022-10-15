@@ -20,10 +20,7 @@ export const getContacts = (myId) => async (dispatch) => {
 }
 
 export const messageSend = (data) => async (dispatch) => {
-
     try {
-        console.log("dispatch:")
-        console.log(data)
 
         const response = await axios.post(CREATE_ROUTE('messenger/send-message'), data);
         dispatch({
@@ -60,24 +57,6 @@ export const getMessage = (expertId, myId) => {
         }
     }
 }
-
-// Not in use
-// export const ImageMessageSend = (data) => async(dispatch)=>{
-
-//      try{
-//           const response = await axios.post('/api/messenger/image-message-send',data);
-//           dispatch({
-//                type: MESSAGE_SEND_SUCCESS,
-//                payload : {
-//                     message : response.data.message
-//                }
-//           })
-//      }catch (error){
-//           console.log(error.response.data);
-
-//      }
-
-// }
 
 export const seenMessage = (msg) => async (dispatch) => {
     try {

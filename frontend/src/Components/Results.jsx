@@ -8,7 +8,7 @@ const styles = {
         display: 'flex',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        flexFlow: "row",
+        flexFlow: "row wrap",
         height: "100%",
     }
 }

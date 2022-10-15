@@ -9,8 +9,6 @@ const messenger = require('./backend/routes/messenger')
 const offer = require('./backend/routes/offer')
 const http = require('http')
 
-// const messengerRoute = require('./routes/Not in Use messengerRoute')
-
 
 let app = express();
 
@@ -26,7 +24,6 @@ app.use(function (req, res, next) {
 })
 
 app.use(express.static(path.join(__dirname, "frontend", "build")))
-console.log(path.join(__dirname, "frontend", "build"));
 app.use(express.static('node_modules'));
 
 // Necessary to parse the JSON from requests
@@ -37,7 +34,6 @@ app.use('/', user)
 app.use('/', messenger)
 app.use('/', offer)
 
-console.log(process.env.MONGODB_URI)
 mongoose.connect(process.env.MONGODB_URI
   || 'mongodb://127.0.0.1:27017/KeepGoingDB',
   { useNewUrlParser: true }, { useUnifiedTopology: true })
@@ -53,11 +49,8 @@ app.get('*', function (req, res) {
 
 let server = http.createServer(app)
 server.listen(PORT, () => console.log(`Running on port ${PORT}`))
-// server start
-// app.listen(PORT, () => console.log(`Running on port ${PORT}`))
 
-// from socket.js
-
+// Socket server connection
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',

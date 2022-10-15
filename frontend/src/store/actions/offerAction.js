@@ -59,15 +59,10 @@ export const getOffer = (expertId, myId) => {
 }
 
 export const updateOffer = (ofr) => async (dispatch) => {
-    console.log('hier hängts')
-    console.log("ofr:")
-    console.log(ofr)
+
     try {
         const response = await axios.post(CREATE_ROUTE('offer/delivered-offer'), ofr);
-        console.log('response:')
-        console.log(response)
-        console.log('response.data:')
-        console.log(response.data);
+
         dispatch({
 
             type: OFFER_GET_SUCCESS,

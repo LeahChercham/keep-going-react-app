@@ -95,10 +95,6 @@ function ExpertProfile(props) {
                     </li>
                 </div>
                 <div>
-                    1 Token / 15 Minutes
-                </div>
-
-                <div>
 
                     <Button
                         variant="contained"

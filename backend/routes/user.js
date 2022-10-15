@@ -42,7 +42,7 @@ router.get("/user/username/:username", function (req, res) {
     let { username } = req.params
     User.findOne({ username }, function (error, response) {
         res.send(response)
-    })
+    }).populate({ path: 'keywords' })
 })
 
 // route to see if email already exists 
@@ -50,12 +50,12 @@ router.get("/user/email/:email", function (req, res) {
     let { email } = req.params
     User.findOne({ email }, function (error, response) {
         res.send(response)
-    })
+    }).populate({ path: 'keywords' })
 })
 
 // Route for updating user profile // Fabrice
 router.put("/user/:username", async function (req, res) {
-    
+
     try {
         let mainExpertise = req.body.updateUser.mainExpertise
         let oldKeywords = req.body.oldKeywords
@@ -78,7 +78,6 @@ router.put("/user/:username", async function (req, res) {
         }
 
 
-        // return null
         let oldKeywordsWords = oldKeywords.map(keyword => {
 
             return keyword.word
@@ -101,6 +100,7 @@ router.put("/user/:username", async function (req, res) {
                     await newlySavedKeyword.save().then((res) => {
 
                         User.findOneAndUpdate({ username: username }, { $push: { keywords: res } }, { new: true }).then((res) => {
+                            console.log(res)
                         })
                     })
                 }
@@ -118,7 +118,7 @@ router.put("/user/:username", async function (req, res) {
 
 
         let sendUser = { ...user }
-      
+
         res.status(201).json({
             successMessage: "User updated",
             user: sendUser._doc
@@ -213,13 +213,6 @@ router.get('/user/search', async function (req, res) {
     data = uniqueUsers
 
     res.send(data)
-
-    // OLD CODE FOR WHEN WE USED STRING SEARCH
-    // for (let i = 0; i < keywords.length; i++) {
-    //     let result = await User.find({ mainExpertiseKeywords: { $regex: keywords[i] } })
-    //     data.push(result)
-    // }
-    // res.send(data)
 }
 )
 

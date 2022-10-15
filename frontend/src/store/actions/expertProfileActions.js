@@ -7,7 +7,6 @@ export const getExpertProfile = (username) => {
         try {
             let response = await Axios.get(CREATE_ROUTE(`user/username/${username}`))
             let user = { ...response.data }
-            console.log(user)
             dispatch({
                 type: AUTH_SUCCESS,
                 payload: {

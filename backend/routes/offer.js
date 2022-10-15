@@ -42,7 +42,7 @@ router.get('/offer/get-contacts/:myId', async function (req, res) {
             _id: {
                 $ne: myId
             }
-        });
+        }).populate({ path: 'keywords' });
 
         for (let i = 0; i < getContacts.length; i++) {
 
@@ -165,45 +165,30 @@ router.post('/offer/delivered-offer', async function (req, res) { // OK
 
     try {
         const { _id, answererId, askerId, senderId, receiverId } = req.body
-        console.log("delivered offer:")
-        console.log(req.body)
+        
         const price = req.body.offer.price
         const offerId = _id
 
-        console.log("offerId: " + offerId)
-        console.log("price: " + price)
-        console.log("answererId: " + answererId)
-        console.log("askerId: " + askerId)
 
         let idToUse = offerId
 
         if (!offerId) {
-            console.log("in offer id is empty")
-            console.log(senderId)
-            console.log(receiverId)
             let ofr = await getLastOffer(senderId, receiverId)
-            console.log('ofr in id is empty: ')
-            console.log(ofr)
             if (ofr._id) {
                 idToUse = ofr._id
             } else {
                 idToUse = ofr.id
             }
-
-            console.log('newUID: ' + idToUse)
         }
 
-        console.log("second offerid")
-        console.log(idToUse)
         await Offer.findByIdAndUpdate(idToUse, { status: req.body.status }, { new: true }) //OK
         if (req.body.status === "accepted") {
             await User.findByIdAndUpdate(answererId, { $inc: { tokens: price } }) // OK
             await User.findByIdAndUpdate(askerId, { $inc: { tokens: -price } }) // OK
         }
 
-        let offer = await Offer.findById(idToUse); //OK
+        let offer = await Offer.findById(idToUse); 
 
-        console.log('found offer: ')
         console.log(offer)
         res.status(200).json({ // OK
             success: true,

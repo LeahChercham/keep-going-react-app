@@ -34,8 +34,6 @@ export const userLogin = (data) => {
     return async dispatch => {
         try {
             let response = await Axios.get(CREATE_ROUTE(`login/${username}/${password}`)) // asynchronous function
-            console.log("in user Update");
-            console.log(response.data)
             if(response.data.error){
                 dispatch({
                     type: USER_LOGIN_FAIL,

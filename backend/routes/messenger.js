@@ -42,7 +42,7 @@ router.get('/messenger/get-contacts/:myId', async function (req, res) {
             _id: {
                 $ne: myId
             }
-        });
+        }).populate({ path: 'keywords' });
         for (let i = 0; i < getContacts.length; i++) {
             let lastMessage = await getLastMessage(myId, getContacts[i]._id);
             if (lastMessage) {
@@ -66,7 +66,7 @@ router.get('/messenger/get-contacts/:myId', async function (req, res) {
 });
 
 router.post('/messenger/send-message', async function (req, res) {
-    console.log(req.body) 
+
     const {
         senderName,
         receiverId,
