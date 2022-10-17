@@ -14,11 +14,20 @@ const randomColor = () => {
 }
 
 const styles = {
+    page: {
+        display: 'flex',
+        alignContent: 'center',
+        justifyContent: 'center',
+        flexFlow: 'column'
+    },
     main: {
         display: "flex",
-        flexFlow: "row",
+        flexFlow: "column",
         justifyContent: "center",
+        alignSelf: 'center',
         height: "100%",
+        width: "60%",
+        padding: "10px"
     },
     menuButton: {
         fontWeight: 500,
@@ -26,8 +35,18 @@ const styles = {
         color: "#FFFFFF",
         backgroundColor: "#063A5B",
     },
-    containerOne: {},
-    containerTwo: {},
+    containerOne: {
+        width: "100%",
+        display: 'flex',
+        justifyContent: 'space-between',
+        flewFlow: "row-wrap"
+    },
+    containerTwo: {
+        width: "100%",
+        display: 'flex',
+        flexFlow: "column",
+        justifyContent: 'space-between'
+    },
     li: {
         listStyle: "none",
         display: "flex",
@@ -49,6 +68,8 @@ const styles = {
         borderRadius: "1rem",
     },
     button: {
+        display: "flex",
+        justifyContent: "center",
         marginTop: "2rem",
 
     }
@@ -88,7 +109,7 @@ function Profile(props) {
 
     const dispatch = useDispatch();
 
-    const {  user } = useSelector(state => state.auth);
+    const { user } = useSelector(state => state.auth);
 
     useEffect(() => {
         let updateUser = user
@@ -135,99 +156,95 @@ function Profile(props) {
     }
 
     return (
-        <div>
-                <h1>Edit your profile</h1>
+        <div style={styles.page}>
             <FormControl style={styles.main} >
-                <div style={styles.main}>
-                    <div style={styles.containerOne}>
-                        <div>
-                            <TextField
-                                disabled={true}
-                                error={state.updateUser.usernameTaken}
-                                id="username"
-                                label="Username"
-                                value={state.updateUser.username}
-                                onChange={handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            />
-                            <FormHelperText id="my-helper-text">{state.updateUser.usernameTaken ? "Username already taken" : ""}</FormHelperText>
-                        </div>
-                        <div>
-                            <TextField
-                                disabled={true}
-                                error={state.updateUser.emailTaken}
-                                id="email"
-                                label="Email"
-                                value={state.updateUser.email}
-                                onChange={handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            />
-                            <FormHelperText id="my-helper-text">{state.updateUser.emailTaken ? "An account with this e-mail address already exists" : ""}</FormHelperText>
-                        </div>
+                <h1>Edit your profile</h1>
+                <div style={styles.containerOne}>
+                    <div>
+                        <TextField
+                            disabled={true}
+                            error={state.updateUser.usernameTaken}
+                            id="username"
+                            label="Username"
+                            value={state.updateUser.username}
+                            onChange={handleChange}
+                            margin="normal"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                        />
+                        <FormHelperText id="my-helper-text">{state.updateUser.usernameTaken ? "Username already taken" : ""}</FormHelperText>
+                    </div>
+                    <div>
+                        <TextField
+                            disabled={true}
+                            error={state.updateUser.emailTaken}
+                            id="email"
+                            label="Email"
+                            value={state.updateUser.email}
+                            onChange={handleChange}
+                            margin="normal"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                        />
+                        <FormHelperText id="my-helper-text">{state.updateUser.emailTaken ? "An account with this e-mail address already exists" : ""}</FormHelperText>
+                    </div>
+                    <div>
+                        <TextField
+                            disabled={state.status === "View" ? true : true}
+                            id="tokens"
+                            label="Tokens"
+                            value={state.updateUser.tokens}
+                            margin="normal"
+                            variant="outlined"
+                            style={{ width: "100%" }}
+                        />
+                    </div>
+                </div>
+
+                <div style={styles.containerTwo}>
+
+
+                    <TextField
+                        disabled={state.status === "View" ? true : false}
+                        id="mainExpertise"
+                        label="Expertise"
+                        value={state.updateUser.mainExpertise}
+                        onChange={handleChange}
+                        margin="normal"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                    />
+                    <div>
+                        <h2>{state.status === "View" ? "Tags" : "Add Tags"}</h2>
+                        <li style={styles.li}>
+                            {tags.map((tag, index) => (
+                                <ul style={{ ...styles.ul, backgroundColor: randomColor() }} key={index}>{tag.toLowerCase()}</ul>
+                            ))}
+
+                        </li>
+                        {state.status === "View" ? null : <div><TagsInput
+                            value={tags}
+                            onChange={setTags}
+                            name="tags"
+                            placeHolder="enter tags"
+                        />
+                            <em>press enter to add new tag</em> </div>
+                        }
                     </div>
 
-                    <div style={styles.containerTwo}>
+                </div>
+                <div style={styles.button}>
 
-                        <div>
-                            <TextField
-                                disabled={state.status === "View" ? true : true}
-                                id="tokens"
-                                label="Tokens"
-                                value={state.updateUser.tokens}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            />
-                        </div>
-                        <div>
-                            <TextField
-                                disabled={state.status === "View" ? true : false}
-                                id="mainExpertise"
-                                label="Expertise"
-                                value={state.updateUser.mainExpertise}
-                                onChange={handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            />
-                            <div>
-                                <h1>{state.status === "View" ? "Tags" : "Add Tags"}</h1>
-                                <li style={styles.li}>
-                                    {tags.map((tag, index) => (
-                                        <ul style={{ ...styles.ul, backgroundColor: randomColor() }} key={index}>{tag.toLowerCase()}</ul>
-                                    ))}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={(e) => handleSubmit(e)}>
+                        {state.status === "View" ? "Edit" : "Save"}
+                    </Button>
 
-                                </li>
-                                {state.status === "View" ? null : <div><TagsInput
-                                    value={tags}
-                                    onChange={setTags}
-                                    name="tags"
-                                    placeHolder="enter tags"
-                                />
-                                    <em>press enter to add new tag</em> </div>
-                                }
-                            </div>
-
-                        </div>
-
-                        <div style={styles.button}>
-
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={(e) => handleSubmit(e)}>
-                                {state.status === "View" ? "Edit" : "Save"}
-                            </Button>
-
-                        </div>
-                        <div>
-                            {state.error}
-                        </div>
-                    </div>
+                </div>
+                <div>
+                    {state.error}
                 </div>
             </FormControl>
         </div>
