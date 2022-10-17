@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import logo from '../Logo Group.png';
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import '../styles/navbar.css';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import MessageIcon from '@mui/icons-material/Message';

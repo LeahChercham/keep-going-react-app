@@ -76,13 +76,9 @@ function Offer(props) {
 
         const data = { ...offer, status: status }
 
-
         dispatch(updateOffer(data)).then((res) => {
-
             dispatch(userGet(myInfo))
         })
-
-
 
         socket.emit('respondToOffer', {
             senderId: myId,
@@ -95,6 +91,7 @@ function Offer(props) {
 
         })
     }
+
 
 
     return (<div style={myStyles.offer}>

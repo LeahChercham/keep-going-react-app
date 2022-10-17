@@ -190,7 +190,7 @@ function Profile(props) {
                     </div>
                     <div>
                         <TextField
-                            disabled={state.status === "View" ? true : true}
+                            disabled={true}
                             id="tokens"
                             label="Tokens"
                             value={state.updateUser.tokens}

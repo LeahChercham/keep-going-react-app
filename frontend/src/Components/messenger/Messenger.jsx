@@ -15,9 +15,6 @@ import { SocketContext } from '../../socketContext';
 
 import { st as myStyles } from './styles'
 import Offer from './Offer';
-import consts from '../../consts'
-const TAG_COLORS = consts.TAG_COLORS
-const RANDOM_COLOR = consts.RANDOM_COLOR
 
 const currentStyles = {
     keywords: {
@@ -45,6 +42,7 @@ const currentStyles = {
         backgroundColor: "green",
         margin: "0.5rem",
         borderRadius: "0.5rem",
+        backgroundColor: "#81AE9D"
     },
 }
 function Messenger(props) {
@@ -73,7 +71,7 @@ function Messenger(props) {
 
     const [price, setPrice] = useState(0);
     const [offerFromMe, setOfferFromMe] = useState(false);
-    const [newOffer, setNewOffer] = useState(false) // gibt es ein offer ? // Das alles in Redux
+    const [newOffer, setNewOffer] = useState(false)
 
     const [askerId, setAskerId] = useState("")
     const [answererId, setAnswererId] = useState("")
@@ -510,7 +508,7 @@ function Messenger(props) {
                                     <div style={currentStyles.keywords}>
                                         {currentContact.keywords ?
                                             <li style={currentStyles.li}>
-                                                {currentContact.keywords.map(kw => { return <ul style={{ ...currentStyles.ul, backgroundColor: RANDOM_COLOR(TAG_COLORS) }} key={kw.word}>{kw.word.toLowerCase()}</ul> })}
+                                                {currentContact.keywords.map(kw => { return <ul style={currentStyles.ul} key={kw.word}>{kw.word.toLowerCase()}</ul> })}
 
                                             </li> : null
                                         }
