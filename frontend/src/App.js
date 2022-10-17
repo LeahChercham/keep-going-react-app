@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-// import { USER_LOGIN_SUCCESS } from '../store/types/authType';
 import { USER_LOGIN_SUCCESS } from './store/types/authType';
 
 import NavBar from './Components/NavBar';

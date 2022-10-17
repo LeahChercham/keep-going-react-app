@@ -147,8 +147,6 @@ function Signup(props) {
         }
     }
 
-    // To do: use function from authActions (reducer)
-    // Should I use FormData ?
     const signUp = async () => {
         let userData = { ...state.newUser }
 

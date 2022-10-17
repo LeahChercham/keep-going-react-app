@@ -4,7 +4,6 @@ import { FormControl, Switch } from "@mui/material";
 import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useDispatch, useSelector } from 'react-redux'
-// import consts from '../consts'
 import { userUpdate } from '../store/actions/authActions'
 import { TagsInput } from "react-tag-input-component";
 
@@ -46,7 +45,6 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         lineHeight: "2.5rem",
-        // backgroundColor: "green",
         margin: "1rem",
         borderRadius: "1rem",
     },
@@ -119,7 +117,6 @@ function Profile(props) {
             }; break;
             case "Edit": {
                 updateUser()
-                // hier zu DB schicken
                 status = "View"
                 setState({ ...state, status })
             }; break;
@@ -139,6 +136,7 @@ function Profile(props) {
 
     return (
         <div>
+                <h1>Edit your profile</h1>
             <FormControl style={styles.main} >
                 <div style={styles.main}>
                     <div style={styles.containerOne}>
@@ -158,7 +156,6 @@ function Profile(props) {
                         </div>
                         <div>
                             <TextField
-                                // disabled={state.status === "View" ? true : false}
                                 disabled={true}
                                 error={state.updateUser.emailTaken}
                                 id="email"
@@ -177,7 +174,7 @@ function Profile(props) {
 
                         <div>
                             <TextField
-                                disabled={state.status === "View" ? true : true} // always disabled
+                                disabled={state.status === "View" ? true : true}
                                 id="tokens"
                                 label="Tokens"
                                 value={state.updateUser.tokens}
@@ -185,7 +182,6 @@ function Profile(props) {
                                 variant="outlined"
                                 style={{ width: "100%" }}
                             />
-                            {/* <FormHelperText id="my-helper-text"></FormHelperText> */}
                         </div>
                         <div>
                             <TextField
@@ -198,23 +194,6 @@ function Profile(props) {
                                 variant="outlined"
                                 style={{ width: "100%" }}
                             />
-
-                            {/* <div>Enter Keywords separated by semicolons ;</div> */}
-                            {/* Hier vorschläge für schon existierende Stichwörter vorschlagen */}
-                            {/* <TextField
-                                multiline
-                                disabled={state.status === "View" ? true : false}
-                                id="mainExpertiseKeywords"
-                                label="Keywords"
-                                value={state.updateUser.mainExpertiseKeywords}
-                                onChange={handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                            /> */}
-
-                            {/* Npm Package react-tag-input-component
-  */}
                             <div>
                                 <h1>{state.status === "View" ? "Tags" : "Add Tags"}</h1>
                                 <li style={styles.li}>
@@ -231,12 +210,6 @@ function Profile(props) {
                                 />
                                     <em>press enter to add new tag</em> </div>
                                 }
-                                {/* <TagsInput
-                                    value={tags}
-                                    onChange={setTags}
-                                    name="tags"
-                                    placeHolder="enter tags"
-                                /> */}
                             </div>
 
                         </div>
@@ -246,7 +219,6 @@ function Profile(props) {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                // currentStatus="Edit"
                                 onClick={(e) => handleSubmit(e)}>
                                 {state.status === "View" ? "Edit" : "Save"}
                             </Button>

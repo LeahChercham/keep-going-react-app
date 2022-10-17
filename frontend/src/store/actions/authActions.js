@@ -33,7 +33,7 @@ export const userLogin = (data) => {
 
     return async dispatch => {
         try {
-            let response = await Axios.get(CREATE_ROUTE(`login/${username}/${password}`)) // asynchronous function
+            let response = await Axios.get(CREATE_ROUTE(`login/${username}/${password}`)) 
             if(response.data.error){
                 dispatch({
                     type: USER_LOGIN_FAIL,

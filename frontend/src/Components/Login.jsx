@@ -4,7 +4,7 @@ import { TextField } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Button } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux' // dispatch actions to the store
+import { useDispatch, useSelector } from 'react-redux'
 import { userLogin } from '../store/actions/authActions';
 
 import { CLEAR_ERROR } from '../store/types/authType';
@@ -89,7 +89,6 @@ function Login(props) {
                             variant="outlined"
                             style={{ width: "100%" }}
                         />
-                        <FormHelperText id="my-helper-text">Use your Username to log in.</FormHelperText>
                     </div>
                     <div>
                         <TextField

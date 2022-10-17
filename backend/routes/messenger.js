@@ -133,7 +133,6 @@ router.get('/messenger/get-message/:expertId/:myId', async function (req, res) {
             }]
         })
 
-        // getAllMessage = getAllMessage.filter(m=>m.senderId === myId && m.receiverId === expertId || m.receiverId ===  myId && m.senderId === expertId );
 
         res.status(200).json({
             success: true,

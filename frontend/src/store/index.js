@@ -1,6 +1,5 @@
 import { legacy_createStore as createStore, compose, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from '@redux-devtools/extension';
-// createStore is depreciate. Use configure Store instead
 
 import thunkMiddleware from 'redux-thunk';
 
@@ -9,7 +8,6 @@ import { messengerReducer } from './reducers/messengerReducer';
 import { offerReducer } from './reducers/offerReducer';
 
 const rootReducer = combineReducers({
-    // add here all reducers
     auth: authReducer,
     messenger: messengerReducer,
     offer: offerReducer

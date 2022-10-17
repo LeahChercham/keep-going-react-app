@@ -4,12 +4,12 @@ const Schema = mongoose.Schema
 const UserSchema = new Schema({
     username: String,
     email: String,
-    password: String, // The password will not be the real password, but the encryption of the password.
+    password: String, 
     mainExpertise: String,
-    mainExpertiseKeywords: String, // old
-    mainExpertiseKeywordsArray: [String], // old
-    keywords: [ { type: Schema.Types.ObjectId, ref: 'Keyword' } ], //new
-    otherKeywords: String, // old
+    mainExpertiseKeywords: String, 
+    mainExpertiseKeywordsArray: [String], 
+    keywords: [ { type: Schema.Types.ObjectId, ref: 'Keyword' } ], 
+    otherKeywords: String, 
     tokens: Number,
     contacts: [ { type: Schema.Types.ObjectId, ref: 'User' }]
 })

@@ -6,7 +6,7 @@ import '../styles/navbar.css';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import MessageIcon from '@mui/icons-material/Message';
-import { useDispatch, useSelector } from 'react-redux' // dispatch actions to the store
+import { useDispatch, useSelector } from 'react-redux' 
 import { userLogout } from '../store/actions/authActions';
 import { messengerActionLogOut } from '../store/actions/messengerAction';
 import { offerActionLogOut } from '../store/actions/offerAction';

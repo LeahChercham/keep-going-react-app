@@ -104,12 +104,6 @@ function Result(props) {
     const { kwList, setKwList } = useState([]);
     const navigate = useNavigate();
 
-    // let keywordsList = props ? props.result.mainExpertiseKeywords.split(";") : []
-
-    // useEffect(() => {
-    //     debugger
-    //     let kwList = props ? props.result.keywords.map(kw => { return kw.word }) : []
-    // }, [props.result.keywords])
 
     useEffect(() => {
         if (redirect) {

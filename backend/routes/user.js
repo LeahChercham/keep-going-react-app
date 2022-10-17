@@ -179,8 +179,7 @@ router.get('/user/search', async function (req, res) {
 
     let foundKeywords = []
     let users = []
-    let data = [] // users to be send back, populated obviously
-    // let found
+    let data = [] 
 
     for (let i = 0; i < keywords.length; i++) {
         multipleFound = await Keyword.find({ word: { $regex: keywords[i], $options: 'i' } }).populate({

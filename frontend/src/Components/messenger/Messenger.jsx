@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast, { Toaster } from 'react-hot-toast';
 import { getContacts, messageSend, getMessage, seenMessage, updateMessage, } from '../../store/actions/messengerAction';
 import { getOffer, offerSend, updateOffer } from '../../store/actions/offerAction';
-// import { userGet } from '../../store/actions/authActions';
 
 import { SocketContext } from '../../socketContext';
 
@@ -54,7 +53,6 @@ function Messenger(props) {
 
     const dispatch = useDispatch();
     const scrollRef = useRef();
-    // const socket = useRef();
 
     const { contacts, message, messageSendSuccess, messageGetSuccess, new_user_add } = useSelector(state => state.messenger);
     let expert = location.state ? location.state.expert : contacts && contacts.length > 0 ? contacts[0].contactInfo : "";
@@ -257,7 +255,7 @@ function Messenger(props) {
     }, [offerSendSuccess])
 
     const sendOffer = (type) => {
-        if(price === 0){
+        if (price === 0) {
             toast.error('Chose amount of tokens')
             return
         }
@@ -407,7 +405,7 @@ function Messenger(props) {
     }
 
     return (<div>
-        <Toaster // notification
+        <Toaster
             position={'top-right'}
             reverseOrder={false}
             toastOptions={{
@@ -447,22 +445,16 @@ function Messenger(props) {
                     <ChatContainer>
                         <ConversationHeader>
                             <ConversationHeader.Back />
-                            {/* <Avatar src={zoeIco} name="Zoe" /> */}
                             <ConversationHeader.Content userName={currentContact.username}
-                            // info="Active 10 mins ago" 
+
                             />
                             <ConversationHeader.Actions>
-                                {/* <VoiceCallButton />
-                                <VideoCallButton /> */}
+
                                 <InfoButton />
                             </ConversationHeader.Actions>
                         </ConversationHeader>
                         <MessageList typingIndicator={typingMessage.msg ? <TypingIndicator content={currentContact.username + " is typing"} /> : false} >
-                            {/* 
-                        {typingMessage.senderId === currentContact._id ? <TypingIndicator content=" is typing" /> : null} */}
 
-
-                            {/* <MessageSeparator content="Saturday, 30 November 2019" /> */}
                             {message && message.length > 0 ?
 
                                 message.map((msg, index) =>
