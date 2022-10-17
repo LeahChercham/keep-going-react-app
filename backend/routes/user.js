@@ -53,7 +53,7 @@ router.get("/user/email/:email", function (req, res) {
     }).populate({ path: 'keywords' })
 })
 
-// Route for updating user profile // Fabrice
+// Route for updating user profile
 router.put("/user/:username", async function (req, res) {
 
     try {
